@@ -3,6 +3,7 @@ import type { Command, GameEvent, GameState, SlotId } from '@hearthvale/core';
 import { useStore } from 'zustand';
 import { createStore, type StoreApi } from 'zustand/vanilla';
 import { eventBus as defaultBus, type EventBus } from './eventBus';
+import { resolveTier, type QualityTier } from '../render/quality';
 
 export type Screen = 'title' | 'slots' | 'newGame' | 'intro' | 'game';
 export type Overlay = 'pause' | 'bin' | 'cart' | 'sleep' | 'morning' | 'restoring';
@@ -59,6 +60,10 @@ export interface GameStore {
   settings: Settings;
   cameraYaw: CameraYaw;
   zoomStep: ZoomStep;
+  /** Tier picked from the device and lowered by the performance monitor. */
+  autoTier: QualityTier;
+  setAutoTier(tier: QualityTier): void;
+  tier(): QualityTier;
   dispatch(cmd: Command): GameEvent[];
   startGame(state: GameState, slot: SlotId, playTimeMs?: number): void;
   replaceGame(state: GameState): void;
@@ -83,6 +88,13 @@ export function createGameStore({
     settings: loadSettings(),
     cameraYaw: 0,
     zoomStep: 1,
+    autoTier: 'high',
+    setAutoTier(autoTier) {
+      set({ autoTier });
+    },
+    tier() {
+      return resolveTier(get().settings.quality, get().autoTier);
+    },
     dispatch(cmd) {
       const { game } = get();
       if (!game) return [];

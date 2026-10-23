@@ -1,5 +1,9 @@
 import { findFeature, type Grid } from '@hearthvale/core';
-import { useMemo } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { useMemo, useRef } from 'react';
+import type { MeshStandardMaterial } from 'three';
+import { gameStore } from '../game/store';
+import { nightFactor } from '../render/lighting';
 import { COLORS } from './palette';
 
 function bounds(grid: Grid, kind: 'building' | 'water') {
@@ -35,6 +39,12 @@ export function Features({ grid }: { grid: Grid }) {
   const bin = findFeature(grid, 'bin');
   const cart = findFeature(grid, 'cart');
   const wallH = 2.2;
+  const windowMat = useRef<MeshStandardMaterial>(null);
+  useFrame(() => {
+    const minute = gameStore.getState().game?.calendar.minute ?? 720;
+    // Windows light up from dusk (18:00); emissive > 1 so bloom catches them.
+    if (windowMat.current) windowMat.current.emissiveIntensity = 0.15 + nightFactor(minute) * 3;
+  });
 
   return (
     <group>
@@ -53,7 +63,12 @@ export function Features({ grid }: { grid: Grid }) {
       </mesh>
       <mesh position={[door.x + 1.6, 1.4, door.y + 0.97]}>
         <boxGeometry args={[0.6, 0.5, 0.06]} />
-        <meshStandardMaterial color="#ffd98a" emissive="#ffb84d" emissiveIntensity={0.25} />
+        <meshStandardMaterial
+          ref={windowMat}
+          color="#ffd98a"
+          emissive="#ffb84d"
+          emissiveIntensity={0.25}
+        />
       </mesh>
 
       {/* Shipping bin */}
