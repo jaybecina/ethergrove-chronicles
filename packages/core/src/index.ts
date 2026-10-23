@@ -9,3 +9,12 @@ export { WEATHER_TABLE } from './data/weatherTable';
 export { nextFloat } from './rng';
 export { findFeature, isBlocked, parseLayout, setTile, tileAt } from './grid';
 export { createNewGame } from './newGame';
+export {
+  SEASONS,
+  advanceMinutes,
+  formatClock,
+  nextDay,
+  shouldPassOut,
+  weekday,
+  type Weekday,
+} from './systems/calendar';
