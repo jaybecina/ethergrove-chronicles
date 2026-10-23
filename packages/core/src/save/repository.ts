@@ -22,6 +22,8 @@ export interface SaveSlotSummary {
   summary: SaveSummary | null;
   savedAt: string | null;
   playTimeMs: number;
+  /** A file exists in the slot but failed validation. */
+  corrupt: boolean;
 }
 
 export type LoadResult =
