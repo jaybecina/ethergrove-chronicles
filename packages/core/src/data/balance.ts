@@ -18,7 +18,7 @@ export const BALANCE = {
   walkSpeed: 4,
   exhaustedSpeedFactor: 0.6,
   playerRadius: 0.3,
-  missCostsStamina: true,
+  missCostsStamina: true as boolean,
   cartOpen: 540,
   cartClose: 1020,
   axeHits: 3,
