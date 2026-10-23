@@ -1,7 +1,9 @@
 import { createNewGame } from '@hearthvale/core';
-import { useGame, gameStore } from './game/store';
+import { useEffect } from 'react';
+import { gameStore, useGame } from './game/store';
 import { getInputSystem } from './input/system';
 import { GameCanvas } from './scene/GameCanvas';
+import { Hud } from './ui/hud/Hud';
 import { ActionButtons } from './ui/touch/ActionButtons';
 import { Joystick } from './ui/touch/Joystick';
 
@@ -16,16 +18,28 @@ function startDevGame() {
   s.setScreen('game');
 }
 
+const coarse = () => window.matchMedia('(pointer: coarse)').matches;
+
 export function App() {
   const screen = useGame((s) => s.screen);
+  const device = useGame((s) => s.device);
+  const settings = useGame((s) => s.settings);
   const { touch } = getInputSystem();
+  const showTouch = device === 'touch' || coarse();
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--text-scale', String(settings.textScale));
+    document.documentElement.classList.toggle('reduced-motion', settings.reducedMotion);
+  }, [settings.textScale, settings.reducedMotion]);
+
   return (
-    <div style={{ position: 'fixed', inset: 0 }}>
+    <div className={`app${showTouch ? ' is-touch' : ''}`}>
       <GameCanvas />
       {screen === 'game' ? (
         <>
-          <Joystick source={touch} />
-          <ActionButtons source={touch} />
+          <Hud />
+          {showTouch && <Joystick source={touch} />}
+          {showTouch && <ActionButtons source={touch} />}
         </>
       ) : (
         <button

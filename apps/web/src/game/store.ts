@@ -4,6 +4,7 @@ import { useStore } from 'zustand';
 import { createStore, type StoreApi } from 'zustand/vanilla';
 import { eventBus as defaultBus, type EventBus } from './eventBus';
 import { resolveTier, type QualityTier } from '../render/quality';
+import type { Device } from '../input/intents';
 
 export type Screen = 'title' | 'slots' | 'newGame' | 'intro' | 'game';
 export type Overlay = 'pause' | 'bin' | 'cart' | 'sleep' | 'morning' | 'restoring';
@@ -62,6 +63,9 @@ export interface GameStore {
   zoomStep: ZoomStep;
   /** Tier picked from the device and lowered by the performance monitor. */
   autoTier: QualityTier;
+  /** Last input device used; picks button glyphs in prompts. */
+  device: Device;
+  setDevice(device: Device): void;
   setAutoTier(tier: QualityTier): void;
   tier(): QualityTier;
   dispatch(cmd: Command): GameEvent[];
@@ -89,6 +93,10 @@ export function createGameStore({
     cameraYaw: 0,
     zoomStep: 1,
     autoTier: 'high',
+    device: 'keyboard',
+    setDevice(device) {
+      if (get().device !== device) set({ device });
+    },
     setAutoTier(autoTier) {
       set({ autoTier });
     },

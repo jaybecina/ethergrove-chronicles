@@ -1,8 +1,478 @@
+@import '@fontsource-variable/fraunces/full.css';
+@import '@fontsource-variable/nunito';
+
+:root {
+  --wood-dark: #3b2617;
+  --wood: #6b4428;
+  --wood-light: #8f5f38;
+  --parchment: #ecdcb8;
+  --parchment-deep: #dcc597;
+  --ink: #2e2118;
+  --ink-soft: #5d4632;
+  --gold: #d9a441;
+  --gold-bright: #f3cf72;
+  --ember: #ff8a3d;
+  --leaf: #6e9c4a;
+  --frost: #bfe0f5;
+  --danger: #c2452d;
+
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-ui: 'Nunito Variable', 'Avenir Next', system-ui, sans-serif;
+  --text-scale: 1;
+  --step--1: calc(0.8125rem * var(--text-scale));
+  --step-0: calc(1rem * var(--text-scale));
+  --step-1: calc(1.25rem * var(--text-scale));
+  --step-2: calc(1.5625rem * var(--text-scale));
+  --step-3: calc(2.4414rem * var(--text-scale));
+
+  --gutter: max(16px, env(safe-area-inset-left));
+  --gutter-r: max(16px, env(safe-area-inset-right));
+  --top: max(14px, env(safe-area-inset-top));
+  --bottom: max(14px, env(safe-area-inset-bottom));
+  --panel-edge: 0 0 0 1.5px var(--gold), 0 0 0 4px var(--wood-dark);
+  --lift: 0 10px 24px rgba(30, 18, 8, 0.35);
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #1d2a1f;
+  font-family: var(--font-ui);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+button {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 3px solid var(--gold-bright);
+  outline-offset: 2px;
+}
+kbd {
+  font-family: var(--font-ui);
+}
+
+.app {
+  position: fixed;
+  inset: 0;
+}
+
+/* ---------- HUD ---------- */
+.hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  font-size: var(--step-0);
+}
+.hud > * {
+  pointer-events: auto;
+}
+
+.hud-clock {
+  position: absolute;
+  top: var(--top);
+  left: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dial {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--wood-light), var(--wood-dark) 70%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 230, 190, 0.25),
+    0 0 0 2px var(--gold),
+    var(--lift);
+}
+.dial svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.dial-season {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+.dial-season.is-now {
+  opacity: 1;
+  stroke-width: 6;
+}
+.dial-face {
+  fill: var(--wood-dark);
+}
+.dial-day {
+  fill: #9fd0ef;
+}
+.dial-night {
+  fill: #1d2a55;
+}
+.dial-horizon {
+  fill: var(--wood-dark);
+  opacity: 0.7;
+}
+.dial-sun {
+  fill: #ffd34d;
+  filter: drop-shadow(0 0 3px #ffb43a);
+}
+.dial-moon {
+  fill: #eef2ff;
+}
+.dial-disc {
+  transition: transform 0.6s ease-out;
+}
+.clock-text {
+  background: var(--parchment);
+  border-radius: 10px;
+  padding: 6px 12px 6px;
+  box-shadow: var(--panel-edge), var(--lift);
+}
+.clock-text p {
+  margin: 0;
+}
+.clock-time {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 600;
+  font-variation-settings:
+    'SOFT' 100,
+    'opsz' 48;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1.05;
+}
+.clock-date {
+  font-size: var(--step--1);
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.clock-weather {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px !important;
+}
+.forecast {
+  opacity: 0.75;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.forecast::before {
+  content: 'then';
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+  margin-right: 2px;
+}
+
+.hud-gold {
+  position: absolute;
+  top: var(--top);
+  right: var(--gutter-r);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--parchment);
+  box-shadow: var(--panel-edge), var(--lift);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-1);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.coin {
+  fill: var(--gold);
+  stroke: #8a5d16;
+  stroke-width: 1.4;
+}
+.coin-inner {
+  fill: none;
+  stroke: var(--gold-bright);
+  stroke-width: 1.2;
+}
+
+.hud-stamina {
+  position: absolute;
+  left: var(--gutter);
+  bottom: var(--bottom);
+  width: min(220px, 40vw);
+  height: 16px;
+  border-radius: 999px;
+  background: var(--wood-dark);
+  box-shadow:
+    0 0 0 1.5px var(--gold),
+    var(--lift);
+  overflow: hidden;
+}
+.stamina-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ff6a2a, var(--ember) 60%, #ffd37a);
+  box-shadow: 0 0 12px rgba(255, 138, 61, 0.7);
+  transition: width 0.3s ease-out;
+}
+.hud-stamina.is-low {
+  animation: stamina-shake 0.6s ease-in-out infinite;
+}
+.hud-stamina.is-empty .stamina-fill {
+  filter: grayscale(1);
+}
+@keyframes stamina-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+.hud-hotbar {
+  position: absolute;
+  bottom: var(--bottom);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 14px;
+  background: rgba(59, 38, 23, 0.82);
+  box-shadow:
+    0 0 0 1.5px var(--gold),
+    var(--lift);
+}
+.hotbar-gap {
+  width: 2px;
+  align-self: stretch;
+  margin: 4px 2px;
+  background: var(--gold);
+  opacity: 0.45;
+  border-radius: 2px;
+}
+.slot {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: var(--parchment);
+  cursor: pointer;
+  transition:
+    transform 0.12s ease-out,
+    box-shadow 0.12s ease-out;
+}
+.slot[aria-selected='true'] {
+  transform: translateY(-5px);
+  box-shadow:
+    0 0 0 2.5px var(--gold-bright),
+    0 0 14px rgba(243, 207, 114, 0.7);
+}
+.slot.is-empty {
+  background: var(--parchment-deep);
+  opacity: 0.6;
+}
+.slot-key {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--ink-soft);
+  opacity: 0.7;
+}
+.slot-qty {
+  position: absolute;
+  right: 4px;
+  bottom: 2px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.can-charge {
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: conic-gradient(#5aa7dc var(--charge), rgba(90, 167, 220, 0.15) 0);
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 3px),
+    #000 calc(100% - 2.5px)
+  );
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+  pointer-events: none;
+}
+
+.hud-prompt {
+  position: absolute;
+  bottom: calc(var(--bottom) + 80px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  pointer-events: none;
+}
+.prompt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 6px;
+  border-radius: 999px;
+  background: rgba(46, 33, 24, 0.78);
+  color: #fff4dc;
+  font-weight: 700;
+  font-size: var(--step--1);
+}
+.prompt-chip kbd {
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--parchment);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* ---------- Touch controls ---------- */
+.joystick-zone {
+  z-index: 1;
+}
+.joystick-base {
+  position: fixed;
+  border-radius: 50%;
+  background: rgba(236, 220, 184, 0.18);
+  box-shadow: inset 0 0 0 2px rgba(243, 207, 114, 0.6);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.joystick-knob {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--parchment);
+  box-shadow:
+    0 0 0 2px var(--gold),
+    var(--lift);
+}
+.touch-actions {
+  position: fixed;
+  right: var(--gutter-r);
+  bottom: calc(var(--bottom) + 70px);
+  display: grid;
+  grid-template-columns: 64px 88px;
+  grid-template-rows: 56px 56px 88px;
+  gap: 10px;
+  z-index: 2;
+}
+.touch-btn {
+  border: 0;
+  border-radius: 50%;
+  background: var(--parchment);
+  box-shadow: var(--panel-edge), var(--lift);
+  font-size: 24px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.touch-btn:active {
+  transform: scale(0.94);
+}
+.touch-primary {
+  grid-column: 2;
+  grid-row: 3;
+  background: radial-gradient(circle at 40% 35%, #ffe3a3, var(--gold));
+}
+.touch-secondary {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: end;
+}
+.touch-tool {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: center;
+}
+.touch-rot-l {
+  grid-column: 1;
+  grid-row: 1;
+}
+.touch-rot-r {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+}
+.touch-menu {
+  position: fixed;
+  top: calc(var(--top) + 54px);
+  right: var(--gutter-r);
+  width: 56px;
+  height: 56px;
+}
+.is-touch .hud-stamina {
+  top: calc(var(--top) + 96px);
+  bottom: auto;
+  width: 150px;
+}
+.is-touch .hud-hotbar {
+  bottom: var(--bottom);
+}
+.is-touch .slot {
+  width: 46px;
+  height: 46px;
+}
+@media (max-width: 560px) {
+  .is-touch .hud-hotbar {
+    left: var(--gutter);
+    right: var(--gutter-r);
+    transform: none;
+    justify-content: space-between;
+    gap: 3px;
+  }
+  .is-touch .slot {
+    width: 38px;
+    height: 42px;
+  }
+  .is-touch .slot svg {
+    width: 22px;
+    height: 22px;
+  }
+  .is-touch .slot-key {
+    display: none;
+  }
+  .is-touch .hud-prompt {
+    bottom: calc(var(--bottom) + 300px);
+  }
+  .dial {
+    width: 66px;
+    height: 66px;
+  }
+}
+
+/* ---------- Floating labels ---------- */
 .float-text {
   display: inline-block;
-  font:
-    700 15px/1 system-ui,
-    sans-serif;
+  font: 800 15px/1 var(--font-ui);
   color: #fff8e1;
   text-shadow:
     0 1px 0 #5b3a1c,
@@ -23,4 +493,20 @@
     transform: translateY(-46px);
     opacity: 0;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-stamina.is-low,
+  .float-text {
+    animation: none;
+  }
+  .slot,
+  .dial-disc,
+  .stamina-fill {
+    transition: none;
+  }
+}
+.reduced-motion .hud-stamina.is-low,
+.reduced-motion .float-text {
+  animation: none;
 }

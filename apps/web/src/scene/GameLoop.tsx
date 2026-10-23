@@ -22,6 +22,7 @@ export function GameLoop() {
       now.current += STEP_MS;
       const intents = mapper.read();
       const s = gameStore.getState();
+      s.setDevice(intents.device);
       if (s.screen !== 'game' || !s.game) continue;
       if (intents.menu) s.setOverlay(s.overlay ? null : 'pause');
       if (!s.isClockRunning()) continue;
