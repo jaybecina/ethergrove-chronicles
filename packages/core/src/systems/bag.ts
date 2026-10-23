@@ -84,3 +84,10 @@ export function assignQuickSlot(
   quickSlots[slot] = bagIndex;
   return { ...state, quickSlots };
 }
+
+/** Unpin quick slots whose bag cell is now empty, so a pin never jumps to a different item. */
+export function prunePins(state: GameState): GameState {
+  const pins = state.quickSlots.map((i) => (i !== null && state.bag[i] ? i : null));
+  if (pins.every((p, k) => p === state.quickSlots[k])) return state;
+  return { ...state, quickSlots: pins as GameState['quickSlots'] };
+}

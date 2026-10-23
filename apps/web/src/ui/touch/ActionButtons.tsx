@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import type { TouchSource } from '../../input/touch';
 
 const MIN = 56;
@@ -40,6 +40,12 @@ function TouchButton(props: {
 }
 
 export function ActionButtons({ source, actionIcon }: Props) {
+  useEffect(
+    () => () => {
+      source.release('primary');
+    },
+    [source],
+  );
   return (
     <div className="touch-actions">
       <TouchButton

@@ -1,3 +1,4 @@
+import { gameStore } from '../game/store';
 import { createGamepadSource } from './gamepad';
 import { createKeyboardSource } from './keyboard';
 import { createInputMapper } from './mapper';
@@ -14,9 +15,22 @@ let system: InputSystem | null = null;
 export function getInputSystem(): InputSystem {
   if (!system) {
     const touch = createTouchSource();
+    // Fingers lifted while the page was hidden never send pointerup.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) touch.reset();
+    });
     system = {
       touch,
-      mapper: createInputMapper([createKeyboardSource(window), createGamepadSource(), touch]),
+      mapper: createInputMapper([
+        createKeyboardSource(window, {
+          capture: () => {
+            const s = gameStore.getState();
+            return s.screen === 'game' && s.overlay === null;
+          },
+        }),
+        createGamepadSource(),
+        touch,
+      ]),
     };
   }
   return system;

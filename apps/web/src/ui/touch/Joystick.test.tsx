@@ -28,6 +28,27 @@ describe('Joystick', () => {
   });
 });
 
+describe('opening a menu mid-hold (review finding 2)', () => {
+  it('unmounting the stick while dragged stops the farmer', () => {
+    const source = createTouchSource();
+    const { unmount } = render(<Joystick source={source} />);
+    const zone = screen.getByTestId('joystick-zone');
+    fireEvent.pointerDown(zone, { pointerId: 9, clientX: 0, clientY: 0 });
+    fireEvent.pointerMove(zone, { pointerId: 9, clientX: JOYSTICK_RADIUS, clientY: 0 });
+    unmount();
+    expect(source.read().move).toEqual({ x: 0, z: 0 });
+  });
+
+  it('unmounting the buttons while Use is held releases it', () => {
+    const source = createTouchSource();
+    const { unmount } = render(<ActionButtons source={source} />);
+    fireEvent.pointerDown(screen.getByRole('button', { name: /use tool/i }), { pointerId: 5 });
+    unmount();
+    source.read(); // the tap itself still counts once
+    expect(source.read().primary).toBe(false);
+  });
+});
+
 describe('ActionButtons', () => {
   it('buttons are at least 56px and drive the touch source', () => {
     const source = createTouchSource();

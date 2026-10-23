@@ -1,4 +1,4 @@
-import { useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import type { TouchSource } from '../../input/touch';
 
 export const JOYSTICK_RADIUS = 60;
@@ -11,6 +11,14 @@ interface Props {
 export function Joystick({ source }: Props) {
   const origin = useRef<{ id: number; x: number; y: number } | null>(null);
   const [knob, setKnob] = useState<{ x: number; y: number; dx: number; dy: number } | null>(null);
+
+  // A menu opening unmounts the stick mid-drag; never leave the farmer walking.
+  useEffect(
+    () => () => {
+      source.setStick(0, 0);
+    },
+    [source],
+  );
 
   const end = () => {
     origin.current = null;

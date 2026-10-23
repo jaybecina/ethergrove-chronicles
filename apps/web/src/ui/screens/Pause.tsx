@@ -4,6 +4,7 @@ import { gameStore, useGame } from '../../game/store';
 import { saveNow } from '../../save/autosave';
 import { downloadSave } from '../../save/fileIO';
 import { saveRepo } from '../../save/repo';
+import { toastStore } from '../toastStore';
 import { BagPanel } from './BagPanel';
 import { CalendarPanel } from './CalendarPanel';
 import { Panel } from './Panel';
@@ -63,10 +64,15 @@ export function Pause({ repo = saveRepo }: { repo?: SaveRepository }) {
           type="button"
           className="btn btn-quiet"
           onClick={() => {
-            void saveNow(gameStore, repo).then(() => {
+            const quit = () => {
               const s = gameStore.getState();
               s.setOverlay(null);
               s.setScreen('title');
+            };
+            saveNow(gameStore, repo).then(quit, () => {
+              toastStore
+                .getState()
+                .push("Couldn't save. Use Export save to keep your progress.", 'warn', 6000);
             });
           }}
         >

@@ -1,6 +1,6 @@
 import { advanceMinutes, shouldPassOut } from './systems/calendar';
 import { endDay, sleep } from './systems/day';
-import { assignQuickSlot, cycleHotbar, moveBagItem, selectHotbar } from './systems/bag';
+import { assignQuickSlot, cycleHotbar, moveBagItem, prunePins, selectHotbar } from './systems/bag';
 import { stepMovement } from './systems/movement';
 import { useTool } from './systems/tools';
 import { useItem } from './systems/crops';
@@ -46,5 +46,6 @@ function dispatch(state: GameState, cmd: Command): Result {
 
 export function applyCommand(state: GameState, cmd: Command): Result {
   const result = dispatch(state, cmd);
-  return checkMilestones(state, result.state, result.events);
+  const next = result.state.bag === state.bag ? result.state : prunePins(result.state);
+  return checkMilestones(state, next, result.events);
 }

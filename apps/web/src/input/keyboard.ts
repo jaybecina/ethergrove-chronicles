@@ -13,13 +13,34 @@ const EDGE_KEYS: Record<string, Partial<Intents>> = {
   Tab: { menu: true },
 };
 
-export function createKeyboardSource(target: Window): InputSource {
+const isTextEntry = (t: EventTarget | null): boolean =>
+  t instanceof HTMLElement &&
+  (t.isContentEditable ||
+    t.tagName === 'INPUT' ||
+    t.tagName === 'TEXTAREA' ||
+    t.tagName === 'SELECT');
+
+interface Options {
+  /** True while the game itself has the keyboard (in play, no menu open). */
+  capture?: () => boolean;
+}
+
+export function createKeyboardSource(
+  target: Window,
+  { capture = () => true }: Options = {},
+): InputSource {
   const held = new Set<string>();
   const edges = createEdges();
   // A press and release between two reads must still count as one action.
   let tapped = false;
 
   const onDown = (e: KeyboardEvent) => {
+    // Text fields and menus keep their own keys (typing spaces, Tab focus, Space on buttons).
+    if (isTextEntry(e.target)) return;
+    if (!capture()) {
+      if (e.code === 'Escape' && !e.repeat) edges.add({ menu: true });
+      return;
+    }
     if (e.code === 'Tab' || e.code === 'Space') e.preventDefault();
     held.add(e.code);
     if (e.repeat) return;

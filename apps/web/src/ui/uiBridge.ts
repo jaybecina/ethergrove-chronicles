@@ -13,6 +13,7 @@ const FAIL_TEXT: Partial<Record<Extract<GameEvent, { type: 'actionFailed' }>['re
   cartClosed: "Sol's cart is open 9 AM to 5 PM, spring to fall.",
   wrongSeason: "Those seeds won't grow this season.",
   notEnoughGold: 'Not enough gold.',
+  notHungry: "You're already full of energy.",
 };
 
 const MILESTONE_TEXT: Record<string, string> = {

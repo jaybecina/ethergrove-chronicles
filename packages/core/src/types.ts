@@ -119,7 +119,8 @@ export type FailReason =
   | 'noTarget'
   | 'noItem'
   | 'notSellable'
-  | 'notHere';
+  | 'notHere'
+  | 'notHungry';
 
 export type GameEvent =
   | { type: 'toolUsed'; tool: ToolId; x: number; y: number; hit: boolean }

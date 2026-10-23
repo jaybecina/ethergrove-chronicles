@@ -12,6 +12,7 @@ import type {
   Result,
   Season,
   SeedId,
+  FailReason,
 } from '../types';
 import { addItem, quickItem, removeAt } from './bag';
 import { targetTile } from './movement';
@@ -28,10 +29,7 @@ export function cropStage(crop: CropState): CropStage {
   return crop.age < days / 3 ? 'sprout' : 'young';
 }
 
-const fail = (
-  state: GameState,
-  reason: 'noTarget' | 'wrongSeason' | 'bagFull' | 'noItem',
-): Result => ({
+const fail = (state: GameState, reason: FailReason): Result => ({
   state,
   events: [{ type: 'actionFailed', reason }],
 });
@@ -115,6 +113,7 @@ export function useItem(state: GameState): Result {
     return { ...planted, state: { ...planted.state, bag: removeAt(state.bag, q.bagIndex, 1) } };
   }
   if (def.eat !== null) {
+    if (state.player.stamina >= BALANCE.maxStamina) return fail(state, 'notHungry');
     const stamina = Math.min(BALANCE.maxStamina, state.player.stamina + def.eat);
     const gained = stamina - state.player.stamina;
     return {
