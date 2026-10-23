@@ -7,6 +7,9 @@ import { HouseInterior } from './HouseInterior';
 import { Player } from './Player';
 import { TargetHighlight } from './TargetHighlight';
 import { Tiles } from './Tiles';
+import { Crops } from './Crops';
+import { Kindling } from './Kindling';
+import { FxLayer } from './fx/FxLayer';
 import { COLORS } from './palette';
 
 export function World() {
@@ -28,9 +31,12 @@ export function World() {
         </mesh>
       ) : null}
       <Tiles grid={grid} />
+      <Crops grid={grid} />
       {location === 'farm' ? <Features grid={grid} /> : <HouseInterior grid={grid} />}
       <Player />
       <TargetHighlight />
+      <FxLayer />
+      <Kindling />
       <CameraRig />
     </>
   );

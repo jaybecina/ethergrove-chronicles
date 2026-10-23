@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { MathUtils, Vector3 } from 'three';
 import { gameStore } from '../game/store';
 import { ZOOM_DISTANCES, offsetAt } from './cameraMath';
+import { takeShake } from './fx/shake';
 
 const target = new Vector3();
 
@@ -39,7 +40,10 @@ export function CameraRig() {
       far ? target.z : MathUtils.damp(focus.current.z, target.z, 6, delta),
     );
     const [ox, oy, oz] = offsetAt(yaw.current, dist.current);
-    camera.position.set(focus.current.x + ox, focus.current.y + oy, focus.current.z + oz);
+    const shake = takeShake(delta);
+    const jx = shake ? (Math.random() - 0.5) * shake : 0;
+    const jy = shake ? (Math.random() - 0.5) * shake : 0;
+    camera.position.set(focus.current.x + ox + jx, focus.current.y + oy + jy, focus.current.z + oz);
     camera.lookAt(focus.current);
   });
   return null;

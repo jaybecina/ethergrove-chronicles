@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import './ui/theme.css';
 import { gameStore } from './game/store';
 
 if (import.meta.env.VITE_E2E === 'true') {
