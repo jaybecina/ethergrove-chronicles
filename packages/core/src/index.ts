@@ -19,3 +19,4 @@ export {
   type Weekday,
 } from './systems/calendar';
 export { activeTool, addItem, countOf, quickItem, removeAt } from './systems/bag';
+export { stepMovement, targetTile } from './systems/movement';
