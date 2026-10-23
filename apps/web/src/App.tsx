@@ -1,5 +1,5 @@
 import { createNewGame } from '@hearthvale/core';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { installAudio } from './audio/install';
 import { eventBus } from './game/eventBus';
 import { gameStore, useGame } from './game/store';
@@ -22,6 +22,31 @@ import { Toasts } from './ui/screens/Toasts';
 import { ActionButtons } from './ui/touch/ActionButtons';
 import { Joystick } from './ui/touch/Joystick';
 import { installUiBridge } from './ui/uiBridge';
+import { hasWebGL2 } from './render/webgl';
+import { ErrorBoundary } from './ui/ErrorBoundary';
+import { Restoring } from './ui/screens/Restoring';
+import { StorageBanner } from './ui/screens/StorageBanner';
+import { WebGLFallback } from './ui/screens/WebGLFallback';
+
+function SceneError() {
+  return (
+    <div className="screen screen-paper">
+      <div className="panel" role="alert">
+        <h2>The farm view stopped working</h2>
+        <p>Your progress is safe. Reload to keep playing.</p>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => {
+            location.reload();
+          }}
+        >
+          Reload
+        </button>
+      </div>
+    </div>
+  );
+}
 import { useUi } from './ui/uiStore';
 
 /** A fixed, pretty farm at golden hour behind the title screen. */
@@ -42,6 +67,8 @@ export function App() {
   const device = useGame((s) => s.device);
   const settings = useGame((s) => s.settings);
   const slotsMode = useUi((s) => s.slotsMode);
+  const canvasKey = useGame((s) => s.canvasKey);
+  const [webgl] = useState(() => hasWebGL2());
   const { touch } = getInputSystem();
   const showTouch = device === 'touch' || coarse();
 
@@ -73,9 +100,13 @@ export function App() {
     }
   }, [screen]);
 
+  if (!webgl) return <WebGLFallback />;
+
   return (
     <div className={`app${showTouch ? ' is-touch' : ''}`}>
-      <GameCanvas />
+      <ErrorBoundary key={canvasKey} fallback={<SceneError />}>
+        <GameCanvas key={canvasKey} />
+      </ErrorBoundary>
       {screen === 'title' && <Title />}
       {screen === 'slots' && <SaveSlots mode={slotsMode} />}
       {screen === 'newGame' && <NewGame />}
@@ -90,10 +121,12 @@ export function App() {
           {overlay === 'cart' && <MerchantCart />}
           {overlay === 'sleep' && <SleepConfirm />}
           {overlay === 'morning' && <MorningReport />}
+          {overlay === 'restoring' && <Restoring />}
           <Tips />
         </>
       )}
       <Toasts />
+      <StorageBanner />
     </div>
   );
 }

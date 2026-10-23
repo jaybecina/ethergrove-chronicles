@@ -74,6 +74,9 @@ export interface GameStore {
   setScreen(screen: Screen): void;
   setOverlay(overlay: Overlay | null): void;
   isClockRunning(): boolean;
+  /** Bumped to remount the 3D canvas (after GPU context loss). */
+  canvasKey: number;
+  remountCanvas(): void;
   /** Menu button: closes the open overlay, or opens the pause menu. */
   toggleMenu(): void;
   addPlayTime(ms: number): void;
@@ -129,9 +132,13 @@ export function createGameStore({
       const { game, screen, overlay } = get();
       return game !== null && screen === 'game' && overlay === null && !document.hidden;
     },
+    canvasKey: 0,
+    remountCanvas() {
+      set((s) => ({ canvasKey: s.canvasKey + 1 }));
+    },
     toggleMenu() {
       if (get().screen !== 'game') return;
-      set((s) => ({ overlay: s.overlay ? null : 'pause' }));
+      set((s) => (s.overlay === 'restoring' ? s : { overlay: s.overlay ? null : 'pause' }));
     },
     addPlayTime(ms) {
       set((s) => ({ playTimeMs: s.playTimeMs + ms }));

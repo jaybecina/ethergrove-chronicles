@@ -4,6 +4,7 @@ import { NoToneMapping } from 'three';
 import { gameStore, useGame } from '../game/store';
 import { PostFX } from '../render/PostFX';
 import { QUALITY, detectTier } from '../render/quality';
+import { installContextLoss } from '../render/webgl';
 import { GameLoop } from './GameLoop';
 import { World } from './World';
 
@@ -17,6 +18,7 @@ export function GameCanvas() {
       gl={{ antialias: false, powerPreference: 'high-performance', toneMapping: NoToneMapping }}
       onCreated={({ gl }) => {
         gameStore.getState().setAutoTier(detectTier(gl));
+        installContextLoss(gl.domElement, gameStore);
       }}
     >
       <PerformanceMonitor

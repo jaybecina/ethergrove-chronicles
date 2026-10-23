@@ -1103,3 +1103,18 @@ input[type='range'] {
   bottom: var(--bottom);
   color: #fff3d6;
 }
+
+.storage-banner {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--bottom) + 76px);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: #fde7d9;
+  box-shadow: 0 0 0 1.5px var(--danger);
+  font-weight: 700;
+  z-index: 30;
+  max-width: calc(100% - 32px);
+}
