@@ -3,6 +3,7 @@ import { assignQuickSlot, cycleHotbar, moveBagItem, selectHotbar } from './syste
 import { stepMovement } from './systems/movement';
 import { useTool } from './systems/tools';
 import { useItem } from './systems/crops';
+import { buyItem, shipItem, unshipItem } from './systems/economy';
 import type { Command, GameState, Result } from './types';
 
 const only = (state: GameState): Result => ({ state, events: [] });
@@ -25,6 +26,12 @@ export function applyCommand(state: GameState, cmd: Command): Result {
       return useTool(state);
     case 'useItem':
       return useItem(state);
+    case 'shipItem':
+      return shipItem(state, cmd.bagIndex, cmd.qty);
+    case 'unshipItem':
+      return unshipItem(state, cmd.binIndex, cmd.qty);
+    case 'buyItem':
+      return buyItem(state, cmd.itemId, cmd.qty);
     default:
       return only(state);
   }
