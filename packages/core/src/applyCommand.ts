@@ -1,4 +1,5 @@
-import { advanceMinutes } from './systems/calendar';
+import { advanceMinutes, shouldPassOut } from './systems/calendar';
+import { endDay, sleep } from './systems/day';
 import { assignQuickSlot, cycleHotbar, moveBagItem, selectHotbar } from './systems/bag';
 import { stepMovement } from './systems/movement';
 import { useTool } from './systems/tools';
@@ -10,8 +11,12 @@ const only = (state: GameState): Result => ({ state, events: [] });
 
 export function applyCommand(state: GameState, cmd: Command): Result {
   switch (cmd.type) {
-    case 'tick':
-      return only({ ...state, calendar: advanceMinutes(state.calendar, cmd.minutes) });
+    case 'tick': {
+      const next = { ...state, calendar: advanceMinutes(state.calendar, cmd.minutes) };
+      return shouldPassOut(next.calendar) ? endDay(next, 'passOut') : only(next);
+    }
+    case 'sleep':
+      return sleep(state);
     case 'move':
       return only(stepMovement(state, cmd.dx, cmd.dz, cmd.dtMs));
     case 'selectHotbar':
