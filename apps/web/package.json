@@ -13,7 +13,8 @@
     "typecheck": "tsc -p tsconfig.json",
     "size": "size-limit",
     "e2e": "playwright test",
-    "perf": "playwright test -c playwright.perf.config.ts"
+    "perf": "playwright test -c playwright.perf.config.ts",
+    "check:build": "node scripts/check-no-debug-hook.mjs dist"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

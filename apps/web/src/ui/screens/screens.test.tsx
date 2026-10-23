@@ -81,6 +81,15 @@ describe('SaveSlots', () => {
   });
 });
 
+describe('SaveSlots new game on a damaged slot (review finding 9)', () => {
+  it('asks before replacing it, since that would erase the backup', async () => {
+    render(<SaveSlots repo={memoryRepo({ 2: 'corrupt' })} mode="new" />);
+    await userEvent.click(await screen.findByRole('button', { name: 'Replace' }));
+    expect(screen.getByRole('alertdialog')).toHaveTextContent(/backup/i);
+    expect(gameStore.getState().screen).not.toBe('newGame');
+  });
+});
+
 describe('MerchantCart', () => {
   it('sells only in-season seeds and updates gold', async () => {
     start(game({ calendar: { year: 1, season: 'summer', day: 2, minute: 600 } }));

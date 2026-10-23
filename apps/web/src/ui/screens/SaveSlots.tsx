@@ -78,11 +78,11 @@ export function SaveSlots({ repo = saveRepo, mode }: Props) {
                     type="button"
                     className="btn btn-primary"
                     onClick={() => {
-                      if (s.summary) setConfirm({ slot: s.slot, action: 'overwrite' });
+                      if (s.summary ?? s.corrupt) setConfirm({ slot: s.slot, action: 'overwrite' });
                       else startNew(s.slot);
                     }}
                   >
-                    {s.summary ? 'Replace' : 'Start here'}
+                    {(s.summary ?? s.corrupt) ? 'Replace' : 'Start here'}
                   </button>
                 )}
                 {mode === 'load' && s.summary && (
@@ -145,7 +145,7 @@ export function SaveSlots({ repo = saveRepo, mode }: Props) {
             <p>
               {confirm.action === 'delete'
                 ? `Delete the farm in slot ${confirm.slot}? This can't be undone.`
-                : `Replace the farm in slot ${confirm.slot} with a new one?`}
+                : `Replace the farm in slot ${confirm.slot} with a new one? Its saved progress and backup will be erased.`}
             </p>
             <div className="row">
               <button
