@@ -1,5 +1,6 @@
 import { createNewGame } from '@hearthvale/core';
 import { useEffect } from 'react';
+import { installAudio } from './audio/install';
 import { eventBus } from './game/eventBus';
 import { gameStore, useGame } from './game/store';
 import { getInputSystem } from './input/system';
@@ -48,9 +49,11 @@ export function App() {
     if (!gameStore.getState().game) gameStore.getState().replaceGame(showcase());
     const offBridge = installUiBridge(gameStore, eventBus);
     const offSave = installAutosave(gameStore, saveRepo, eventBus);
+    const offAudio = installAudio(gameStore, eventBus);
     return () => {
       offBridge();
       offSave();
+      offAudio();
     };
   }, []);
 
