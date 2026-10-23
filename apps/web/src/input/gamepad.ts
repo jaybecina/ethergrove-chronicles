@@ -1,7 +1,20 @@
 import { normalize, type InputSource, type Intents } from './intents';
 
 const DEADZONE = 0.2;
-const B = { a: 0, b: 1, x: 2, lb: 4, rb: 5, lt: 6, rt: 7, start: 9 } as const;
+const B = {
+  a: 0,
+  b: 1,
+  x: 2,
+  lb: 4,
+  rb: 5,
+  lt: 6,
+  rt: 7,
+  start: 9,
+  up: 12,
+  down: 13,
+  left: 14,
+  right: 15,
+} as const;
 
 const defaultPads = (): (Gamepad | null)[] =>
   typeof navigator !== 'undefined' && 'getGamepads' in navigator
@@ -34,7 +47,18 @@ export function createGamepadSource(getPads: () => (Gamepad | null)[] = defaultP
         secondary: edge(B.x),
         cycle: edge(B.rb) ? 1 : edge(B.lb) ? -1 : 0,
         rotate: edge(B.rt) ? 1 : edge(B.lt) ? -1 : 0,
-        menu: edge(B.start) || edge(B.b),
+        menu: edge(B.start),
+        back: edge(B.b),
+        confirm: edge(B.a),
+        nav: edge(B.up)
+          ? 'up'
+          : edge(B.down)
+            ? 'down'
+            : edge(B.left)
+              ? 'left'
+              : edge(B.right)
+                ? 'right'
+                : null,
       };
     },
     reset,

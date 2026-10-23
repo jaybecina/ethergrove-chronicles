@@ -40,6 +40,9 @@ export function createInputMapper(sources: readonly InputSource[]): { read(): In
         out.primary ||= p.primary === true;
         out.secondary ||= p.secondary === true;
         out.menu ||= p.menu === true;
+        out.confirm ||= p.confirm === true;
+        out.back ||= p.back === true;
+        if (p.nav) out.nav = p.nav;
         if (p.cycle) out.cycle = p.cycle;
         if (p.rotate) out.rotate = p.rotate;
         if (p.zoom) out.zoom = p.zoom;

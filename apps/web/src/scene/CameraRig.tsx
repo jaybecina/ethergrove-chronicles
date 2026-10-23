@@ -26,11 +26,21 @@ export function CameraRig() {
       yawTarget.current += (step * Math.PI) / 2;
       lastSteps.current = s.cameraYaw;
     }
+    // Title screen: a slow drift around the farm.
+    if (s.screen === 'title' && !s.settings.reducedMotion) yawTarget.current += delta * 0.06;
+    else {
+      // Leaving the title: settle on the nearest angle that matches the movement yaw.
+      const quarter = Math.PI / 2;
+      const k = Math.round((yawTarget.current - s.cameraYaw * quarter) / (2 * Math.PI));
+      const settled = s.cameraYaw * quarter + k * 2 * Math.PI;
+      if (Math.abs(settled - yawTarget.current) > 1e-6 && step === 0) yawTarget.current = settled;
+    }
     const instant = s.settings.reducedMotion;
     yaw.current = instant
       ? yawTarget.current
       : MathUtils.damp(yaw.current, yawTarget.current, 12, delta);
-    dist.current = MathUtils.damp(dist.current, ZOOM_DISTANCES[s.zoomStep], 6, delta);
+    const want = s.screen === 'title' ? ZOOM_DISTANCES[2] + 6 : ZOOM_DISTANCES[s.zoomStep];
+    dist.current = MathUtils.damp(dist.current, want, 6, delta);
     target.set(p.x, 0.6, p.z);
     focus.current ??= target.clone();
     const far = focus.current.distanceTo(target) > 4;

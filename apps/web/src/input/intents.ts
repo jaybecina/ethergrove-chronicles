@@ -13,6 +13,10 @@ export interface Intents {
   rotate: -1 | 0 | 1;
   zoom: -1 | 0 | 1;
   menu: boolean;
+  /** Gamepad menu navigation (d-pad, A, B) — edges. */
+  nav: 'up' | 'down' | 'left' | 'right' | null;
+  confirm: boolean;
+  back: boolean;
   device: Device;
 }
 
@@ -32,6 +36,9 @@ export const EMPTY_INTENTS: Intents = {
   rotate: 0,
   zoom: 0,
   menu: false,
+  nav: null,
+  confirm: false,
+  back: false,
   device: 'keyboard',
 };
 

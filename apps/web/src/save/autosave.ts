@@ -1,12 +1,16 @@
 import { makeSaveFile } from '@hearthvale/core';
-import type { LoadResult, SaveRepository, SlotId } from '@hearthvale/core';
+import type { GameState, LoadResult, SaveRepository, SlotId } from '@hearthvale/core';
 import type { StoreApi } from 'zustand/vanilla';
 import type { EventBus } from '../game/eventBus';
 import type { GameStore } from '../game/store';
 
+const lastSaved = new WeakMap<SaveRepository, GameState>();
+
+/** Save the current game to its slot; skips if this exact state was just saved. */
 export async function saveNow(store: StoreApi<GameStore>, repo: SaveRepository): Promise<void> {
   const { game, slot, playTimeMs } = store.getState();
-  if (!game || slot === null) return;
+  if (!game || slot === null || lastSaved.get(repo) === game) return;
+  lastSaved.set(repo, game);
   await repo.save(slot, makeSaveFile(game, playTimeMs, new Date()));
 }
 

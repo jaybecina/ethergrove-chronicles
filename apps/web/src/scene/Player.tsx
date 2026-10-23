@@ -13,6 +13,7 @@ export function Player() {
     const g = ref.current;
     const p = gameStore.getState().game?.player;
     if (!g || !p) return;
+    g.visible = gameStore.getState().screen !== 'title';
     const snap = Math.hypot(g.position.x - p.x, g.position.z - p.z) > 2;
     g.position.x = snap ? p.x : MathUtils.damp(g.position.x, p.x, 20, delta);
     g.position.z = snap ? p.z : MathUtils.damp(g.position.z, p.z, 20, delta);

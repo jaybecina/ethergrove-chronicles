@@ -74,6 +74,8 @@ export interface GameStore {
   setScreen(screen: Screen): void;
   setOverlay(overlay: Overlay | null): void;
   isClockRunning(): boolean;
+  /** Menu button: closes the open overlay, or opens the pause menu. */
+  toggleMenu(): void;
   addPlayTime(ms: number): void;
   updateSettings(patch: Partial<Settings>): void;
   rotateCamera(dir: 1 | -1): void;
@@ -126,6 +128,10 @@ export function createGameStore({
     isClockRunning() {
       const { game, screen, overlay } = get();
       return game !== null && screen === 'game' && overlay === null && !document.hidden;
+    },
+    toggleMenu() {
+      if (get().screen !== 'game') return;
+      set((s) => ({ overlay: s.overlay ? null : 'pause' }));
     },
     addPlayTime(ms) {
       set((s) => ({ playTimeMs: s.playTimeMs + ms }));

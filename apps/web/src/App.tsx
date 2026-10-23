@@ -1,55 +1,96 @@
 import { createNewGame } from '@hearthvale/core';
 import { useEffect } from 'react';
+import { eventBus } from './game/eventBus';
 import { gameStore, useGame } from './game/store';
 import { getInputSystem } from './input/system';
+import { installAutosave } from './save/autosave';
+import { saveRepo } from './save/repo';
 import { GameCanvas } from './scene/GameCanvas';
 import { Hud } from './ui/hud/Hud';
+import { MerchantCart } from './ui/screens/MerchantCart';
+import { MorningReport } from './ui/screens/MorningReport';
+import { NewGame } from './ui/screens/NewGame';
+import { Pause } from './ui/screens/Pause';
+import { SaveSlots } from './ui/screens/SaveSlots';
+import { ShippingBin } from './ui/screens/ShippingBin';
+import { SleepConfirm } from './ui/screens/SleepConfirm';
+import { Tips, offerTip } from './ui/screens/Tips';
+import { Title } from './ui/screens/Title';
+import { Toasts } from './ui/screens/Toasts';
 import { ActionButtons } from './ui/touch/ActionButtons';
 import { Joystick } from './ui/touch/Joystick';
+import { installUiBridge } from './ui/uiBridge';
+import { useUi } from './ui/uiStore';
 
-// Temporary shell until the real screens land (Task 23).
-function startDevGame() {
-  const s = gameStore.getState();
-  s.startGame(
-    createNewGame({ seed: Date.now() % 100000, farmName: 'Hearthvale', playerName: 'Farmer' }),
-    1,
-  );
-  if (window.innerHeight > window.innerWidth) s.zoom(1);
-  s.setScreen('game');
+/** A fixed, pretty farm at golden hour behind the title screen. */
+function showcase() {
+  const g = createNewGame({ seed: 7, farmName: '', playerName: '' });
+  return {
+    ...g,
+    calendar: { ...g.calendar, minute: 1030 },
+    player: { ...g.player, x: 12.5, z: 12.5 },
+  };
 }
 
 const coarse = () => window.matchMedia('(pointer: coarse)').matches;
 
 export function App() {
   const screen = useGame((s) => s.screen);
+  const overlay = useGame((s) => s.overlay);
   const device = useGame((s) => s.device);
   const settings = useGame((s) => s.settings);
+  const slotsMode = useUi((s) => s.slotsMode);
   const { touch } = getInputSystem();
   const showTouch = device === 'touch' || coarse();
+
+  useEffect(() => {
+    if (!gameStore.getState().game) gameStore.getState().replaceGame(showcase());
+    const offBridge = installUiBridge(gameStore, eventBus);
+    const offSave = installAutosave(gameStore, saveRepo, eventBus);
+    return () => {
+      offBridge();
+      offSave();
+    };
+  }, []);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--text-scale', String(settings.textScale));
     document.documentElement.classList.toggle('reduced-motion', settings.reducedMotion);
   }, [settings.textScale, settings.reducedMotion]);
 
+  // Placeholder until the intro sequence (Task 24): go straight to the farm.
+  useEffect(() => {
+    if (screen === 'intro') gameStore.getState().setScreen('game');
+    if (screen === 'game') offerTip('move');
+  }, [screen]);
+
+  useEffect(() => {
+    if (screen === 'title') {
+      const g = gameStore.getState().game;
+      if (g?.farmName) gameStore.getState().replaceGame(showcase());
+    }
+  }, [screen]);
+
   return (
     <div className={`app${showTouch ? ' is-touch' : ''}`}>
       <GameCanvas />
-      {screen === 'game' ? (
+      {screen === 'title' && <Title />}
+      {screen === 'slots' && <SaveSlots mode={slotsMode} />}
+      {screen === 'newGame' && <NewGame />}
+      {screen === 'game' && (
         <>
           <Hud />
-          {showTouch && <Joystick source={touch} />}
-          {showTouch && <ActionButtons source={touch} />}
+          {showTouch && overlay === null && <Joystick source={touch} />}
+          {showTouch && overlay === null && <ActionButtons source={touch} />}
+          {overlay === 'pause' && <Pause />}
+          {overlay === 'bin' && <ShippingBin />}
+          {overlay === 'cart' && <MerchantCart />}
+          {overlay === 'sleep' && <SleepConfirm />}
+          {overlay === 'morning' && <MorningReport />}
+          <Tips />
         </>
-      ) : (
-        <button
-          type="button"
-          onClick={startDevGame}
-          style={{ position: 'fixed', top: 20, left: 20 }}
-        >
-          Start
-        </button>
       )}
+      <Toasts />
     </div>
   );
 }
