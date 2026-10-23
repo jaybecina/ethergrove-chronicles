@@ -77,15 +77,15 @@ describe('Hotbar', () => {
     expect(slots).toHaveLength(8);
     expect(slots[1]).toHaveAttribute('aria-selected', 'true');
     expect(slots[0]).toHaveAttribute('aria-selected', 'false');
-    expect(screen.getByLabelText('Water: 7 of 20')).toBeInTheDocument();
-    expect(slots[5]).toHaveAccessibleName('Turnip Seeds, 6');
+    expect(slots[1]).toHaveAccessibleName(/^Watering Can,\s*7 of 20 water,\s*key\s*2$/);
+    expect(slots[5]).toHaveAccessibleName(/^Turnip Seeds,\s*6,\s*key\s*6$/);
   });
 
   it('shows an emptied quick slot as empty (Review Focus)', () => {
     const b = base();
     load({ bag: b.bag.map(() => null) });
     render(<Hotbar />);
-    expect(screen.getAllByRole('tab')[5]).toHaveAccessibleName('Empty slot');
+    expect(screen.getAllByRole('tab')[5]).toHaveAccessibleName(/^Empty slot,\s*key\s*6$/);
   });
 });
 

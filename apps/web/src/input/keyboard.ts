@@ -16,11 +16,14 @@ const EDGE_KEYS: Record<string, Partial<Intents>> = {
 export function createKeyboardSource(target: Window): InputSource {
   const held = new Set<string>();
   const edges = createEdges();
+  // A press and release between two reads must still count as one action.
+  let tapped = false;
 
   const onDown = (e: KeyboardEvent) => {
     if (e.code === 'Tab' || e.code === 'Space') e.preventDefault();
     held.add(e.code);
     if (e.repeat) return;
+    if (e.code === 'Space') tapped = true;
     const edge = EDGE_KEYS[e.code];
     if (edge) edges.add(edge);
     const digit = /^Digit([1-8])$/.exec(e.code)?.[1];
@@ -35,6 +38,7 @@ export function createKeyboardSource(target: Window): InputSource {
   const reset = () => {
     held.clear();
     edges.clear();
+    tapped = false;
   };
 
   target.addEventListener('keydown', onDown);
@@ -48,7 +52,9 @@ export function createKeyboardSource(target: Window): InputSource {
     read() {
       const x = (any('KeyD', 'ArrowRight') ? 1 : 0) - (any('KeyA', 'ArrowLeft') ? 1 : 0);
       const z = (any('KeyS', 'ArrowDown') ? 1 : 0) - (any('KeyW', 'ArrowUp') ? 1 : 0);
-      return { move: normalize(x, z), primary: held.has('Space'), ...edges.take() };
+      const primary = held.has('Space') || tapped;
+      tapped = false;
+      return { move: normalize(x, z), primary, ...edges.take() };
     },
     reset,
     dispose() {

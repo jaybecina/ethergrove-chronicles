@@ -22,22 +22,24 @@ export function Hotbar() {
           type="button"
           role="tab"
           aria-selected={active === i}
-          aria-label={displayName(tool)}
           className="slot slot-tool"
           onClick={() => {
             select(i as HotbarIndex);
           }}
         >
+          <span className="sr-only">
+            {displayName(tool)}
+            {tool === 'can' ? `, ${charges} of ${BALANCE.canCharges} water` : ''}
+          </span>
           <ToolIcon tool={tool} />
-          <kbd className="slot-key">{i + 1}</kbd>
+          <kbd className="slot-key">
+            <span className="sr-only">, key </span>
+            {i + 1}
+          </kbd>
           {tool === 'can' && (
             <span
               className="can-charge"
-              role="meter"
-              aria-label={`Water: ${charges} of ${BALANCE.canCharges}`}
-              aria-valuenow={charges}
-              aria-valuemin={0}
-              aria-valuemax={BALANCE.canCharges}
+              aria-hidden="true"
               style={{ ['--charge' as string]: `${ring}%` }}
             />
           )}
@@ -53,15 +55,18 @@ export function Hotbar() {
             type="button"
             role="tab"
             aria-selected={active === index}
-            aria-label={stack ? `${displayName(stack.id)}, ${stack.qty}` : 'Empty slot'}
             className={`slot slot-item${stack ? '' : ' is-empty'}`}
             onClick={() => {
               select(index);
             }}
           >
+            <span className="sr-only">{stack ? `${displayName(stack.id)}, ` : 'Empty slot'}</span>
             {stack && <ItemIcon id={stack.id} />}
             {stack && <span className="slot-qty">{stack.qty}</span>}
-            <kbd className="slot-key">{index + 1}</kbd>
+            <kbd className="slot-key">
+              <span className="sr-only">, key </span>
+              {index + 1}
+            </kbd>
           </button>
         );
       })}

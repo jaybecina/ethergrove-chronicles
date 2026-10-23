@@ -26,11 +26,6 @@ export function BagPanel() {
               type="button"
               className={`bag-cell${picked === i ? ' is-picked' : ''}${cell ? '' : ' is-empty'}`}
               aria-pressed={picked === i}
-              aria-label={
-                cell
-                  ? `${displayName(cell.id)}, ${cell.qty}${pin >= 0 ? `, on key ${pin + 6}` : ''}`
-                  : `Empty bag slot ${i + 1}`
-              }
               onClick={() => {
                 if (picked === null) {
                   if (cell) setPicked(i);
@@ -40,9 +35,17 @@ export function BagPanel() {
                 setPicked(null);
               }}
             >
+              <span className="sr-only">
+                {cell ? `${displayName(cell.id)}, ` : `Empty bag slot ${i + 1}`}
+              </span>
               {cell && <ItemIcon id={cell.id} size={30} />}
               {cell && <span className="slot-qty">{cell.qty}</span>}
-              {pin >= 0 && <span className="pin">{pin + 6}</span>}
+              {pin >= 0 && (
+                <span className="pin">
+                  <span className="sr-only">, key </span>
+                  {pin + 6}
+                </span>
+              )}
             </button>
           );
         })}

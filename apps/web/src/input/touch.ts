@@ -12,10 +12,12 @@ export interface TouchSource extends InputSource {
 export function createTouchSource(): TouchSource {
   let stick = { x: 0, z: 0 };
   let primary = false;
+  let tapped = false;
   const edges = createEdges();
   const reset = () => {
     stick = { x: 0, z: 0 };
     primary = false;
+    tapped = false;
     edges.clear();
   };
   return {
@@ -24,7 +26,7 @@ export function createTouchSource(): TouchSource {
       stick = normalize(x, z);
     },
     press(button) {
-      if (button === 'primary') primary = true;
+      if (button === 'primary') primary = tapped = true;
       else edges.add({ secondary: true });
     },
     release(button) {
@@ -34,7 +36,16 @@ export function createTouchSource(): TouchSource {
       edges.add(e);
     },
     read() {
-      return { secondary: false, cycle: 0, rotate: 0, move: stick, primary, ...edges.take() };
+      const fired = primary || tapped;
+      tapped = false;
+      return {
+        secondary: false,
+        cycle: 0,
+        rotate: 0,
+        move: stick,
+        primary: fired,
+        ...edges.take(),
+      };
     },
     reset,
     dispose: reset,

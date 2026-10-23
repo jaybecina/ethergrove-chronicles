@@ -51,14 +51,18 @@ function Row({ seed }: { seed: SeedId }) {
         <button
           type="button"
           className="btn btn-primary"
-          aria-label={`Buy ${qty} ${name} for ${gold.format(total)} gold`}
           disabled={reason !== null}
           onClick={() => {
             gameStore.getState().dispatch({ type: 'buyItem', itemId: seed, qty });
             setQty(1);
           }}
         >
-          Buy for {gold.format(total)}
+          Buy{' '}
+          <span className="sr-only">
+            {qty} {name}{' '}
+          </span>
+          for {gold.format(total)}
+          <span className="sr-only"> gold</span>
         </button>
         {reason && <span className="reason">{reason}</span>}
       </div>

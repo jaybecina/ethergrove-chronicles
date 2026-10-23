@@ -23,6 +23,15 @@ describe('keyboard', () => {
     kb.dispose();
   });
 
+  it('a tap shorter than one step still fires primary once', () => {
+    const kb = createKeyboardSource(window);
+    key('keydown', 'Space');
+    key('keyup', 'Space');
+    expect(kb.read().primary).toBe(true);
+    expect(kb.read().primary).toBe(false);
+    kb.dispose();
+  });
+
   it('window blur releases held keys (Review Focus)', () => {
     const kb = createKeyboardSource(window);
     key('keydown', 'KeyW');
@@ -118,6 +127,14 @@ describe('touch', () => {
     expect(t.read()).toMatchObject({ move: { x: 1, z: 0 }, primary: true });
     t.reset();
     expect(t.read()).toMatchObject({ move: { x: 0, z: 0 }, primary: false });
+  });
+
+  it('a quick tap on the action button still fires once', () => {
+    const t = createTouchSource();
+    t.press('primary');
+    t.release('primary');
+    expect(t.read().primary).toBe(true);
+    expect(t.read().primary).toBe(false);
   });
 
   it('pulses edges once', () => {

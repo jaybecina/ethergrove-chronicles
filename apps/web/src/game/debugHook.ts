@@ -11,6 +11,8 @@ export interface DebugHook {
   sleep(): void;
   setWeather(today: Weather): void;
   teleport(location: LocationId, x: number, z: number, facing: Facing): void;
+  /** Overlay/screen transitions since load, for diagnosing UI flow in e2e tests. */
+  log: string[];
 }
 
 declare global {
@@ -25,7 +27,13 @@ export function installDebugHook(store: StoreApi<GameStore>): void {
     const { game } = store.getState();
     if (game) store.getState().replaceGame(fn(game));
   };
+  const log: string[] = [];
+  store.subscribe((s, p) => {
+    if (s.overlay !== p.overlay) log.push(`overlay ${p.overlay} -> ${s.overlay}`);
+    if (s.screen !== p.screen) log.push(`screen ${p.screen} -> ${s.screen}`);
+  });
   window.__hearthvale = {
+    log,
     getState: () => store.getState().game,
     dispatch: (cmd) => store.getState().dispatch(cmd),
     setSeed(seed) {
