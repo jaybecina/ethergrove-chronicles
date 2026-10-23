@@ -3,6 +3,7 @@ import { setTile, tileAt } from '../grid';
 import { currentGrid, withGrid } from '../state';
 import type { GameEvent, GameState, ItemId, Result, Tile, ToolId } from '../types';
 import { activeTool, addItem } from './bag';
+import { harvestAt, isMature } from './crops';
 import { targetTile } from './movement';
 
 export function spendStamina(state: GameState, cost: number): Result {
@@ -75,6 +76,16 @@ export function useTool(state: GameState): Result {
     };
   }
   if (tool === 'can' && state.canCharges <= 0) return fail(state, 'canEmpty');
+
+  if (tool === 'sickle' && tile?.crop && isMature(tile.crop)) {
+    const harvest = harvestAt(state, x, y);
+    if (harvest.events[0]?.type !== 'cropHarvested') return harvest;
+    const spent = spendStamina(harvest.state, TOOL_COST[tool]);
+    return {
+      state: spent.state,
+      events: [{ type: 'toolUsed', tool, x, y, hit: true }, ...harvest.events, ...spent.events],
+    };
+  }
 
   const effect = tile ? effectOf(tool, tile, x, y, state) : null;
   if (!effect) {

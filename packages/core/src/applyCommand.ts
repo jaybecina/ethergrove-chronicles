@@ -2,6 +2,7 @@ import { advanceMinutes } from './systems/calendar';
 import { assignQuickSlot, cycleHotbar, moveBagItem, selectHotbar } from './systems/bag';
 import { stepMovement } from './systems/movement';
 import { useTool } from './systems/tools';
+import { useItem } from './systems/crops';
 import type { Command, GameState, Result } from './types';
 
 const only = (state: GameState): Result => ({ state, events: [] });
@@ -22,6 +23,8 @@ export function applyCommand(state: GameState, cmd: Command): Result {
       return only(assignQuickSlot(state, cmd.slot, cmd.bagIndex));
     case 'useTool':
       return useTool(state);
+    case 'useItem':
+      return useItem(state);
     default:
       return only(state);
   }
