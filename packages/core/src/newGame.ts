@@ -8,6 +8,7 @@ import {
 } from './data/layouts';
 import { findChar, parseLayout } from './grid';
 import { nextFloat } from './rng';
+import { rollWeather } from './systems/weather';
 import type { GameState, Grid, NewGameOptions, Tile } from './types';
 
 function rollObstacles(grid: Grid, rng: number): [Grid, number] {
@@ -34,7 +35,8 @@ function rollObstacles(grid: Grid, rng: number): [Grid, number] {
 }
 
 export function createNewGame(opts: NewGameOptions): GameState {
-  const [farm, rng] = rollObstacles(parseLayout(FARM_LAYOUT, FARM_LEGEND), opts.seed >>> 0);
+  const [farm, afterMap] = rollObstacles(parseLayout(FARM_LAYOUT, FARM_LEGEND), opts.seed >>> 0);
+  const [tomorrow, rng] = rollWeather('spring', 2, afterMap);
   const spawn = findChar(FARM_LAYOUT, FARM_SPAWN_CHAR);
   const bag: GameState['bag'] = Array.from({ length: BALANCE.bagSlots }, () => null);
   bag[0] = { id: 'seed:turnip', qty: BALANCE.startTurnipSeeds };
@@ -45,7 +47,7 @@ export function createNewGame(opts: NewGameOptions): GameState {
     farmName: opts.farmName,
     playerName: opts.playerName,
     calendar: { year: 1, season: 'spring', day: 1, minute: BALANCE.dayStartMinute },
-    weather: { today: 'sunny', tomorrow: 'sunny' },
+    weather: { today: 'sunny', tomorrow },
     player: {
       location: 'farm',
       x: spawn.x + 0.5,

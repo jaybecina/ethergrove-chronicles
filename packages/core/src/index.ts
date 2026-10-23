@@ -22,3 +22,4 @@ export { activeTool, addItem, countOf, quickItem, removeAt } from './systems/bag
 export { stepMovement, targetTile } from './systems/movement';
 export { applyCommand } from './applyCommand';
 export { cropStage, isMature, type CropStage } from './systems/crops';
+export { rollWeather } from './systems/weather';
