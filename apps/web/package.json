@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "size": "size-limit",
+    "e2e": "playwright test",
+    "perf": "playwright test -c playwright.perf.config.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

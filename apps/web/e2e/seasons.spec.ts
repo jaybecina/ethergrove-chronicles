@@ -1,3 +1,5 @@
+import { writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 import { newGame, sleepNight, state } from './helpers';
 
@@ -9,16 +11,18 @@ test('a full year turns through every season', async ({ page }, info) => {
   for (const season of ['Spring', 'Summer', 'Fall', 'Winter'] as const) {
     await expect(page.locator('.clock-date')).toContainText(season);
     await page.evaluate(() => {
-      window.__hearthvale?.teleport('farm', 16.5, 19.5, 'n');
-      window.__hearthvale?.skipMinutes(330);
+      window.__hearthvale?.teleport('farm', 9.5, 7.5, 's');
+      window.__hearthvale?.skipMinutes(260);
     });
     await page.waitForTimeout(1500);
-    await info.attach(`${season.toLowerCase()}.png`, {
-      body: await page.locator('canvas').screenshot(),
-      contentType: 'image/png',
-    });
+    const shot = await page.screenshot();
+    await info.attach(`${season.toLowerCase()}.png`, { body: shot, contentType: 'image/png' });
+    if (process.env.SAVE_MEDIA && info.project.name === 'chromium')
+      writeFileSync(
+        join(import.meta.dirname, '../../../docs/media', `${season.toLowerCase()}.png`),
+        shot,
+      );
     for (let d = 0; d < 28; d++) await sleepNight(page);
-    await page.keyboard.press('Escape');
   }
   expect((await state(page)).calendar).toMatchObject({ year: 2, season: 'spring', day: 1 });
 });

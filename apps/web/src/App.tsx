@@ -1,12 +1,11 @@
 import { createNewGame } from '@hearthvale/core';
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { installAudio } from './audio/install';
 import { eventBus } from './game/eventBus';
 import { gameStore, useGame } from './game/store';
 import { getInputSystem } from './input/system';
 import { installAutosave } from './save/autosave';
 import { saveRepo } from './save/repo';
-import { GameCanvas } from './scene/GameCanvas';
 import { Hud } from './ui/hud/Hud';
 import { MerchantCart } from './ui/screens/MerchantCart';
 import { MorningReport } from './ui/screens/MorningReport';
@@ -48,6 +47,11 @@ function SceneError() {
   );
 }
 import { useUi } from './ui/uiStore';
+
+// three.js, R3F and post-processing load after the menus are on screen (initial JS budget, spec §6.3).
+const GameCanvas = lazy(() =>
+  import('./scene/GameCanvas').then((m) => ({ default: m.GameCanvas })),
+);
 
 /** A fixed, pretty farm at golden hour behind the title screen. */
 function showcase() {
@@ -105,7 +109,9 @@ export function App() {
   return (
     <div className={`app${showTouch ? ' is-touch' : ''}`}>
       <ErrorBoundary key={canvasKey} fallback={<SceneError />}>
-        <GameCanvas key={canvasKey} />
+        <Suspense fallback={null}>
+          <GameCanvas key={canvasKey} />
+        </Suspense>
       </ErrorBoundary>
       {screen === 'title' && <Title />}
       {screen === 'slots' && <SaveSlots mode={slotsMode} />}

@@ -12,7 +12,10 @@
     "test": "pnpm -r test",
     "test:coverage": "pnpm -r test:coverage",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "e2e": "pnpm --filter web e2e"
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs}": [
