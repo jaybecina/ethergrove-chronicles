@@ -9,6 +9,7 @@ import { GameCanvas } from './scene/GameCanvas';
 import { Hud } from './ui/hud/Hud';
 import { MerchantCart } from './ui/screens/MerchantCart';
 import { MorningReport } from './ui/screens/MorningReport';
+import { Intro } from './ui/screens/Intro';
 import { NewGame } from './ui/screens/NewGame';
 import { Pause } from './ui/screens/Pause';
 import { SaveSlots } from './ui/screens/SaveSlots';
@@ -58,9 +59,7 @@ export function App() {
     document.documentElement.classList.toggle('reduced-motion', settings.reducedMotion);
   }, [settings.textScale, settings.reducedMotion]);
 
-  // Placeholder until the intro sequence (Task 24): go straight to the farm.
   useEffect(() => {
-    if (screen === 'intro') gameStore.getState().setScreen('game');
     if (screen === 'game') offerTip('move');
   }, [screen]);
 
@@ -77,6 +76,7 @@ export function App() {
       {screen === 'title' && <Title />}
       {screen === 'slots' && <SaveSlots mode={slotsMode} />}
       {screen === 'newGame' && <NewGame />}
+      {screen === 'intro' && <Intro />}
       {screen === 'game' && (
         <>
           <Hud />

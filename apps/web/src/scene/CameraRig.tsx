@@ -4,6 +4,8 @@ import { MathUtils, Vector3 } from 'three';
 import { gameStore } from '../game/store';
 import { ZOOM_DISTANCES, offsetAt } from './cameraMath';
 import { takeShake } from './fx/shake';
+import { INTRO_FLIGHT_MS, introCameraAt } from './introCamera';
+import { uiStore } from '../ui/uiStore';
 
 const target = new Vector3();
 
@@ -20,6 +22,22 @@ export function CameraRig() {
     const s = gameStore.getState();
     const p = s.game?.player;
     if (!p) return;
+    if (s.screen === 'intro') {
+      const start = uiStore.getState().flightStart;
+      const t = start === null ? 0 : (performance.now() - start) / INTRO_FLIGHT_MS;
+      const pose = introCameraAt(s.settings.reducedMotion && start !== null ? 1 : t, {
+        x: p.x,
+        z: p.z,
+      });
+      camera.position.set(...pose.position);
+      camera.lookAt(...pose.target);
+      // Hand over seamlessly to the follow camera when the flight ends.
+      focus.current = new Vector3(p.x, 0.6, p.z);
+      dist.current = ZOOM_DISTANCES[1];
+      yaw.current = yawTarget.current = 0;
+      lastSteps.current = s.cameraYaw;
+      return;
+    }
     // Unwrap 3 → 0 into +90°, never a 270° spin.
     const step = ((s.cameraYaw - lastSteps.current + 6) % 4) - 2;
     if (step !== 0) {

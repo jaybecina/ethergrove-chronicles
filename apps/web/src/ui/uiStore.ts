@@ -12,6 +12,9 @@ interface UiState {
   report: { items: ItemStack[]; total: number } | null;
   tip: TipId | null;
   settingsOpen: boolean;
+  /** performance.now() when the intro camera flight began; null while reading the letter. */
+  flightStart: number | null;
+  setFlightStart(t: number | null): void;
   setSlotsMode(mode: SlotsMode): void;
   setPendingSlot(slot: SlotId | null): void;
   setReport(report: UiState['report']): void;
@@ -26,6 +29,10 @@ export const uiStore = createStore<UiState>()((set) => ({
   report: null,
   tip: null,
   settingsOpen: false,
+  flightStart: null,
+  setFlightStart: (flightStart) => {
+    set({ flightStart });
+  },
   setSlotsMode: (slotsMode) => {
     set({ slotsMode });
   },
