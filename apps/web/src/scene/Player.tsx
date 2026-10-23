@@ -1,8 +1,9 @@
 import { useFrame } from '@react-three/fiber';
-import { useRef } from 'react';
+import { Suspense, useRef } from 'react';
 import { MathUtils, type Group } from 'three';
 import { gameStore } from '../game/store';
 import { COLORS } from './palette';
+import { PlayerModel } from './PlayerModel';
 
 const FACING_YAW = { n: Math.PI, s: 0, e: Math.PI / 2, w: -Math.PI / 2 } as const;
 
@@ -24,6 +25,16 @@ export function Player() {
   });
   return (
     <group ref={ref}>
+      <Suspense fallback={<PlaceholderFarmer />}>
+        <PlayerModel />
+      </Suspense>
+    </group>
+  );
+}
+
+function PlaceholderFarmer() {
+  return (
+    <group>
       <mesh position={[0, 0.55, 0]} castShadow>
         <capsuleGeometry args={[0.26, 0.55, 6, 12]} />
         <meshStandardMaterial color={COLORS.player} roughness={0.6} />

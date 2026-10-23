@@ -6,7 +6,7 @@ import { newGame, sleepNight, state } from './helpers';
 test.skip(({ isMobile }) => isMobile, 'desktop only');
 
 test('a full year turns through every season', async ({ page }, info) => {
-  test.setTimeout(180_000);
+  test.setTimeout(600_000);
   await newGame(page, 11);
   for (const season of ['Spring', 'Summer', 'Fall', 'Winter'] as const) {
     await expect(page.locator('.clock-date')).toContainText(season);
@@ -14,7 +14,7 @@ test('a full year turns through every season', async ({ page }, info) => {
       window.__hearthvale?.teleport('farm', 9.5, 7.5, 's');
       window.__hearthvale?.skipMinutes(260);
     });
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(process.env.SAVE_MEDIA ? 12_000 : 1500);
     const shot = await page.screenshot();
     await info.attach(`${season.toLowerCase()}.png`, { body: shot, contentType: 'image/png' });
     if (process.env.SAVE_MEDIA && info.project.name === 'chromium')

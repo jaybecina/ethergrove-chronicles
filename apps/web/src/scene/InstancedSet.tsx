@@ -8,6 +8,8 @@ export interface InstanceItem {
   rotY?: number;
   scale?: number | [number, number, number];
   color?: string;
+  /** Optional owner id (e.g. tile index) for per-item animation. */
+  id?: number;
 }
 
 const dummy = new Object3D();

@@ -1,23 +1,26 @@
 import { Howl } from 'howler';
+import { SOUND_FILES } from '../scene/assets';
 import type { SoundFactory } from './sound';
-import { soundUrl, type SoundId } from './soundMap';
+import { soundUrls, type SoundId } from './soundMap';
 import { synthPlay } from './synth';
 
-/** Howler-backed sounds; one-shots fall back to the synth if their file can't load. */
+/** Howler-backed sounds. One-shots without a (loadable) file use the synth; loops without one stay silent. */
 export const howlerFactory: SoundFactory = (id, { loop }) => {
-  let failed = false;
   let vol = 1;
-  const howl = new Howl({
-    src: [soundUrl(id)],
-    loop,
-    preload: true,
-    onloaderror: () => {
-      failed = true;
-    },
-  });
+  let failed = !(SOUND_FILES as readonly string[]).includes(id);
+  const howl = failed
+    ? null
+    : new Howl({
+        src: soundUrls(id),
+        loop,
+        preload: true,
+        onloaderror: () => {
+          failed = true;
+        },
+      });
   return {
     play() {
-      if (failed) {
+      if (failed || !howl) {
         if (!loop) synthPlay(id as SoundId, vol);
         return;
       }
@@ -25,16 +28,15 @@ export const howlerFactory: SoundFactory = (id, { loop }) => {
       howl.play();
     },
     stop() {
-      howl.stop();
+      howl?.stop();
     },
     volume(v) {
       vol = v;
-      howl.volume(v);
+      howl?.volume(v);
     },
     fade(from, to, ms) {
       vol = to;
-      if (failed) return;
-      howl.fade(from, to, ms);
+      if (!failed) howl?.fade(from, to, ms);
     },
   };
 };

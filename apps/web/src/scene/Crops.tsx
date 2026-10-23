@@ -93,7 +93,10 @@ const dummy = new Object3D();
 const tint = new Color();
 const POP_MS = 250;
 
-function partsFor(grid: Grid): { bush: Part[]; fruit: Part[] } {
+/** Crops whose mature look comes from a CC0 model; the rest get procedural fruit on a leafy model. */
+export const MODEL_MATURE: ReadonlySet<CropId> = new Set(['turnip', 'melon', 'pumpkin', 'corn']);
+
+function partsFor(grid: Grid, modelMode: boolean): { bush: Part[]; fruit: Part[] } {
   const bush: Part[] = [];
   const fruit: Part[] = [];
   grid.tiles.forEach((t, tile) => {
@@ -109,17 +112,18 @@ function partsFor(grid: Grid): { bush: Part[]; fruit: Part[] } {
     const grow = stage === 'sprout' ? 0.4 : stage === 'young' ? 0.75 : 1;
     const g = look.bush * grow;
     const h = g * look.tall;
-    bush.push({
-      tile,
-      x: cx,
-      y: h * 0.9,
-      z: cz,
-      sx: g,
-      sy: h,
-      sz: g,
-      color: stage === 'sprout' ? '#8cc45a' : '#5f9a3c',
-    });
-    if (stage !== 'mature') return;
+    if (!modelMode)
+      bush.push({
+        tile,
+        x: cx,
+        y: h * 0.9,
+        z: cz,
+        sx: g,
+        sy: h,
+        sz: g,
+        color: stage === 'sprout' ? '#8cc45a' : '#5f9a3c',
+      });
+    if (stage !== 'mature' || (modelMode && MODEL_MATURE.has(t.crop.id))) return;
     for (let n = 0; n < look.count; n++) {
       const a = (n / look.count) * Math.PI * 2 + tile;
       const r = look.count > 1 ? g * 0.7 : 0;
@@ -155,11 +159,12 @@ function write(mesh: InstancedMesh, parts: Part[], pop: Map<number, number>, now
   mesh.instanceMatrix.needsUpdate = true;
 }
 
-export function Crops({ grid }: { grid: Grid }) {
+/** Seed specks and procedural fruit; with `modelMode` the leafy parts come from CropModels instead. */
+export function Crops({ grid, modelMode = false }: { grid: Grid; modelMode?: boolean }) {
   const bushRef = useRef<InstancedMesh>(null);
   const fruitRef = useRef<InstancedMesh>(null);
   const pops = useRef(new Map<number, number>());
-  const parts = useMemo(() => partsFor(grid), [grid]);
+  const parts = useMemo(() => partsFor(grid, modelMode), [grid, modelMode]);
   const cap = grid.tiles.length * 4;
 
   useEffect(() => {

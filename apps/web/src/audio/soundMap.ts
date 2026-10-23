@@ -61,5 +61,8 @@ export function soundsFor(event: GameEvent, _ctx: { surface: Surface }): (SoundI
   }
 }
 
-/** Audio files (CC0, see CREDITS.md). A missing file falls back to the built-in synth. */
-export const soundUrl = (id: SoundId | LoopId): string => `/assets/audio/${id}.mp3`;
+/** Audio files (CC0, see CREDITS.md): Ogg first, AAC for browsers without Ogg. */
+export const soundUrls = (id: SoundId | LoopId): string[] => [
+  `/assets/audio/${id}.ogg`,
+  `/assets/audio/${id}.m4a`,
+];

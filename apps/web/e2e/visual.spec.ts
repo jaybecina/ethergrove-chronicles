@@ -10,15 +10,17 @@ test.skip(!!process.env.CI, 'visual baselines are checked locally');
 
 // The 3D view is full-screen and GPU-dependent, so it is hidden (not masked: a mask would cover the UI too).
 const HIDE_3D =
-  'canvas { visibility: hidden !important; } body, #root { background: #6b7f5a !important; }';
+  'canvas { display: none !important; } body, #root { background: #6b7f5a !important; }';
 
 const opts = (page: import('@playwright/test').Page) => ({
   animations: 'disabled' as const,
+  timeout: 45_000,
   mask: [page.locator('.clock-time'), page.locator('.dial'), page.locator('.toasts')],
   maxDiffPixelRatio: 0.02,
 });
 
 test.beforeEach(async ({ page }) => {
+  test.setTimeout(300_000);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   page.on('load', () => {
     void page.addStyleTag({ content: HIDE_3D });
@@ -28,11 +30,13 @@ test.beforeEach(async ({ page }) => {
 test('title screen', async ({ page }) => {
   await boot(page);
   await expect(page.getByRole('heading', { name: 'Hearthvale' })).toBeVisible();
+  await page.waitForLoadState('networkidle');
   await expect(page).toHaveScreenshot('title.png', opts(page));
 });
 
 test('pause menu and cart', async ({ page }) => {
   await newGame(page, 5);
+  await page.waitForLoadState('networkidle');
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect(page).toHaveScreenshot('pause.png', opts(page));

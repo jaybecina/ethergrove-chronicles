@@ -1,6 +1,6 @@
 import type { Grid, Tile } from '@hearthvale/core';
 import { useFrame } from '@react-three/fiber';
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { weatherNow } from '../render/weatherState';
 import {
   BoxGeometry,
@@ -15,6 +15,7 @@ import { paletteFor } from '../render/seasonPalette';
 import { patchMaterial } from '../render/shaders/patch';
 import { COLORS, hash01 } from './palette';
 import { InstancedSet, type InstanceItem } from './InstancedSet';
+import { TileModels } from './TileModels';
 
 const ground = new BoxGeometry(1, 0.2, 1);
 const groundMat = patchMaterial(new MeshStandardMaterial({ roughness: 0.95 }), { snow: true });
@@ -85,7 +86,11 @@ export function Tiles({ grid, season }: Props) {
           { x: x - 0.15, y: 0.22, z: z - 0.1, rotY: j * 6, scale: 0.9 + j * 0.4 },
           { x: x + 0.18, y: 0.18, z: z + 0.12, rotY: j * 3, scale: 0.7 + j * 0.3 },
         );
-      if (t.kind === 'fence') posts.push({ x, y: 0.4, z, rotY: j * 0.3 });
+      if (t.kind === 'fence') {
+        const row = Math.floor(i / grid.width);
+        const edgeRow = row === 0 || row === grid.height - 1;
+        posts.push({ x, y: 0.4, z, rotY: edgeRow ? 0 : Math.PI / 2 });
+      }
     });
     return { groundItems, rocks, stumps, weeds, posts };
   }, [grid, season]);
@@ -98,6 +103,14 @@ export function Tiles({ grid, season }: Props) {
   });
 
   const cap = grid.tiles.length;
+  const placeholders = (
+    <>
+      <InstancedSet items={sets.rocks} geometry={rockGeo} material={rockMat} capacity={cap} />
+      <InstancedSet items={sets.stumps} geometry={stumpGeo} material={stumpMat} capacity={cap} />
+      <InstancedSet items={sets.weeds} geometry={weedGeo} material={weedMat} capacity={cap * 2} />
+      <InstancedSet items={sets.posts} geometry={postGeo} material={fenceMat} capacity={cap} />
+    </>
+  );
   return (
     <group>
       <InstancedSet
@@ -107,10 +120,15 @@ export function Tiles({ grid, season }: Props) {
         capacity={cap}
         castShadow={false}
       />
-      <InstancedSet items={sets.rocks} geometry={rockGeo} material={rockMat} capacity={cap} />
-      <InstancedSet items={sets.stumps} geometry={stumpGeo} material={stumpMat} capacity={cap} />
-      <InstancedSet items={sets.weeds} geometry={weedGeo} material={weedMat} capacity={cap * 2} />
-      <InstancedSet items={sets.posts} geometry={postGeo} material={fenceMat} capacity={cap} />
+      <Suspense fallback={placeholders}>
+        <TileModels
+          rocks={sets.rocks}
+          stumps={sets.stumps}
+          weeds={sets.weeds}
+          fences={sets.posts}
+          capacity={cap}
+        />
+      </Suspense>
     </group>
   );
 }

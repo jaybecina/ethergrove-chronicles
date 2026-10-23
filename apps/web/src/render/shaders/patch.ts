@@ -8,6 +8,8 @@ export interface PatchOptions {
   trample?: boolean;
   /** Whiten upward faces by the shared snow amount. */
   snow?: boolean;
+  /** Mesh height in its own units, so wind bends by relative height (models aren't 0..1 tall). */
+  height?: number;
 }
 
 const ORIGIN = /* glsl */ `
@@ -18,10 +20,10 @@ const ORIGIN = /* glsl */ `
   #endif
 `;
 
-function windChunk(amp: number, trample: boolean): string {
+function windChunk(amp: number, trample: boolean, height: number): string {
   return /* glsl */ `
     ${ORIGIN}
-    float hvH = max(position.y, 0.0);
+    float hvH = max(position.y / ${height.toFixed(4)}, 0.0);
     float hvW = sin(uTime * 1.7 + hvOrigin.x * 0.7 + hvOrigin.z * 0.45)
               + 0.45 * sin(uTime * 3.3 + hvOrigin.x * 1.9 + hvOrigin.z * 1.1);
     transformed.x += hvW * ${amp.toFixed(4)} * hvH * hvH;
@@ -54,7 +56,7 @@ export function patchMaterial<T extends Material>(material: T, opts: PatchOption
     if (wind > 0)
       vs = vs.replace(
         '#include <begin_vertex>',
-        `#include <begin_vertex>\n${windChunk(wind, opts.trample === true)}`,
+        `#include <begin_vertex>\n${windChunk(wind, opts.trample === true, opts.height ?? 1)}`,
       );
     if (opts.snow) {
       vs = vs.replace(
@@ -66,6 +68,7 @@ export function patchMaterial<T extends Material>(material: T, opts: PatchOption
     shader.vertexShader = vs;
     shader.fragmentShader = fs;
   };
-  material.customProgramCacheKey = () => `hv-${wind}-${opts.trample ? 1 : 0}-${opts.snow ? 1 : 0}`;
+  material.customProgramCacheKey = () =>
+    `hv-${wind}-${opts.trample ? 1 : 0}-${opts.snow ? 1 : 0}-${(opts.height ?? 1).toFixed(3)}`;
   return material;
 }

@@ -1,5 +1,5 @@
 import type { Grid, Season } from '@hearthvale/core';
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { Suspense, useLayoutEffect, useMemo, useRef } from 'react';
 import {
   Color,
   ConeGeometry,
@@ -12,13 +12,8 @@ import {
 import { paletteFor } from '../render/seasonPalette';
 import { patchMaterial } from '../render/shaders/patch';
 import { hash01 } from './palette';
-
-interface TreeSpot {
-  x: number;
-  z: number;
-  s: number;
-  kind: 'round' | 'pine' | 'blossom';
-}
+import { TreeModels } from './TreeModels';
+import { spots } from './treeSpots';
 
 const trunkGeo = new CylinderGeometry(0.12, 0.18, 1, 7);
 trunkGeo.translate(0, 0.5, 0);
@@ -42,28 +37,7 @@ const pineMat = patchMaterial(
 const dummy = new Object3D();
 const tint = new Color();
 
-function spots(grid: Grid): TreeSpot[] {
-  const out: TreeSpot[] = [];
-  for (let i = 0; i < 260 && out.length < 90; i++) {
-    const a = hash01(i * 3.7 + 1);
-    const b = hash01(i * 5.3 + 2);
-    const x = -9 + a * (grid.width + 18);
-    const z = -9 + b * (grid.height + 18);
-    const insideish = x > -1.5 && z > -1.5 && x < grid.width + 1.5 && z < grid.height + 1.5;
-    const road = x > grid.width && z > 15 && z < 19.5;
-    if (insideish || road || out.some((t) => Math.hypot(t.x - x, t.z - z) < 2.1)) continue;
-    const k = hash01(i * 9.1);
-    out.push({
-      x,
-      z,
-      s: 0.8 + hash01(i * 2.2) * 0.7,
-      kind: k < 0.35 ? 'pine' : k < 0.5 ? 'blossom' : 'round',
-    });
-  }
-  return out;
-}
-
-export function Trees({ grid, season }: { grid: Grid; season: Season }) {
+function TreesPlaceholder({ grid, season }: { grid: Grid; season: Season }) {
   const trunks = useRef<InstancedMesh>(null);
   const blobs = useRef<InstancedMesh>(null);
   const pines = useRef<InstancedMesh>(null);
@@ -139,5 +113,13 @@ export function Trees({ grid, season }: { grid: Grid; season: Season }) {
         frustumCulled={false}
       />
     </>
+  );
+}
+
+export function Trees({ grid, season }: { grid: Grid; season: Season }) {
+  return (
+    <Suspense fallback={<TreesPlaceholder grid={grid} season={season} />}>
+      <TreeModels grid={grid} season={season} />
+    </Suspense>
   );
 }

@@ -8,6 +8,8 @@ import { Player } from './Player';
 import { TargetHighlight } from './TargetHighlight';
 import { Tiles } from './Tiles';
 import { Crops } from './Crops';
+import { CropModels } from './CropModels';
+import { Suspense } from 'react';
 import { Kindling } from './Kindling';
 import { FxLayer } from './fx/FxLayer';
 import { MeshStandardMaterial } from 'three';
@@ -17,6 +19,7 @@ import { Grass } from './Grass';
 import { SeasonDriver } from './SeasonDriver';
 import { SeasonParticles } from './SeasonParticles';
 import { Trees } from './Trees';
+import { Decor } from './Decor';
 import { Puddles } from './Puddles';
 import { Weather } from './Weather';
 
@@ -46,10 +49,14 @@ export function World() {
       <Tiles grid={grid} season={season} />
       {outdoor && <Grass grid={grid} season={season} />}
       {outdoor && <Trees grid={grid} season={season} />}
+      {outdoor && <Decor grid={grid} season={season} />}
       {outdoor && <SeasonParticles season={season} />}
       {outdoor && <Puddles grid={grid} />}
       <Weather />
-      <Crops grid={grid} />
+      <Suspense fallback={<Crops grid={grid} />}>
+        <Crops grid={grid} modelMode />
+        <CropModels grid={grid} />
+      </Suspense>
       {location === 'farm' ? <Features grid={grid} /> : <HouseInterior grid={grid} />}
       <Player />
       <TargetHighlight />

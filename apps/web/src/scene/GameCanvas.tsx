@@ -1,4 +1,4 @@
-import { PerformanceMonitor } from '@react-three/drei';
+import { PerformanceMonitor, useGLTF } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { NoToneMapping } from 'three';
 import { gameStore, useGame } from '../game/store';
@@ -7,6 +7,10 @@ import { QUALITY, detectTier } from '../render/quality';
 import { installContextLoss } from '../render/webgl';
 import { GameLoop } from './GameLoop';
 import { World } from './World';
+import { ASSETS } from './assets';
+
+// This chunk loads after the title screen is up; start fetching every model right away.
+for (const a of Object.values(ASSETS)) useGLTF.preload(a.url);
 
 export function GameCanvas() {
   const tier = useGame((s) => s.tier());

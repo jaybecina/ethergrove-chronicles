@@ -5,8 +5,12 @@ import type {} from '../src/game/debugHook';
 /** Fresh browser storage, then the title screen with the test hook ready. */
 export async function boot(page: Page): Promise<void> {
   await page.goto('/');
-  await page.evaluate(async () => {
+  // CI renders on a software GPU; the Low tier keeps frames fast enough for input-driven tests.
+  // README screenshots (SAVE_MEDIA) use High.
+  const quality = process.env.SAVE_MEDIA ? 'high' : 'low';
+  await page.evaluate(async (q) => {
     localStorage.clear();
+    localStorage.setItem('hearthvale:settings', JSON.stringify({ quality: q }));
     await new Promise<void>((resolve) => {
       const req = indexedDB.deleteDatabase('hearthvale');
       req.onsuccess =
@@ -16,7 +20,7 @@ export async function boot(page: Page): Promise<void> {
             resolve();
           };
     });
-  });
+  }, quality);
   await page.reload();
   await page.waitForFunction(() => window.__hearthvale !== undefined);
 }
