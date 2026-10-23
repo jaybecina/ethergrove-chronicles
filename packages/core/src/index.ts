@@ -18,3 +18,4 @@ export {
   weekday,
   type Weekday,
 } from './systems/calendar';
+export { activeTool, addItem, countOf, quickItem, removeAt } from './systems/bag';
