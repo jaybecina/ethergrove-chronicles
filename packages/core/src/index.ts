@@ -25,3 +25,4 @@ export { cropStage, isMature, type CropStage } from './systems/crops';
 export { rollWeather } from './systems/weather';
 export { cartStock, isCartOpen, sellPrice } from './systems/economy';
 export { endDay } from './systems/day';
+export { resolveSecondary } from './systems/interact';

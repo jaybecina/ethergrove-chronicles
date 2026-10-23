@@ -5,11 +5,13 @@ import { stepMovement } from './systems/movement';
 import { useTool } from './systems/tools';
 import { useItem } from './systems/crops';
 import { buyItem, shipItem, unshipItem } from './systems/economy';
+import { interact } from './systems/interact';
+import { checkMilestones } from './systems/milestones';
 import type { Command, GameState, Result } from './types';
 
 const only = (state: GameState): Result => ({ state, events: [] });
 
-export function applyCommand(state: GameState, cmd: Command): Result {
+function dispatch(state: GameState, cmd: Command): Result {
   switch (cmd.type) {
     case 'tick': {
       const next = { ...state, calendar: advanceMinutes(state.calendar, cmd.minutes) };
@@ -17,6 +19,8 @@ export function applyCommand(state: GameState, cmd: Command): Result {
     }
     case 'sleep':
       return sleep(state);
+    case 'interact':
+      return interact(state);
     case 'move':
       return only(stepMovement(state, cmd.dx, cmd.dz, cmd.dtMs));
     case 'selectHotbar':
@@ -37,7 +41,10 @@ export function applyCommand(state: GameState, cmd: Command): Result {
       return unshipItem(state, cmd.binIndex, cmd.qty);
     case 'buyItem':
       return buyItem(state, cmd.itemId, cmd.qty);
-    default:
-      return only(state);
   }
+}
+
+export function applyCommand(state: GameState, cmd: Command): Result {
+  const result = dispatch(state, cmd);
+  return checkMilestones(state, result.state, result.events);
 }
