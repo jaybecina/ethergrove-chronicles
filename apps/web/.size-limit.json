@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Initial JS (menus, HUD, game rules)",
+    "path": "dist/assets/index-*.js",
+    "limit": "500 KB",
+    "gzip": true
+  },
+  {
+    "name": "All JS including the lazy 3D chunk",
+    "path": "dist/assets/*.js",
+    "limit": "650 KB",
+    "gzip": true
+  }
+]
