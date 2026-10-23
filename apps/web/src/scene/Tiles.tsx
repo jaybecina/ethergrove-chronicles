@@ -8,34 +8,47 @@ import {
   DodecahedronGeometry,
   MeshStandardMaterial,
 } from 'three';
+import type { Season } from '@hearthvale/core';
+import { paletteFor } from '../render/seasonPalette';
+import { patchMaterial } from '../render/shaders/patch';
 import { COLORS, hash01 } from './palette';
 import { InstancedSet, type InstanceItem } from './InstancedSet';
 
 const ground = new BoxGeometry(1, 0.2, 1);
-const groundMat = new MeshStandardMaterial({ roughness: 0.95 });
+const groundMat = patchMaterial(new MeshStandardMaterial({ roughness: 0.95 }), { snow: true });
 const rockGeo = new DodecahedronGeometry(0.38, 0);
-const rockMat = new MeshStandardMaterial({ color: COLORS.rock, roughness: 0.9, flatShading: true });
+const rockMat = patchMaterial(
+  new MeshStandardMaterial({ color: COLORS.rock, roughness: 0.9, flatShading: true }),
+  { snow: true },
+);
 const stumpGeo = new CylinderGeometry(0.28, 0.34, 0.4, 9);
-const stumpMat = new MeshStandardMaterial({ color: COLORS.stump, roughness: 0.85 });
+const stumpMat = patchMaterial(new MeshStandardMaterial({ color: COLORS.stump, roughness: 0.85 }), {
+  snow: true,
+});
 const weedGeo = new ConeGeometry(0.22, 0.45, 5);
-const weedMat = new MeshStandardMaterial({ color: COLORS.weed, roughness: 0.8, flatShading: true });
+const weedMat = patchMaterial(
+  new MeshStandardMaterial({ color: COLORS.weed, roughness: 0.8, flatShading: true }),
+  { wind: 0.06, snow: true },
+);
 const postGeo = new BoxGeometry(0.14, 0.8, 0.14);
-const fenceMat = new MeshStandardMaterial({ color: COLORS.fence, roughness: 0.8 });
+const fenceMat = patchMaterial(new MeshStandardMaterial({ color: COLORS.fence, roughness: 0.8 }), {
+  snow: true,
+});
 
 const shade = new Color();
-function groundColor(t: Tile, i: number): string | null {
+function groundColor(t: Tile, i: number, grass: string, path: string): string | null {
   const base =
     t.kind === 'tilled'
       ? t.watered
         ? COLORS.watered
         : COLORS.tilled
       : t.kind === 'path'
-        ? COLORS.path
+        ? path
         : t.kind === 'floor' || t.kind === 'wall' || t.feature === 'bed' || t.feature === 'exitDoor'
           ? COLORS.floor
           : t.kind === 'water'
             ? null
-            : COLORS.grass;
+            : grass;
   if (!base) return null;
   return `#${shade
     .set(base)
@@ -45,10 +58,12 @@ function groundColor(t: Tile, i: number): string | null {
 
 interface Props {
   grid: Grid;
+  season: Season;
 }
 
-export function Tiles({ grid }: Props) {
+export function Tiles({ grid, season }: Props) {
   const sets = useMemo(() => {
+    const look = paletteFor(season, 5);
     const groundItems: InstanceItem[] = [];
     const rocks: InstanceItem[] = [];
     const stumps: InstanceItem[] = [];
@@ -57,7 +72,7 @@ export function Tiles({ grid }: Props) {
     grid.tiles.forEach((t, i) => {
       const x = (i % grid.width) + 0.5;
       const z = Math.floor(i / grid.width) + 0.5;
-      const color = groundColor(t, i);
+      const color = groundColor(t, i, look.grass, look.ground);
       const sunk = t.kind === 'tilled' ? -0.13 : -0.1;
       if (color) groundItems.push({ x, y: sunk, z, color });
       const j = hash01(i + 17);
@@ -71,7 +86,7 @@ export function Tiles({ grid }: Props) {
       if (t.kind === 'fence') posts.push({ x, y: 0.4, z, rotY: j * 0.3 });
     });
     return { groundItems, rocks, stumps, weeds, posts };
-  }, [grid]);
+  }, [grid, season]);
 
   const cap = grid.tiles.length;
   return (

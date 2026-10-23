@@ -10,12 +10,22 @@ import { Tiles } from './Tiles';
 import { Crops } from './Crops';
 import { Kindling } from './Kindling';
 import { FxLayer } from './fx/FxLayer';
-import { COLORS } from './palette';
+import { MeshStandardMaterial } from 'three';
+import { paletteFor } from '../render/seasonPalette';
+import { patchMaterial } from '../render/shaders/patch';
+import { Grass } from './Grass';
+import { SeasonDriver } from './SeasonDriver';
+import { SeasonParticles } from './SeasonParticles';
+import { Trees } from './Trees';
+
+const outerGround = patchMaterial(new MeshStandardMaterial({ roughness: 1 }), { snow: true });
 
 export function World() {
   const location = useGame((s) => s.game?.player.location ?? null);
   const grid = useGame((s) => (s.game ? s.game.maps[s.game.player.location] : null));
+  const season = useGame((s) => s.game?.calendar.season ?? 'spring');
   if (!grid || !location) return null;
+  const outdoor = location === 'farm';
   return (
     <>
       <SunLight />
@@ -27,10 +37,14 @@ export function World() {
           receiveShadow
         >
           <planeGeometry args={[grid.width + 160, grid.height + 160]} />
-          <meshStandardMaterial color={COLORS.grass} roughness={1} />
+          <primitive object={outerGround} attach="material" color={paletteFor(season, 5).grass} />
         </mesh>
       ) : null}
-      <Tiles grid={grid} />
+      <SeasonDriver />
+      <Tiles grid={grid} season={season} />
+      {outdoor && <Grass grid={grid} season={season} />}
+      {outdoor && <Trees grid={grid} season={season} />}
+      {outdoor && <SeasonParticles season={season} />}
       <Crops grid={grid} />
       {location === 'farm' ? <Features grid={grid} /> : <HouseInterior grid={grid} />}
       <Player />

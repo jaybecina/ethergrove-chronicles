@@ -65,10 +65,19 @@ const BURSTS: Record<FxKind, Burst> = {
     life: 0.7,
     size: 0.06,
   },
+  breath: {
+    count: 4,
+    colors: ['#eef4fb', '#ffffff'],
+    speed: 0.15,
+    up: 0.25,
+    gravity: -0.2,
+    life: 0.9,
+    size: 0.05,
+  },
 };
 
 export interface ParticlesHandle {
-  spawn(kind: FxKind, x: number, y: number): void;
+  spawn(kind: FxKind, x: number, y: number, height?: number): void;
 }
 
 /** One pooled instanced mesh for every small burst effect. */
@@ -90,7 +99,7 @@ export const Particles = forwardRef<ParticlesHandle>(function Particles(_, ref) 
   const material = useMemo(() => new MeshBasicMaterial({ toneMapped: false }), []);
 
   useImperativeHandle(ref, () => ({
-    spawn(kind, x, y) {
+    spawn(kind, x, y, height = 0.25) {
       const b = BURSTS[kind];
       const m = mesh.current;
       if (!m) return;
@@ -99,7 +108,7 @@ export const Particles = forwardRef<ParticlesHandle>(function Particles(_, ref) 
         sim.next = (sim.next + 1) % MAX;
         const a = Math.random() * Math.PI * 2;
         const r = Math.random() * b.speed;
-        sim.pos.set([x + 0.5, 0.25, y + 0.5], i * 3);
+        sim.pos.set([x + 0.5, height, y + 0.5], i * 3);
         sim.vel.set([Math.cos(a) * r, b.up * (0.6 + Math.random() * 0.6), Math.sin(a) * r], i * 3);
         sim.life[i] = b.life * (0.7 + Math.random() * 0.5);
         sim.max[i] = sim.life[i] ?? 1;

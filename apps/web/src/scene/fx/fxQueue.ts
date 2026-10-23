@@ -1,7 +1,7 @@
 import type { GameEvent } from '@hearthvale/core';
 import { displayName } from '../../ui/labels';
 
-export type FxKind = 'dust' | 'splash' | 'chips' | 'sparkle' | 'leafPuff';
+export type FxKind = 'dust' | 'splash' | 'chips' | 'sparkle' | 'leafPuff' | 'breath';
 export type FxSpawn =
   { kind: FxKind; x: number; y: number } | { kind: 'float'; x: number; y: number; text: string };
 

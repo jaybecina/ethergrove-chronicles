@@ -1,3 +1,4 @@
+import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { eventBus } from '../../game/eventBus';
 import { gameStore } from '../../game/store';
@@ -23,6 +24,21 @@ export function FxLayer() {
       }),
     [],
   );
+  const breath = useRef(0);
+  useFrame((_, delta) => {
+    const g = gameStore.getState().game;
+    if (g?.calendar.season !== 'winter' || g.player.location !== 'farm') return;
+    breath.current += delta;
+    if (breath.current < 1.8) return;
+    breath.current = 0;
+    const f = { n: [0, -0.3], s: [0, 0.3], e: [0.3, 0], w: [-0.3, 0] }[g.player.facing];
+    particles.current?.spawn(
+      'breath',
+      g.player.x - 0.5 + (f[0] ?? 0),
+      g.player.z - 0.5 + (f[1] ?? 0),
+      1.05,
+    );
+  });
   return (
     <>
       <Particles ref={particles} />
