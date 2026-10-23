@@ -57,4 +57,10 @@ export default tseslint.config(
       ...jsxA11y.flatConfigs.recommended.rules,
     },
   },
+  {
+    // R3F scene code mutates three.js objects inside useFrame by design; the React
+    // Compiler's immutability rule does not model that, so it is off for 3D code only.
+    files: ['apps/web/src/scene/**/*.tsx', 'apps/web/src/render/**/*.tsx'],
+    rules: { 'react-hooks/immutability': 'off' },
+  },
 );

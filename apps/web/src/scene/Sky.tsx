@@ -4,6 +4,7 @@ import { useMemo, useRef } from 'react';
 import { BackSide, Color, Fog, ShaderMaterial, type Group } from 'three';
 import { gameStore } from '../game/store';
 import { nightFactor, sunAt } from '../render/lighting';
+import { weatherNow } from '../render/weatherState';
 
 const vertex = /* glsl */ `
   varying vec3 vDir;
@@ -45,9 +46,13 @@ export function Sky() {
     const g = gameStore.getState().game;
     if (!g) return;
     const s = sunAt(g.calendar.minute);
-    (material.uniforms.top?.value as Color).set(s.skyTop);
-    (material.uniforms.bottom?.value as Color).set(s.skyBottom);
-    fog.color.set(s.skyBottom);
+    const { cloudiness, fogDensity } = weatherNow.visuals;
+    const grey = new Color('#8a929c').multiplyScalar(0.35 + (s.intensity / 2.7) * 0.65);
+    (material.uniforms.top?.value as Color).set(s.skyTop).lerp(grey, cloudiness);
+    (material.uniforms.bottom?.value as Color).set(s.skyBottom).lerp(grey, cloudiness * 0.8);
+    fog.color.set(s.skyBottom).lerp(grey, cloudiness * 0.8);
+    fog.near = 40 - fogDensity * 30;
+    fog.far = 120 - fogDensity * 70;
     scene.fog = fog;
     group.current?.position.copy(camera.position);
     if (stars.current) {

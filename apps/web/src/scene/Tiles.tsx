@@ -1,5 +1,7 @@
 import type { Grid, Tile } from '@hearthvale/core';
+import { useFrame } from '@react-three/fiber';
 import { useMemo } from 'react';
+import { weatherNow } from '../render/weatherState';
 import {
   BoxGeometry,
   Color,
@@ -87,6 +89,13 @@ export function Tiles({ grid, season }: Props) {
     });
     return { groundItems, rocks, stumps, weeds, posts };
   }, [grid, season]);
+
+  useFrame(() => {
+    // Wet ground reads darker and glossier (spec §4.4).
+    const wet = weatherNow.visuals.wetness;
+    groundMat.roughness = 0.95 - wet * 0.35;
+    rockMat.roughness = 0.9 - wet * 0.4;
+  });
 
   const cap = grid.tiles.length;
   return (

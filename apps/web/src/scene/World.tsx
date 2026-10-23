@@ -17,6 +17,8 @@ import { Grass } from './Grass';
 import { SeasonDriver } from './SeasonDriver';
 import { SeasonParticles } from './SeasonParticles';
 import { Trees } from './Trees';
+import { Puddles } from './Puddles';
+import { Weather } from './Weather';
 
 const outerGround = patchMaterial(new MeshStandardMaterial({ roughness: 1 }), { snow: true });
 
@@ -45,6 +47,8 @@ export function World() {
       {outdoor && <Grass grid={grid} season={season} />}
       {outdoor && <Trees grid={grid} season={season} />}
       {outdoor && <SeasonParticles season={season} />}
+      {outdoor && <Puddles grid={grid} />}
+      <Weather />
       <Crops grid={grid} />
       {location === 'farm' ? <Features grid={grid} /> : <HouseInterior grid={grid} />}
       <Player />

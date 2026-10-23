@@ -4,6 +4,7 @@ import { Color, type AmbientLight, type DirectionalLight, type HemisphereLight }
 import { gameStore, useGame } from '../game/store';
 import { sunAt, sunDirection } from './lighting';
 import { QUALITY } from './quality';
+import { weatherNow } from './weatherState';
 
 const SHADOW_SPAN = 12;
 const tmp = new Color();
@@ -27,10 +28,14 @@ export function SunLight() {
     l.target.position.set(g.player.x, 0, g.player.z);
     l.target.updateMatrixWorld();
     l.color.set(indoors ? '#ffe2b8' : s.color);
-    l.intensity = indoors ? 1.6 : s.intensity;
+    const { cloudiness } = weatherNow.visuals;
+    const flash = weatherNow.flash * 6;
+    l.intensity = indoors ? 1.6 : s.intensity * (1 - cloudiness * 0.7) + flash;
     hemi.current.color.set(indoors ? '#ffe9cc' : s.skyTop);
     hemi.current.groundColor.set(tmp.set(indoors ? '#4a3425' : '#5c6b3a'));
-    hemi.current.intensity = indoors ? 0.8 : 0.2 + s.ambient * 0.9;
+    hemi.current.intensity = indoors
+      ? 0.8
+      : 0.2 + s.ambient * 0.9 + cloudiness * 0.15 + flash * 0.4;
     amb.current.intensity = indoors ? 0.35 : s.ambient * 0.5;
   });
 

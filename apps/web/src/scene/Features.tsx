@@ -4,6 +4,7 @@ import { useMemo, useRef } from 'react';
 import type { MeshStandardMaterial } from 'three';
 import { gameStore } from '../game/store';
 import { nightFactor } from '../render/lighting';
+import { Water } from './Water';
 import { COLORS } from './palette';
 
 function bounds(grid: Grid, kind: 'building' | 'water') {
@@ -107,11 +108,12 @@ export function Features({ grid }: { grid: Grid }) {
         ))}
       </group>
 
-      {/* Pond placeholder (shader water arrives in Task 21) */}
-      <mesh position={[pond.cx, -0.12, pond.cz]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[pond.w, pond.d]} />
-        <meshStandardMaterial color={COLORS.water} roughness={0.2} metalness={0.1} />
+      {/* Pond: dark bed under shader water */}
+      <mesh position={[pond.cx, -0.25, pond.cz]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[pond.w + 0.2, pond.d + 0.2]} />
+        <meshStandardMaterial color="#20384a" roughness={1} />
       </mesh>
+      <Water x={pond.cx} z={pond.cz} w={pond.w} d={pond.d} />
     </group>
   );
 }
