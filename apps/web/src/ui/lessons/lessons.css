@@ -125,3 +125,40 @@
 .reduced-motion .lesson-card {
   animation: none;
 }
+
+/* Marker pointer and hotbar ring (spec §4.6) */
+.marker-pointer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--wood-dark);
+  color: var(--gold);
+  font-size: 20px;
+  box-shadow:
+    0 0 0 1.5px var(--gold),
+    var(--lift);
+  pointer-events: none;
+  z-index: 5;
+}
+.slot.is-lesson {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
+  animation: lesson-ring 1.6s ease-in-out infinite;
+}
+@keyframes lesson-ring {
+  50% {
+    outline-color: rgb(243 207 114 / 0.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slot.is-lesson {
+    animation: none;
+  }
+}
+.reduced-motion .slot.is-lesson {
+  animation: none;
+}
