@@ -6,7 +6,7 @@ import type { GameStore } from './store';
 export interface DebugHook {
   getState(): GameState | null;
   dispatch(cmd: Command): GameEvent[];
-  setSeed(seed: number): void;
+  setSeed(seed: number, opts?: { lessons?: boolean }): void;
   skipMinutes(minutes: number): void;
   sleep(): void;
   setWeather(today: Weather): void;
@@ -39,10 +39,14 @@ export function installDebugHook(store: StoreApi<GameStore>): void {
     playTimeMs: () => store.getState().playTimeMs,
     getState: () => store.getState().game,
     dispatch: (cmd) => store.getState().dispatch(cmd),
-    setSeed(seed) {
+    setSeed(seed, opts) {
+      const lessons = opts?.lessons === true;
       store
         .getState()
-        .startGame(createNewGame({ seed, farmName: 'Testfield', playerName: 'Tester' }), 1);
+        .startGame(
+          createNewGame({ seed, farmName: 'Testfield', playerName: 'Tester', lessons }),
+          1,
+        );
       store.getState().setScreen('game');
     },
     skipMinutes(minutes) {

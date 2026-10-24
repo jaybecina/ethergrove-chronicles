@@ -48,6 +48,29 @@ describe('soundsFor', () => {
   });
 });
 
+describe('lesson sounds', () => {
+  it('lessonDone chimes; lessonsComplete chimes; notes are silent', () => {
+    const ctx = { surface: 'grass' as const };
+    expect(soundsFor({ type: 'lessonDone', id: 'till' }, ctx)).toEqual(['chime']);
+    expect(soundsFor({ type: 'lessonsComplete', gift: 100 }, ctx)).toEqual(['chime']);
+    expect(soundsFor({ type: 'noteShown', id: 'rain' }, ctx)).toEqual([]);
+  });
+
+  it('plays the same sound once when it repeats within 150 ms', () => {
+    const { factory, log } = fakeFactory();
+    let t = 0;
+    const sys = createSoundSystem(factory, () => t);
+    sys.unlock();
+    sys.play('chime');
+    t = 100;
+    sys.play('chime');
+    expect(log.filter((l) => l === 'play:chime')).toHaveLength(1);
+    t = 260;
+    sys.play('chime');
+    expect(log.filter((l) => l === 'play:chime')).toHaveLength(2);
+  });
+});
+
 describe('sound system', () => {
   it('stays silent until unlocked by a user gesture', () => {
     const { factory, log } = fakeFactory();

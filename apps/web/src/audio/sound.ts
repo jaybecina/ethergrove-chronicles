@@ -29,8 +29,15 @@ function wantedAmbience(a: AmbientState): LoopId[] {
   return ['birds'];
 }
 
-export function createSoundSystem(factory: SoundFactory) {
+/** The same one-shot within this window plays once (e.g. a milestone and a lesson chiming together). */
+const REPEAT_MS = 150;
+
+export function createSoundSystem(
+  factory: SoundFactory,
+  now: () => number = () => performance.now(),
+) {
   const handles = new Map<string, SoundHandle>();
+  const lastPlayed = new Map<string, number>();
   const get = (id: SoundId | LoopId, loop: boolean) => {
     let h = handles.get(id);
     if (!h) {
@@ -59,6 +66,10 @@ export function createSoundSystem(factory: SoundFactory) {
     },
     play(id: SoundId) {
       if (!unlocked) return;
+      const t = now();
+      const last = lastPlayed.get(id);
+      if (last !== undefined && t - last < REPEAT_MS) return;
+      lastPlayed.set(id, t);
       const h = get(id, false);
       safe(() => {
         h.volume(sfx);
