@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { applyCommand } from '../src/applyCommand';
 import { CROPS } from '../src/data/crops';
-import type { CropId, GameEvent, GameState, Result } from '../src/types';
+import { BALANCE } from '../src/data/balance';
+import type { Command, CropId, GameEvent, GameState, NoteId, Result } from '../src/types';
 import { blankFarm, fresh, lessonAt, standAt, withBag, withTile } from './helpers';
 
 const types = (r: Result) => r.events.map((e) => e.type);
@@ -156,5 +157,154 @@ describe('lesson progression', () => {
       s = inHouse(r.state);
     }
     expect(events.some((e) => e.type.startsWith('lesson'))).toBe(false);
+  });
+});
+
+const notes = (r: Result) => r.events.flatMap((e) => (e.type === 'noteShown' ? [e.id] : []));
+const noCrops = (s: GameState) => blankFarm(s);
+
+describe('adaptive rules', () => {
+  it('all crops gone with seeds in bag → back to plant', () => {
+    const s = lessonAt(noCrops(farm()), 'waterDaily');
+    const r = applyCommand(s, { type: 'tick', minutes: 1 });
+    expect(r.state.tutorial.lesson).toBe('plant');
+    expect(r.events).toContainEqual({ type: 'lessonStarted', id: 'plant' });
+  });
+
+  it('all crops gone and no seeds → buySeeds', () => {
+    const s = withBag(lessonAt(noCrops(farm()), 'harvest'), []);
+    expect(applyCommand(s, { type: 'tick', minutes: 1 }).state.tutorial.lesson).toBe('buySeeds');
+  });
+
+  it('out-of-season seeds only → buySeeds', () => {
+    const s = withBag(lessonAt(noCrops(farm()), 'water'), [{ id: 'seed:tomato', qty: 3 }]);
+    expect(applyCommand(s, { type: 'tick', minutes: 1 }).state.tutorial.lesson).toBe('buySeeds');
+  });
+
+  it('nothing left to learn with → complete with gift', () => {
+    const s = { ...withBag(lessonAt(noCrops(farm()), 'buySeeds'), []), gold: 10 };
+    const r = applyCommand(s, { type: 'tick', minutes: 1 });
+    expect(r.state.tutorial.lesson).toBe('complete');
+    expect(r.state.gold).toBe(110);
+    expect(r.events).toContainEqual({ type: 'lessonsComplete', gift: 100 });
+  });
+
+  it('winter with no seeds and no crops → complete with gift', () => {
+    const s = withBag(lessonAt(noCrops(farm()), 'buySeeds'), []);
+    const winter = { ...s, calendar: { ...s.calendar, season: 'winter' as const } };
+    expect(applyCommand(winter, { type: 'tick', minutes: 1 }).state.tutorial.lesson).toBe(
+      'complete',
+    );
+  });
+
+  it('buySeeds waits while the player can still afford seeds', () => {
+    const s = withBag(lessonAt(noCrops(farm()), 'buySeeds'), []);
+    expect(applyCommand(s, { type: 'tick', minutes: 1 }).state.tutorial.lesson).toBe('buySeeds');
+  });
+
+  it('crops dying while others remain does not move the lesson', () => {
+    const s = withTile(lessonAt(farm(), 'waterDaily'), 11, 10, crop());
+    expect(applyCommand(s, { type: 'tick', minutes: 1 }).state.tutorial.lesson).toBe('waterDaily');
+  });
+});
+
+/** A state and command that trigger each note once (lesson 'harvest', which nothing here completes). */
+const TRIGGERS: [NoteId, () => GameState, Command][] = [
+  [
+    'canEmpty',
+    () => ({ ...lessonAt(farm(), 'harvest'), activeSlot: 1, canCharges: 0 }),
+    { type: 'useTool' },
+  ],
+  [
+    'staminaLow',
+    () => ({
+      ...lessonAt(farm(), 'harvest'),
+      player: { ...farm().player, stamina: BALANCE.staminaLowAt + 1 },
+    }),
+    { type: 'useTool' },
+  ],
+  [
+    'exhausted',
+    () => ({ ...lessonAt(farm(), 'harvest'), player: { ...farm().player, stamina: 1 } }),
+    { type: 'useTool' },
+  ],
+  [
+    'passedOut',
+    () => atMinute(lessonAt(farm(), 'harvest'), BALANCE.passOutMinute - 1),
+    { type: 'tick', minutes: 2 },
+  ],
+  [
+    'rain',
+    () => ({
+      ...inHouse(lessonAt(farm(), 'harvest')),
+      weather: { today: 'sunny', tomorrow: 'rain' },
+    }),
+    { type: 'sleep' },
+  ],
+  [
+    'obstacles',
+    () => withTile(lessonAt(farm(10, 10, 'e'), 'harvest'), 11, 10, { kind: 'weed' }),
+    { type: 'useTool' },
+  ],
+  [
+    'wrongSeason',
+    () => atMinute(lessonAt(farm(), 'harvest'), 600),
+    { type: 'buyItem', itemId: 'seed:tomato', qty: 1 },
+  ],
+  [
+    'newSeason',
+    () => {
+      const s = inHouse(lessonAt(farm(), 'harvest'));
+      return { ...s, calendar: { ...s.calendar, day: BALANCE.seasonDays } };
+    },
+    { type: 'sleep' },
+  ],
+  [
+    'bagFull',
+    () =>
+      atMinute(
+        withBag(
+          lessonAt(farm(), 'harvest'),
+          Array.from({ length: 12 }, () => ({ id: 'stone' as const, qty: 99 })),
+        ),
+        600,
+      ),
+    { type: 'buyItem', itemId: 'seed:turnip', qty: 1 },
+  ],
+  [
+    'cartClosed',
+    () => atMinute(lessonAt(farm(), 'harvest'), 400),
+    { type: 'buyItem', itemId: 'seed:turnip', qty: 1 },
+  ],
+];
+
+describe('notes', () => {
+  it.each(TRIGGERS)('note %s shows once', (id, make, cmd) => {
+    const r1 = applyCommand(make(), cmd);
+    expect(notes(r1)).toEqual([id]);
+    expect(r1.state.tutorial.notesSeen).toContain(id);
+    const again = { ...make(), tutorial: r1.state.tutorial };
+    expect(notes(applyCommand(again, cmd))).toEqual([]);
+  });
+
+  it('shows at most one note per command, first in NOTE_IDS order', () => {
+    // Passing out the night before rain: passedOut and rain fire in the same command.
+    const base = atMinute(lessonAt(farm(), 'harvest'), BALANCE.passOutMinute - 1);
+    const s = { ...base, weather: { today: 'sunny' as const, tomorrow: 'rain' as const } };
+    const r = applyCommand(s, { type: 'tick', minutes: 2 });
+    expect(types(r)).toEqual(expect.arrayContaining(['passedOut', 'dayStarted']));
+    expect(r.state.weather.today).toBe('rain');
+    expect(notes(r)).toEqual(['passedOut']);
+  });
+
+  it('shows no notes when lessons are off, but still after completion', () => {
+    const [, make, cmd] = TRIGGERS[0] as (typeof TRIGGERS)[number];
+    const off = make();
+    expect(
+      notes(applyCommand({ ...off, tutorial: { ...off.tutorial, lesson: 'off' } }, cmd)),
+    ).toEqual([]);
+    expect(
+      notes(applyCommand({ ...off, tutorial: { ...off.tutorial, lesson: 'complete' } }, cmd)),
+    ).toEqual(['canEmpty']);
   });
 });

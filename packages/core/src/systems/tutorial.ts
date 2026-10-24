@@ -1,6 +1,9 @@
+import { CROP_IDS, CROPS } from '../data/crops';
 import { FIELD_RECT } from '../data/layouts';
-import { LESSON_GOAL, LESSON_ORDER, LESSONS_GIFT } from '../data/lessons';
-import type { GameEvent, GameState, LessonId, Result, Tile } from '../types';
+import { LESSON_GOAL, LESSON_ORDER, LESSONS_GIFT, NOTE_IDS } from '../data/lessons';
+import { tileAt } from '../grid';
+import { targetTile } from './movement';
+import type { GameEvent, GameState, LessonId, NoteId, Result, Tile } from '../types';
 
 const farmTiles = (s: GameState): Tile[] => s.maps.farm.tiles;
 const cropCount = (s: GameState) => farmTiles(s).filter((t) => t.crop).length;
@@ -92,25 +95,89 @@ export function startLesson(state: GameState, id: LessonId, events: GameEvent[])
   return complete(s, events);
 }
 
+const seasonSeeds = (s: GameState) => CROP_IDS.filter((c) => CROPS[c].season === s.calendar.season);
+const hasSeasonSeed = (s: GameState) =>
+  s.bag.some((c) => c !== null && seasonSeeds(s).some((crop) => c.id === `seed:${crop}`));
+
+/** Spec §3.5: never trap the player on a lesson they can no longer finish. */
+function adapt(s: GameState, events: GameEvent[]): GameState {
+  const { lesson } = s.tutorial;
+  const needsCrops =
+    lesson === 'plant' || lesson === 'water' || lesson === 'waterDaily' || lesson === 'harvest';
+  if (needsCrops && cropCount(s) === 0) {
+    if (hasSeasonSeed(s)) return lesson === 'plant' ? s : startLesson(s, 'plant', events);
+    s = startLesson(s, 'buySeeds', events);
+  }
+  if (s.tutorial.lesson !== 'buySeeds' || hasSeed(s) || cropCount(s) > 0) return s;
+  const costs = seasonSeeds(s).map((c) => CROPS[c].seedCost);
+  const broke = costs.length === 0 || s.gold < Math.min(...costs);
+  return broke ? complete(s, events) : s;
+}
+
+const failed = (events: GameEvent[], reason: string) =>
+  events.some((e) => e.type === 'actionFailed' && e.reason === reason);
+
+/** Spec §3.7 triggers. */
+function triggered(id: NoteId, next: GameState, events: GameEvent[]): boolean {
+  switch (id) {
+    case 'canEmpty':
+    case 'wrongSeason':
+    case 'bagFull':
+    case 'cartClosed':
+      return failed(events, id);
+    case 'staminaLow':
+    case 'exhausted':
+    case 'passedOut':
+      return count(events, id) > 0;
+    case 'rain':
+      return (
+        count(events, 'dayStarted') > 0 &&
+        (next.weather.today === 'rain' || next.weather.today === 'storm')
+      );
+    case 'newSeason':
+      return count(events, 'seasonChanged') > 0;
+    case 'obstacles': {
+      const missed =
+        events.some((e) => e.type === 'toolUsed' && !e.hit) || failed(events, 'noTarget');
+      if (!missed) return false;
+      const { x, y } = targetTile(next.player);
+      const kind = tileAt(next.maps[next.player.location], x, y)?.kind;
+      return kind === 'weed' || kind === 'rock' || kind === 'stump';
+    }
+  }
+}
+
+/** Shows at most one unseen note whose trigger fired in this command's `events`; appends to `out`. */
+function note(s: GameState, events: GameEvent[], out: GameEvent[]): GameState {
+  const id = NOTE_IDS.find((n) => !s.tutorial.notesSeen.includes(n) && triggered(n, s, events));
+  if (!id) return s;
+  out.push({ type: 'noteShown', id });
+  return { ...s, tutorial: { ...s.tutorial, notesSeen: [...s.tutorial.notesSeen, id] } };
+}
+
 /** Runs after every command (spec §3.3). Pure; touches only `tutorial` and the gift's `gold`. */
 export function advanceTutorial(prev: GameState, next: GameState, events: GameEvent[]): Result {
   const { lesson } = next.tutorial;
-  if (lesson === 'off' || lesson === 'complete') return { state: next, events };
+  if (lesson === 'off') return { state: next, events };
   const out = [...events];
   let s = next;
-  // 1. count
-  if (lesson === 'till' || lesson === 'plant') {
-    const add = count(events, lesson === 'till' ? 'tileTilled' : 'cropPlanted');
-    if (add > 0) s = { ...s, tutorial: { ...s.tutorial, count: s.tutorial.count + add } };
+  if (lesson !== 'complete') {
+    // 1. count
+    if (lesson === 'till' || lesson === 'plant') {
+      const add = count(events, lesson === 'till' ? 'tileTilled' : 'cropPlanted');
+      if (add > 0) s = { ...s, tutorial: { ...s.tutorial, count: s.tutorial.count + add } };
+    }
+    // 2. done → next lesson (or complete past the last one)
+    if (isDone(lesson, prev, s, events)) {
+      out.push({ type: 'lessonDone', id: lesson });
+      const following = LESSON_ORDER[LESSON_ORDER.indexOf(lesson) + 1];
+      s = following ? startLesson(s, following, out) : complete(s, out);
+    }
+    // 3. adaptive rules
+    s = adapt(s, out);
   }
-  // 2. done → next lesson (or complete past the last one)
-  if (isDone(lesson, prev, s, events)) {
-    out.push({ type: 'lessonDone', id: lesson });
-    const following = LESSON_ORDER[LESSON_ORDER.indexOf(lesson) + 1];
-    s = following ? startLesson(s, following, out) : complete(s, out);
-  }
-  // 3. adaptive rules (Task 3)
-  // 4. notes (Task 3)
+  // 4. notes (also after completion)
+  s = note(s, events, out);
   return { state: s, events: out };
 }
 
