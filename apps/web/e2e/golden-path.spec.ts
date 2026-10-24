@@ -49,7 +49,12 @@ test('till, plant, water, grow, harvest, ship, earn, and continue after reload',
   await page.getByRole('button', { name: /^Continue/ }).click();
   await expect(page.getByRole('tablist', { name: 'Hotbar' })).toBeVisible();
   const after = await state(page);
-  expect(after.calendar).toEqual(before.calendar);
+  // The clock resumes once the farm is shown, so a slow machine may already be a minute or two on.
+  const { minute: savedMinute, ...savedDay } = before.calendar;
+  const { minute, ...day } = after.calendar;
+  expect(day).toEqual(savedDay);
+  expect(minute).toBeGreaterThanOrEqual(savedMinute);
+  expect(minute).toBeLessThanOrEqual(savedMinute + 5);
   expect(after.gold).toBe(before.gold);
   expect(after.bag).toEqual(before.bag);
 });
