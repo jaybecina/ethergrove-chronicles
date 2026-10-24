@@ -482,7 +482,7 @@ Copy `packages/core/test/fixtures/part1-save-v1.json` from the local branch `doc
 5. **Old save.** Import the v1 fixture on the slots screen → plays, no goal card.
 6. **Accessibility.** axe has no serious violations on the game screen with the goal card expanded and on the Journal tab.
 
-Use the existing helpers (`newGame`, `faceTile`, `act`, `sleepNight`, `state`). Add a `newGame(page, seed, { lessons })` option if needed; it defaults to lessons on.
+Use the existing helpers (`newGame`, `faceTile`, `act`, `sleepNight`, `state`). Add a `newGame(page, seed, { lessons })` option if needed; it defaults to lessons off, so existing tests are unchanged; only `lessons.spec.ts` turns them on.
 
 ---
 
