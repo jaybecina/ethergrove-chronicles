@@ -1,9 +1,20 @@
 import { CROP_IDS, CROPS } from '../data/crops';
 import { FIELD_RECT } from '../data/layouts';
 import { LESSON_GOAL, LESSON_ORDER, LESSONS_GIFT, NOTE_IDS } from '../data/lessons';
-import { tileAt } from '../grid';
+import { findFeature, tileAt } from '../grid';
 import { targetTile } from './movement';
-import type { GameEvent, GameState, LessonId, NoteId, Result, Tile } from '../types';
+import type {
+  GameEvent,
+  GameState,
+  Grid,
+  HotbarIndex,
+  LessonId,
+  LocationId,
+  NoteId,
+  Result,
+  Tile,
+} from '../types';
+import { isMature } from './crops';
 
 const farmTiles = (s: GameState): Tile[] => s.maps.farm.tiles;
 const cropCount = (s: GameState) => farmTiles(s).filter((t) => t.crop).length;
@@ -192,4 +203,113 @@ export function skipLessons(state: GameState): Result {
 export function restartLessons(state: GameState): Result {
   const events: GameEvent[] = [];
   return { state: startLesson(state, 'walkToField', events), events };
+}
+
+export interface LessonTarget {
+  location: LocationId;
+  x: number;
+  y: number;
+}
+
+/** Nearest tile by Manhattan distance; row-major scan keeps the lower y, then lower x, on ties. */
+function nearest(
+  grid: Grid,
+  from: { x: number; y: number },
+  match: (t: Tile, x: number, y: number) => boolean,
+): { x: number; y: number } | null {
+  let best: { x: number; y: number } | null = null;
+  let bestD = Infinity;
+  grid.tiles.forEach((t, i) => {
+    const x = i % grid.width;
+    const y = Math.floor(i / grid.width);
+    if (!match(t, x, y)) return;
+    const d = Math.abs(x - from.x) + Math.abs(y - from.y);
+    if (d < bestD) {
+      best = { x, y };
+      bestD = d;
+    }
+  });
+  return best;
+}
+
+const fieldGrass = (t: Tile, x: number, y: number) =>
+  t.kind === 'grass' &&
+  x >= FIELD_RECT.x0 &&
+  x <= FIELD_RECT.x1 &&
+  y >= FIELD_RECT.y0 &&
+  y <= FIELD_RECT.y1;
+
+/** Where the marker goes for the active lesson (spec §3.9). */
+export function lessonTarget(state: GameState): LessonTarget | null {
+  const { lesson } = state.tutorial;
+  if (lesson === 'off' || lesson === 'complete') return null;
+  const { farm, house } = state.maps;
+  const from = { x: Math.floor(state.player.x), y: Math.floor(state.player.z) };
+  // Positions measured from the player only make sense on the farm; in the house use the door.
+  const onFarm = (match: (t: Tile, x: number, y: number) => boolean) =>
+    nearest(farm, state.player.location === 'farm' ? from : findFeature(farm, 'houseDoor'), match);
+  let target: LessonTarget | null = null;
+  const put = (location: LocationId, p: { x: number; y: number } | null) => {
+    target = p ? { location, ...p } : null;
+  };
+  switch (lesson) {
+    case 'walkToField':
+    case 'till':
+      put('farm', onFarm(fieldGrass));
+      break;
+    case 'plant':
+      put('farm', onFarm((t) => t.kind === 'tilled' && !t.crop) ?? onFarm(fieldGrass));
+      break;
+    case 'water':
+    case 'waterDaily':
+      put(
+        'farm',
+        onFarm((t) => t.crop !== undefined && t.watered !== true),
+      );
+      break;
+    case 'harvest':
+      put(
+        'farm',
+        onFarm((t) => t.crop !== undefined && isMature(t.crop)),
+      );
+      break;
+    case 'sleep':
+    case 'sellOvernight':
+      put('house', findFeature(house, 'bed'));
+      break;
+    case 'ship':
+      put('farm', findFeature(farm, 'bin'));
+      break;
+    case 'buySeeds':
+      put('farm', findFeature(farm, 'cart'));
+      break;
+  }
+  const t = target as LessonTarget | null;
+  if (!t || t.location === state.player.location) return t;
+  const here = state.player.location;
+  return {
+    location: here,
+    ...findFeature(state.maps[here], here === 'farm' ? 'houseDoor' : 'exitDoor'),
+  };
+}
+
+/** The hotbar slot the active lesson wants (spec §3.9). */
+export function lessonSlot(state: GameState): HotbarIndex | null {
+  switch (state.tutorial.lesson) {
+    case 'till':
+      return 0;
+    case 'water':
+    case 'waterDaily':
+      return 1;
+    case 'harvest':
+      return 2;
+    case 'plant': {
+      const i = state.quickSlots.findIndex(
+        (b) => b !== null && state.bag[b]?.id.startsWith('seed:') === true,
+      );
+      return i < 0 ? null : ((5 + i) as HotbarIndex);
+    }
+    default:
+      return null;
+  }
 }

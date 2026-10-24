@@ -27,6 +27,7 @@ export { rollWeather } from './systems/weather';
 export { cartStock, isCartOpen, sellPrice } from './systems/economy';
 export { endDay } from './systems/day';
 export { resolveSecondary } from './systems/interact';
+export { lessonSlot, lessonTarget, type LessonTarget } from './systems/tutorial';
 export { CURRENT_SAVE_VERSION, MIGRATIONS, makeSaveFile, migrate } from './save/migrate';
 export type { Migration, MigrateResult } from './save/migrate';
 export { gameStateSchema, saveFileSchema } from './save/schema';
