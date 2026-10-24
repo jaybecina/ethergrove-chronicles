@@ -75,7 +75,8 @@ export function createKeyboardSource(
       const z = (any('KeyS', 'ArrowDown') ? 1 : 0) - (any('KeyW', 'ArrowUp') ? 1 : 0);
       const primary = held.has('Space') || tapped;
       tapped = false;
-      return { move: normalize(x, z), primary, ...edges.take() };
+      const run = held.has('ShiftLeft') || held.has('ShiftRight');
+      return { move: normalize(x, z), primary, run, ...edges.take() };
     },
     reset,
     dispose() {

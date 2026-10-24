@@ -14,7 +14,7 @@ export function intentsToCommands(
   if (intents.hotbar !== null) cmds.push({ type: 'selectHotbar', index: intents.hotbar });
   if (intents.cycle !== 0) cmds.push({ type: 'cycleHotbar', dir: intents.cycle });
   const m = cameraRelative(intents.move, yawSteps);
-  cmds.push({ type: 'move', dx: m.x, dz: m.z, dtMs: STEP_MS });
+  cmds.push({ type: 'move', dx: m.x, dz: m.z, dtMs: STEP_MS, run: intents.run });
   if (gate.allow(intents.primary, nowMs))
     cmds.push({ type: state.activeSlot <= 4 ? 'useTool' : 'useItem' });
   if (intents.secondary) {

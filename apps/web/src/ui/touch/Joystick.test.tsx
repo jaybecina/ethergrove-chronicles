@@ -28,6 +28,24 @@ describe('Joystick', () => {
   });
 });
 
+describe('run ring', () => {
+  it('glows when the stick is dragged to the edge, and not at half tilt', () => {
+    const source = createTouchSource();
+    render(<Joystick source={source} />);
+    const zone = screen.getByTestId('joystick-zone');
+    fireEvent.pointerDown(zone, { pointerId: 11, clientX: 100, clientY: 100 });
+    fireEvent.pointerMove(zone, {
+      pointerId: 11,
+      clientX: 100 + JOYSTICK_RADIUS * 0.5,
+      clientY: 100,
+    });
+    expect(screen.getByTestId('joystick-base')).not.toHaveClass('is-running');
+    fireEvent.pointerMove(zone, { pointerId: 11, clientX: 100 + JOYSTICK_RADIUS, clientY: 100 });
+    expect(screen.getByTestId('joystick-base')).toHaveClass('is-running');
+    expect(source.read().run).toBe(true);
+  });
+});
+
 describe('opening a menu mid-hold (review finding 2)', () => {
   it('unmounting the stick while dragged stops the farmer', () => {
     const source = createTouchSource();

@@ -138,8 +138,11 @@ describe('dispatcher', () => {
   it('move delegates to movement', () => {
     const s = standAt(blankFarm(fresh()), 10, 10, 'n');
     expect(applyCommand(s, { type: 'move', dx: 1, dz: 0, dtMs: 250 }).state.player.x).toBeCloseTo(
-      11.5,
+      11.15,
     );
+    expect(
+      applyCommand(s, { type: 'move', dx: 1, dz: 0, dtMs: 250, run: true }).state.player.x,
+    ).toBeCloseTo(11.65);
   });
 
   it('hotbar and bag commands', () => {

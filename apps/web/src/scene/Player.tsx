@@ -1,27 +1,27 @@
 import { useFrame } from '@react-three/fiber';
 import { Suspense, useRef } from 'react';
-import { MathUtils, type Group } from 'three';
+import type { Group } from 'three';
 import { gameStore } from '../game/store';
 import { COLORS } from './palette';
+import { FACING_YAW, followMotion, playerMotion, type Motion } from './motion';
 import { PlayerModel } from './PlayerModel';
-
-const FACING_YAW = { n: Math.PI, s: 0, e: Math.PI / 2, w: -Math.PI / 2 } as const;
 
 /** Placeholder farmer; follows the simulated position smoothly between 50 ms steps. */
 export function Player() {
   const ref = useRef<Group>(null);
+  const motion = useRef<Motion | null>(null);
   useFrame((_, delta) => {
     const g = ref.current;
     const p = gameStore.getState().game?.player;
     if (!g || !p) return;
     g.visible = gameStore.getState().screen !== 'title';
-    const snap = Math.hypot(g.position.x - p.x, g.position.z - p.z) > 2;
-    g.position.x = snap ? p.x : MathUtils.damp(g.position.x, p.x, 20, delta);
-    g.position.z = snap ? p.z : MathUtils.damp(g.position.z, p.z, 20, delta);
-    const target = FACING_YAW[p.facing];
-    let d = target - g.rotation.y;
-    d = Math.atan2(Math.sin(d), Math.cos(d));
-    g.rotation.y += d * Math.min(1, delta * 14);
+    const m = motion.current
+      ? followMotion(motion.current, p, Math.min(delta, 0.1))
+      : { x: p.x, z: p.z, speed: 0, yaw: FACING_YAW[p.facing] };
+    motion.current = m;
+    Object.assign(playerMotion, m);
+    g.position.set(m.x, 0, m.z);
+    g.rotation.y = m.yaw;
   });
   return (
     <group ref={ref}>

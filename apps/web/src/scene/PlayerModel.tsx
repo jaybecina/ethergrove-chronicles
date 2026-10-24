@@ -6,12 +6,13 @@ import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { eventBus } from '../game/eventBus';
 import { gameStore } from '../game/store';
 import { ASSETS } from './assets';
-import { clipForEvent, locomotionClip, type Clip } from './playerClips';
+import { playerMotion } from './motion';
+import { clipForEvent, clipRate, locomotionClip, type Clip } from './playerClips';
 
 /** The Rogue's weapons don't belong on a farm. */
 const HIDDEN = new Set(['Knife_Offhand', '1H_Crossbow', '2H_Crossbow', 'Knife', 'Throwable']);
 const HEIGHT = 1.2;
-const FADE = 0.15;
+const FADE = 0.2;
 
 /** KayKit farmer with locomotion and action clips driven by game events. */
 export function PlayerModel() {
@@ -33,7 +34,6 @@ export function PlayerModel() {
     action: null,
     oneShot: false,
   });
-  const last = useRef(new Vector3());
 
   const play = (clip: Clip, oneShot: boolean) => {
     const next = actions[clip];
@@ -64,16 +64,14 @@ export function PlayerModel() {
     };
   }, [actions, mixer]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useFrame((_, delta) => {
+  useFrame(() => {
     const p = gameStore.getState().game?.player;
-    if (!p || current.current.oneShot) {
-      if (p) last.current.set(p.x, 0, p.z);
-      return;
-    }
-    const speed = delta > 0 ? Math.hypot(p.x - last.current.x, p.z - last.current.z) / delta : 0;
-    last.current.set(p.x, 0, p.z);
+    if (!p || current.current.oneShot) return;
+    // Smoothed speed from Player (not raw 50 ms core steps, which flicker between idle and run).
+    const { speed } = playerMotion;
     const want = locomotionClip(speed, p.stamina <= 0);
     if (want !== current.current.clip) play(want, false);
+    if (current.current.action) current.current.action.timeScale = clipRate(want, speed);
   });
 
   return (

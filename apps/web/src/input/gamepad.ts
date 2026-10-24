@@ -1,4 +1,4 @@
-import { normalize, type InputSource, type Intents } from './intents';
+import { RUN_TILT, normalize, type InputSource, type Intents } from './intents';
 
 const DEADZONE = 0.2;
 const B = {
@@ -32,7 +32,7 @@ export function createGamepadSource(getPads: () => (Gamepad | null)[] = defaultP
       const pad = getPads().find((p): p is Gamepad => p?.connected === true);
       if (!pad) {
         reset();
-        return { move: { x: 0, z: 0 }, primary: false };
+        return { move: { x: 0, z: 0 }, primary: false, run: false };
       }
       const down = pad.buttons.map((b) => b.pressed);
       const was = prev;
@@ -44,6 +44,7 @@ export function createGamepadSource(getPads: () => (Gamepad | null)[] = defaultP
       return {
         move,
         primary: down[B.a] === true,
+        run: Math.hypot(ax, az) >= RUN_TILT || down[B.b] === true,
         secondary: edge(B.x),
         cycle: edge(B.rb) ? 1 : edge(B.lb) ? -1 : 0,
         rotate: edge(B.rt) ? 1 : edge(B.lt) ? -1 : 0,

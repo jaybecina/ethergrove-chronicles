@@ -4,8 +4,8 @@ import { uiStore, useUi, type TipId } from '../uiStore';
 
 const TEXT: Record<TipId, { keys: string; touch: string }> = {
   move: {
-    keys: 'Walk with W A S D. Turn the camera with Q and E. Esc opens the menu.',
-    touch: 'Drag on the left side of the screen to walk.',
+    keys: 'Walk with W A S D and hold Shift to run. Turn the camera with Q and E. Esc opens the menu.',
+    touch: 'Drag on the left side of the screen to walk. Drag out to the glowing ring to run.',
   },
   hoe: {
     keys: 'The hoe turns grass into soil you can plant.',

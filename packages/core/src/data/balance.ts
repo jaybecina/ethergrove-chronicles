@@ -15,7 +15,9 @@ export const BALANCE = {
   passOutGoldCap: 1000,
   tilledRevertChance: 0.1,
   /** tiles per second */
-  walkSpeed: 4,
+  walkSpeed: 2.6,
+  /** tiles per second while run is held (never when exhausted) */
+  runSpeed: 4.6,
   exhaustedSpeedFactor: 0.6,
   playerRadius: 0.3,
   missCostsStamina: true as boolean,

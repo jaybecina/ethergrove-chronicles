@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clipForEvent, locomotionClip } from './playerClips';
+import { clipForEvent, clipRate, locomotionClip } from './playerClips';
 
 describe('farmer animation choice', () => {
   it('maps actions to one-shot clips', () => {
@@ -22,8 +22,19 @@ describe('farmer animation choice', () => {
 
   it('picks idle, walk or run from speed', () => {
     expect(locomotionClip(0, false)).toBe('Idle');
-    expect(locomotionClip(4, false)).toBe('Running_A');
-    expect(locomotionClip(2.4, true)).toBe('Walking_A');
+    expect(locomotionClip(0.2, false)).toBe('Idle');
     expect(locomotionClip(1, false)).toBe('Walking_A');
+    expect(locomotionClip(2.6, false)).toBe('Walking_A');
+    expect(locomotionClip(4.6, false)).toBe('Running_A');
+    expect(locomotionClip(4.6, true)).toBe('Walking_A');
+  });
+
+  it('plays walk and run clips at a rate matched to ground speed', () => {
+    expect(clipRate('Walking_A', 2.6)).toBeCloseTo(1);
+    expect(clipRate('Walking_A', 1.3)).toBeCloseTo(0.5);
+    expect(clipRate('Walking_A', 0.2)).toBeCloseTo(0.5);
+    expect(clipRate('Running_A', 4.6)).toBeCloseTo(1);
+    expect(clipRate('Running_A', 9)).toBeCloseTo(1.3);
+    expect(clipRate('Idle', 0)).toBe(1);
   });
 });

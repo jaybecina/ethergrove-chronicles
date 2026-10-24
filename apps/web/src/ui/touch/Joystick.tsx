@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import { RUN_TILT } from '../../input/intents';
 import type { TouchSource } from '../../input/touch';
 
 export const JOYSTICK_RADIUS = 60;
@@ -64,7 +65,8 @@ export function Joystick({ source }: Props) {
     >
       {knob && (
         <div
-          className="joystick-base"
+          data-testid="joystick-base"
+          className={`joystick-base${Math.hypot(knob.dx, knob.dy) >= RUN_TILT * JOYSTICK_RADIUS ? ' is-running' : ''}`}
           aria-hidden="true"
           style={{
             left: knob.x - JOYSTICK_RADIUS,

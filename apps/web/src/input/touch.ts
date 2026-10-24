@@ -1,4 +1,4 @@
-import { createEdges, normalize, type InputSource, type Intents } from './intents';
+import { RUN_TILT, createEdges, normalize, type InputSource, type Intents } from './intents';
 
 export type TouchButton = 'primary' | 'secondary';
 
@@ -43,6 +43,7 @@ export function createTouchSource(): TouchSource {
         cycle: 0,
         rotate: 0,
         move: stick,
+        run: Math.hypot(stick.x, stick.z) >= RUN_TILT,
         primary: fired,
         ...edges.take(),
       };

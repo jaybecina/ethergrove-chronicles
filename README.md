@@ -18,15 +18,16 @@ the town, festivals, romance and the valley's story follow in later parts (see
 
 ## Play
 
-| Action               | Keyboard         | Gamepad    | Touch                    |
-| -------------------- | ---------------- | ---------- | ------------------------ |
-| Walk                 | W A S D / arrows | Left stick | Drag on the left side    |
-| Use tool             | Space            | A          | ✦ button                 |
-| Interact, plant, eat | F                | X          | ✋ button                |
-| Pick a tool or item  | 1–8, mouse wheel | LB / RB    | ⇄ button, tap the hotbar |
-| Turn the camera      | Q / E            | LT / RT    | ⟲ ⟳ buttons              |
-| Zoom                 | + / −            |            |                          |
-| Menu                 | Esc / Tab        | Start      | ☰                       |
+| Action               | Keyboard                 | Gamepad                               | Touch                        |
+| -------------------- | ------------------------ | ------------------------------------- | ---------------------------- |
+| Walk                 | W A S D / arrows         | Left stick                            | Drag on the left side        |
+| Run                  | Hold Shift while walking | Push the stick all the way, or hold B | Drag out to the glowing ring |
+| Use tool             | Space                    | A                                     | ✦ button                     |
+| Interact, plant, eat | F                        | X                                     | ✋ button                    |
+| Pick a tool or item  | 1–8, mouse wheel         | LB / RB                               | ⇄ button, tap the hotbar     |
+| Turn the camera      | Q / E                    | LT / RT                               | ⟲ ⟳ buttons                  |
+| Zoom                 | + / −                    |                                       |                              |
+| Menu                 | Esc / Tab                | Start                                 | ☰                           |
 
 Sleep in your bed to end the day and save. Anything in the shipping bin sells overnight. Sol's cart on the
 east road sells seeds from 9 AM to 5 PM, spring to fall.
