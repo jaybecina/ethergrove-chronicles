@@ -7,13 +7,15 @@ import { saveRepo } from '../../save/repo';
 import { toastStore } from '../toastStore';
 import { BagPanel } from './BagPanel';
 import { CalendarPanel } from './CalendarPanel';
+import { JournalPanel } from './JournalPanel';
 import { Panel } from './Panel';
 import { Settings } from './Settings';
 
-type Tab = 'bag' | 'calendar' | 'settings';
+type Tab = 'bag' | 'calendar' | 'journal' | 'settings';
 const TABS: { id: Tab; label: string }[] = [
   { id: 'bag', label: 'Bag' },
   { id: 'calendar', label: 'Calendar' },
+  { id: 'journal', label: 'Journal' },
   { id: 'settings', label: 'Settings' },
 ];
 
@@ -44,6 +46,7 @@ export function Pause({ repo = saveRepo }: { repo?: SaveRepository }) {
       <div role="tabpanel" className="tab-body">
         {tab === 'bag' && <BagPanel />}
         {tab === 'calendar' && <CalendarPanel />}
+        {tab === 'journal' && <JournalPanel />}
         {tab === 'settings' && <Settings />}
       </div>
       <div className="row">

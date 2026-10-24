@@ -53,14 +53,17 @@ export function installLessonBridge(store: StoreApi<GameStore>, bus: EventBus): 
     if (lessonStore.getState().completeGift !== null && store.getState().overlay === null)
       store.getState().setOverlay('lessons');
   };
+  const expandFor = (id: LessonId) => {
+    const t = LESSON_TEXT[id];
+    lessonStore.setState({ expanded: true, announce: `New goal: ${t.title}. ${t.body}` });
+    clearTimeout(collapse);
+    collapse = setTimeout(() => {
+      lessonStore.setState({ expanded: false });
+    }, COLLAPSE_MS);
+  };
   const offs = [
     bus.on('lessonStarted', (e) => {
-      const t = LESSON_TEXT[e.id];
-      lessonStore.setState({ expanded: true, announce: `New goal: ${t.title}. ${t.body}` });
-      clearTimeout(collapse);
-      collapse = setTimeout(() => {
-        lessonStore.setState({ expanded: false });
-      }, COLLAPSE_MS);
+      expandFor(e.id);
     }),
     bus.on('lessonDone', (e) => {
       lessonStore.setState({ doneFlash: e.id, announce: `Done: ${LESSON_TEXT[e.id].title}` });
@@ -82,6 +85,16 @@ export function installLessonBridge(store: StoreApi<GameStore>, bus: EventBus): 
     }),
     store.subscribe((s, p) => {
       if (s.overlay === null && p.overlay !== null) openComplete();
+      // A new game or a loaded save emits no lessonStarted: open the card when the farm shows.
+      const lesson = s.game?.tutorial.lesson;
+      if (
+        s.screen === 'game' &&
+        p.screen !== 'game' &&
+        lesson &&
+        lesson !== 'off' &&
+        lesson !== 'complete'
+      )
+        expandFor(lesson);
     }),
   ];
   return () => {

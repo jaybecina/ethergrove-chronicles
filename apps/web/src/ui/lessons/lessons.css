@@ -162,3 +162,150 @@
 .reduced-motion .slot.is-lesson {
   animation: none;
 }
+
+/* Journal tab (spec §4.8) */
+.journal h3 {
+  margin: 16px 0 8px;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+}
+.journal h3:first-child {
+  margin-top: 0;
+}
+.journal-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.journal-row-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.journal-row-head:hover,
+.journal-row-head:focus-visible {
+  background: var(--parchment-deep);
+}
+.journal-row-head::before {
+  content: '';
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 2px solid var(--ink-soft);
+}
+.journal-row.is-done .journal-row-head::before {
+  background: var(--leaf);
+  border-color: var(--leaf);
+}
+.journal-row.is-current .journal-row-head::before {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.journal-state {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.journal-row-body {
+  padding: 0 10px 10px 30px;
+}
+.journal-row-body p,
+.journal-notes dd {
+  margin: 0;
+  font-size: var(--step--1);
+}
+.journal-notes {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.journal-notes dt {
+  font-weight: 800;
+}
+.journal-controls {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+}
+.journal-controls th,
+.journal-controls td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--parchment-deep);
+}
+.journal-controls .is-current {
+  background: var(--parchment-deep);
+}
+.journal-controls kbd {
+  display: inline-block;
+  margin: 0 4px 2px 0;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--wood-dark);
+  color: var(--parchment);
+}
+.journal-show-all {
+  display: none;
+}
+@media (max-width: 479px) {
+  .journal-controls:not(.show-all) th:not(:first-child):not(.is-current),
+  .journal-controls:not(.show-all) td:not(.is-current) {
+    display: none;
+  }
+  .journal-show-all {
+    display: inline-flex;
+  }
+}
+.journal-confirm {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--parchment-deep);
+  box-shadow: var(--panel-edge);
+}
+.journal-confirm-title {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.field.field-check input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  padding: 0;
+  box-shadow: none;
+  accent-color: var(--wood);
+}
+.field-check small {
+  display: block;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+.lessons-complete-gift {
+  font-family: var(--font-display);
+  font-style: italic;
+}

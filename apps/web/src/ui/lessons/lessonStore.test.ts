@@ -1,3 +1,5 @@
+import { createNewGame } from '@hearthvale/core';
+import { act } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createEventBus } from '../../game/eventBus';
 import { createGameStore } from '../../game/store';
@@ -74,5 +76,25 @@ describe('lesson bridge', () => {
     lessonStore.getState().clearComplete();
     store.getState().setOverlay(null);
     expect(store.getState().overlay).toBeNull();
+  });
+
+  it('opens the goal card when the farm first shows (new game or load)', () => {
+    const { store } = setup();
+    act(() => {
+      store
+        .getState()
+        .startGame(createNewGame({ seed: 1, farmName: 'A', playerName: 'B', lessons: true }), 1);
+      store.getState().setScreen('intro');
+    });
+    expect(lessonStore.getState().expanded).toBe(false);
+    act(() => {
+      store.getState().setScreen('game');
+    });
+    expect(lessonStore.getState().expanded).toBe(true);
+    expect(lessonStore.getState().announce).toBe(
+      'New goal: Walk to the field. The old field lies north of where you stand. Walk up and take a look.',
+    );
+    vi.advanceTimersByTime(8000);
+    expect(lessonStore.getState().expanded).toBe(false);
   });
 });

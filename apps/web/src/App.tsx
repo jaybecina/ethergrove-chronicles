@@ -1,3 +1,4 @@
+import { LessonsComplete } from './ui/lessons/LessonsComplete';
 import { createNewGame } from '@hearthvale/core';
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { installAudio } from './audio/install';
@@ -123,6 +124,7 @@ export function App() {
           {overlay === 'sleep' && <SleepConfirm />}
           {overlay === 'morning' && <MorningReport />}
           {overlay === 'restoring' && <Restoring />}
+          {overlay === 'lessons' && <LessonsComplete />}
         </>
       )}
       <Toasts />

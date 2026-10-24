@@ -181,7 +181,13 @@ describe('Pause and menu toggling', () => {
     const buttons = screen.getAllByRole('button');
     const reached = new Set<Element>();
     if (document.activeElement) reached.add(document.activeElement);
-    for (let i = 0; i < buttons.length + 2; i++) {
+    // Every focusable item, not just buttons, sits in the arrow-key cycle (bag slots too).
+    const stops = screen
+      .getByRole('dialog')
+      .querySelectorAll(
+        'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])',
+      ).length;
+    for (let i = 0; i < stops + 2; i++) {
       fireEvent.keyDown(document.activeElement ?? document.body, { key: 'ArrowDown' });
       if (document.activeElement) reached.add(document.activeElement);
     }
