@@ -42,7 +42,8 @@ export function LessonMarker() {
   const target = useLessonTarget();
   const gem = useRef<Group>(null);
   const ring = useRef<Mesh>(null);
-  const { camera, size } = useThree();
+  const camera = useThree((s) => s.camera);
+  const size = useThree((s) => s.size);
 
   useFrame(({ clock }) => {
     if (!target) {

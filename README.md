@@ -32,6 +32,9 @@ the town, festivals, romance and the valley's story follow in later parts (see
 Sleep in your bed to end the day and save. Anything in the shipping bin sells overnight. Sol's cart on the
 east road sells seeds from 9 AM to 5 PM, spring to fall.
 
+New farms start with Grandpa's lessons. Reread them, skip them or start them again from the Journal
+tab in the menu.
+
 ## Develop
 
 Requires Node 24 and pnpm 10.

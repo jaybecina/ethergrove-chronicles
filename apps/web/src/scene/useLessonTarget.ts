@@ -1,14 +1,19 @@
-import { lessonTarget, type LessonTarget } from '@hearthvale/core';
+import { lessonTarget, type LessonTarget, type LocationId } from '@hearthvale/core';
 import { useMemo } from 'react';
 import { useGame } from '../game/store';
 
-/** The lesson marker's target, if it is on the map the player is on. */
+/**
+ * The lesson marker's target, if it is on the map the player is on. The store selector returns a
+ * string key, so this re-renders only when the target moves, not on every simulation step.
+ */
 export function useLessonTarget(): LessonTarget | null {
-  // Select the game (a stable reference) and derive here: a selector that builds a new object
-  // on every read makes React re-render forever.
-  const game = useGame((s) => s.game);
+  const key = useGame((s) => {
+    const t = s.game ? lessonTarget(s.game) : null;
+    return t && t.location === s.game?.player.location ? `${t.location}:${t.x}:${t.y}` : null;
+  });
   return useMemo(() => {
-    const target = game ? lessonTarget(game) : null;
-    return target !== null && target.location === game?.player.location ? target : null;
-  }, [game]);
+    if (key === null) return null;
+    const [location, x, y] = key.split(':');
+    return { location: location as LocationId, x: Number(x), y: Number(y) };
+  }, [key]);
 }

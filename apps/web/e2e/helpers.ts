@@ -33,11 +33,19 @@ export async function boot(page: Page): Promise<void> {
   await page.waitForFunction(() => window.__hearthvale !== undefined);
 }
 
-export async function newGame(page: Page, seed: number): Promise<void> {
+/** A fresh farm. Lessons are off unless asked, so other tests see no goal card. */
+export async function newGame(
+  page: Page,
+  seed: number,
+  { lessons = false }: { lessons?: boolean } = {},
+): Promise<void> {
   await boot(page);
-  await page.evaluate((s) => {
-    window.__hearthvale?.setSeed(s);
-  }, seed);
+  await page.evaluate(
+    ([s, l]) => {
+      window.__hearthvale?.setSeed(s, { lessons: l });
+    },
+    [seed, lessons] as const,
+  );
   await expect(page.getByRole('tablist', { name: 'Hotbar' })).toBeVisible();
 }
 

@@ -9,11 +9,17 @@ export function MarkerPointer() {
   const el = useRef<HTMLDivElement>(null);
   useEffect(() => {
     let raf = 0;
+    let shown = false;
+    let last = '';
+    // Touch the DOM only when something changed: this runs every frame.
     const tick = () => {
       const node = el.current;
       if (node) {
         const show = markerScreen.visible && !markerScreen.onScreen;
-        node.style.display = show ? 'grid' : 'none';
+        if (show !== shown) {
+          shown = show;
+          node.style.display = show ? 'grid' : 'none';
+        }
         if (show) {
           const p = edgePoint(
             markerScreen,
@@ -21,7 +27,11 @@ export function MarkerPointer() {
             EDGE_INSET,
             markerScreen.behind,
           );
-          node.style.transform = `translate(${p.x - SIZE / 2}px, ${p.y - SIZE / 2}px) rotate(${p.angle}rad)`;
+          const t = `translate(${Math.round(p.x - SIZE / 2)}px, ${Math.round(p.y - SIZE / 2)}px) rotate(${p.angle.toFixed(2)}rad)`;
+          if (t !== last) {
+            last = t;
+            node.style.transform = t;
+          }
         }
       }
       raf = requestAnimationFrame(tick);

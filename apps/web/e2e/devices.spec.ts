@@ -58,4 +58,26 @@ test.describe('phones', () => {
       await expect(page.getByRole('tablist', { name: 'Hotbar' })).toBeInViewport();
     }
   });
+
+  test('goal card fits on a phone at text size 1.5', async ({ page }) => {
+    await newGame(page, 3, { lessons: true });
+    await page.getByRole('button', { name: 'Menu' }).click();
+    await page.getByRole('tab', { name: 'Settings' }).click();
+    await page.getByRole('radio', { name: '150%' }).check();
+    await page.getByRole('button', { name: 'Resume' }).first().click();
+    const card = page.locator('.goal-card');
+    // The card opens by itself when the farm shows and closes after 8 s; open it if closed.
+    const head = card.getByRole('button').first();
+    if ((await head.getAttribute('aria-expanded')) === 'false') await head.click();
+    await expect(card.locator('.goal-body')).toBeVisible();
+    const box = await card.boundingBox();
+    const hotbar = await page.getByRole('tablist', { name: 'Hotbar' }).boundingBox();
+    const stick = await page.getByTestId('joystick-zone').boundingBox();
+    const vp = page.viewportSize();
+    if (!box || !hotbar || !vp) throw new Error('missing layout');
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(vp.width);
+    expect(box.y + box.height).toBeLessThan(hotbar.y);
+    if (stick) expect(box.y + box.height).toBeLessThanOrEqual(stick.y + stick.height / 2);
+  });
 });

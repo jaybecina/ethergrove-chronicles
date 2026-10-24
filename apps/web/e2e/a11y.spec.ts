@@ -50,3 +50,13 @@ test('pause, cart and bin', async ({ page }) => {
   await expect(page.getByRole('dialog', { name: 'Shipping bin' })).toBeVisible();
   await expectNoSeriousViolations(page);
 });
+
+test('lesson goal card and Journal tab', async ({ page }) => {
+  await newGame(page, 5, { lessons: true });
+  await expect(page.locator('.goal-card .goal-body')).toBeVisible();
+  await expectNoSeriousViolations(page);
+  await page.keyboard.press('Escape');
+  await page.getByRole('tab', { name: 'Journal' }).click();
+  await expect(page.getByRole('list', { name: 'Lessons' })).toBeVisible();
+  await expectNoSeriousViolations(page);
+});
