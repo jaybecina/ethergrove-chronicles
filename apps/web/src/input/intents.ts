@@ -4,6 +4,8 @@ export type Device = 'keyboard' | 'gamepad' | 'touch';
 
 export interface Intents {
   move: { x: number; z: number };
+  /** Held: Shift, full stick tilt, gamepad B, or the joystick's outer ring. */
+  run: boolean;
   /** Held: the action gate decides when it repeats. */
   primary: boolean;
   /** Edge: true for one read per press. */
@@ -29,6 +31,7 @@ export interface InputSource {
 
 export const EMPTY_INTENTS: Intents = {
   move: { x: 0, z: 0 },
+  run: false,
   primary: false,
   secondary: false,
   cycle: 0,
@@ -41,6 +44,9 @@ export const EMPTY_INTENTS: Intents = {
   back: false,
   device: 'keyboard',
 };
+
+/** Stick or joystick tilt at or above this runs. */
+export const RUN_TILT = 0.85;
 
 export function normalize(x: number, z: number): { x: number; z: number } {
   const len = Math.hypot(x, z);

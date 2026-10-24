@@ -13,6 +13,8 @@ export interface DebugHook {
   teleport(location: LocationId, x: number, z: number, facing: Facing): void;
   /** Overlay/screen transitions since load, for diagnosing UI flow in e2e tests. */
   log: string[];
+  /** Simulated play time; lets e2e tests measure speed independent of frame rate. */
+  playTimeMs(): number;
 }
 
 declare global {
@@ -34,6 +36,7 @@ export function installDebugHook(store: StoreApi<GameStore>): void {
   });
   window.__hearthvale = {
     log,
+    playTimeMs: () => store.getState().playTimeMs,
     getState: () => store.getState().game,
     dispatch: (cmd) => store.getState().dispatch(cmd),
     setSeed(seed) {

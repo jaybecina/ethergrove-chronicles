@@ -38,6 +38,7 @@ export function createInputMapper(sources: readonly InputSource[]): { read(): In
           out.move = m;
         }
         out.primary ||= p.primary === true;
+        out.run ||= p.run === true;
         out.secondary ||= p.secondary === true;
         out.menu ||= p.menu === true;
         out.confirm ||= p.confirm === true;

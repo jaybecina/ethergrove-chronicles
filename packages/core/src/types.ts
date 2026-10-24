@@ -96,7 +96,7 @@ export interface GameState {
 
 export type Command =
   | { type: 'tick'; minutes: number }
-  | { type: 'move'; dx: number; dz: number; dtMs: number }
+  | { type: 'move'; dx: number; dz: number; dtMs: number; run?: boolean }
   | { type: 'selectHotbar'; index: HotbarIndex }
   | { type: 'cycleHotbar'; dir: 1 | -1 }
   | { type: 'useTool' }

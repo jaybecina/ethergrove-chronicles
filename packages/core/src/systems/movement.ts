@@ -30,11 +30,22 @@ function facingOf(dx: number, dz: number): Facing {
   return dz > 0 ? 's' : 'n';
 }
 
-export function stepMovement(state: GameState, dx: number, dz: number, dtMs: number): GameState {
+export function stepMovement(
+  state: GameState,
+  dx: number,
+  dz: number,
+  dtMs: number,
+  run = false,
+): GameState {
   if (Math.abs(dx) < DEADZONE && Math.abs(dz) < DEADZONE) return state;
   const len = Math.hypot(dx, dz);
   const [ux, uz] = len > 1 ? [dx / len, dz / len] : [dx, dz];
-  const speed = BALANCE.walkSpeed * (state.player.stamina <= 0 ? BALANCE.exhaustedSpeedFactor : 1);
+  const tired = state.player.stamina <= 0;
+  const speed = tired
+    ? BALANCE.walkSpeed * BALANCE.exhaustedSpeedFactor
+    : run
+      ? BALANCE.runSpeed
+      : BALANCE.walkSpeed;
   const reach = speed * (dtMs / 1000);
   const steps = Math.max(1, Math.ceil((reach * Math.hypot(ux, uz)) / MAX_SUBSTEP));
   const grid = state.maps[state.player.location];

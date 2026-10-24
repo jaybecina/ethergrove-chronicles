@@ -22,7 +22,7 @@ function dispatch(state: GameState, cmd: Command): Result {
     case 'interact':
       return interact(state);
     case 'move':
-      return only(stepMovement(state, cmd.dx, cmd.dz, cmd.dtMs));
+      return only(stepMovement(state, cmd.dx, cmd.dz, cmd.dtMs, cmd.run === true));
     case 'selectHotbar':
       return only(selectHotbar(state, cmd.index));
     case 'cycleHotbar':

@@ -28,5 +28,6 @@ describe('debug hook', () => {
     hv.sleep();
     expect(hv.getState()?.calendar.day).toBe(2);
     expect(hv.dispatch({ type: 'tick', minutes: 1 })).toEqual([]);
+    expect(hv.playTimeMs()).toBe(store.getState().playTimeMs);
   });
 });

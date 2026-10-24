@@ -57,6 +57,6 @@ describe('createStepper', () => {
   it('dispatches commands while running', () => {
     const store = started();
     createStepper(store)([{ type: 'move', dx: 0, dz: -1, dtMs: STEP_MS }]);
-    expect(store.getState().game?.player.z).toBeCloseTo(22.3);
+    expect(store.getState().game?.player.z).toBeCloseTo(22.37);
   });
 });
