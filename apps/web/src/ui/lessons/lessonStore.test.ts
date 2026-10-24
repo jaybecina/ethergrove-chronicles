@@ -11,6 +11,8 @@ const setup = () => {
   const store = createGameStore();
   const bus = createEventBus();
   off = installLessonBridge(store, bus);
+  // The card can be seen on the game screen with no overlay open.
+  store.setState({ screen: 'game' });
   return { store, bus };
 };
 
@@ -94,6 +96,46 @@ describe('lesson bridge', () => {
     expect(lessonStore.getState().announce).toBe(
       'New goal: Walk to the field. The old field lies north of where you stand. Walk up and take a look.',
     );
+    vi.advanceTimersByTime(8000);
+    expect(lessonStore.getState().expanded).toBe(false);
+  });
+
+  it('Escape (toggleMenu) and B (setOverlay null) close the completion panel for good', () => {
+    const { store, bus } = setup();
+    act(() => {
+      store.getState().setScreen('game');
+    });
+    bus.emit([{ type: 'lessonsComplete', gift: 100 }]);
+    expect(store.getState().overlay).toBe('lessons');
+    store.getState().toggleMenu();
+    expect(store.getState().overlay).toBeNull();
+    expect(lessonStore.getState().completeGift).toBeNull();
+    bus.emit([{ type: 'lessonsComplete', gift: 0 }]);
+    expect(store.getState().overlay).toBe('lessons');
+    store.getState().setOverlay(null);
+    expect(store.getState().overlay).toBeNull();
+  });
+
+  it('starts the collapse and done timers only once the card can be seen', () => {
+    const { store, bus } = setup();
+    act(() => {
+      store
+        .getState()
+        .startGame(createNewGame({ seed: 1, farmName: 'A', playerName: 'B', lessons: true }), 1);
+      store.getState().setScreen('game');
+      store.getState().setOverlay('bin');
+    });
+    bus.emit([
+      { type: 'lessonDone', id: 'ship' },
+      { type: 'lessonStarted', id: 'sellOvernight' },
+    ]);
+    vi.advanceTimersByTime(10_000);
+    expect(lessonStore.getState()).toMatchObject({ expanded: true, doneFlash: 'ship' });
+    act(() => {
+      store.getState().setOverlay(null);
+    });
+    vi.advanceTimersByTime(1200);
+    expect(lessonStore.getState()).toMatchObject({ expanded: true, doneFlash: null });
     vi.advanceTimersByTime(8000);
     expect(lessonStore.getState().expanded).toBe(false);
   });

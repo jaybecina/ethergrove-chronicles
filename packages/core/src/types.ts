@@ -101,6 +101,8 @@ export interface TutorialState {
   count: number;
   /** Notes already shown in this save; each shows at most once. */
   notesSeen: NoteId[];
+  /** The completion gift was given; it is given once per save, however often lessons restart. */
+  gifted: boolean;
 }
 
 export interface GameState {

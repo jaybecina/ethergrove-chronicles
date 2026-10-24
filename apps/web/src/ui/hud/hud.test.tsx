@@ -126,12 +126,12 @@ describe('promptFor', () => {
 
 describe('Hotbar lesson ring', () => {
   it('rings the lesson slot unless it is already active', () => {
-    load({ tutorial: { lesson: 'till', count: 0, notesSeen: [] }, activeSlot: 1 });
+    load({ tutorial: { lesson: 'till', count: 0, notesSeen: [], gifted: false }, activeSlot: 1 });
     const { rerender } = render(<Hotbar />);
     const hoe = () => screen.getAllByRole('tab')[0];
     expect(hoe()).toHaveClass('is-lesson');
     expect(screen.getAllByRole('tab')[1]).not.toHaveClass('is-lesson');
-    load({ tutorial: { lesson: 'till', count: 0, notesSeen: [] }, activeSlot: 0 });
+    load({ tutorial: { lesson: 'till', count: 0, notesSeen: [], gifted: false }, activeSlot: 0 });
     rerender(<Hotbar />);
     expect(hoe()).not.toHaveClass('is-lesson');
   });

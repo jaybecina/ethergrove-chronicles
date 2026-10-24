@@ -90,6 +90,17 @@ describe('Journal', () => {
     expect(screen.getByRole('button', { name: 'Start lessons again' })).toBeInTheDocument();
   });
 
+  it('returns focus to the Journal button after the Skip dialog closes', () => {
+    start(game('till'));
+    render(<JournalPanel />);
+    fireEvent.click(screen.getByRole('button', { name: 'Skip lessons' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Keep learning' }));
+    expect(screen.getByRole('button', { name: 'Skip lessons' })).toHaveFocus();
+    fireEvent.click(screen.getByRole('button', { name: 'Skip lessons' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Skip' }));
+    expect(screen.getByRole('button', { name: 'Start lessons again' })).toHaveFocus();
+  });
+
   it('Start lessons again restarts and closes the menu', () => {
     start(game('off'));
     act(() => {
@@ -130,6 +141,19 @@ describe('LessonsComplete', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Thanks, Grandpa' }));
     expect(lessonStore.getState().completeGift).toBeNull();
     expect(gameStore.getState().overlay).toBeNull();
+  });
+});
+
+describe('LessonsComplete without a gift', () => {
+  it('omits the gift line when the gift was already given', () => {
+    start(game('complete'));
+    act(() => {
+      lessonStore.setState({ completeGift: 0 });
+      gameStore.getState().setOverlay('lessons');
+    });
+    render(<LessonsComplete />);
+    expect(screen.getByRole('dialog', { name: 'The rest is yours' })).toBeInTheDocument();
+    expect(screen.queryByText(/Tucked in the last page/)).toBeNull();
   });
 });
 

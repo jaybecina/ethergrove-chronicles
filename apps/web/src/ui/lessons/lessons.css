@@ -1,13 +1,24 @@
 /* ---------- Grandpa's lessons (spec §4) ---------- */
 .hud-lessons {
-  position: absolute;
-  top: calc(var(--top) + 96px);
+  /* Under the clock; on touch layouts the stamina bar sits there too, so go below it. */
+  --lessons-top: calc(var(--top) + 96px);
+  /* Room kept free at the bottom for the hotbar. */
+  --lessons-reserve: 84px;
+  position: fixed;
+  top: var(--lessons-top);
   left: var(--gutter);
   width: min(320px, calc(100vw - var(--gutter) - var(--gutter-r)));
+  max-height: calc(100dvh - var(--lessons-top) - var(--bottom) - var(--lessons-reserve));
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
   pointer-events: none;
+  /* Above the touch joystick zone, so taps on a card reach the card. */
+  z-index: 2;
+}
+.is-touch .hud-lessons {
+  --lessons-top: calc(var(--top) + 96px + 16px + 10px);
 }
 .hud-lessons > * {
   pointer-events: auto;

@@ -61,6 +61,14 @@ export function JournalPanel() {
   const [open, setOpen] = useState<string | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  /** Skip / Start again: focus returns here when the confirm closes, so menu navigation keeps working. */
+  const action = useRef<HTMLButtonElement>(null);
+  const refocus = useRef(false);
+  useEffect(() => {
+    if (confirm || !refocus.current) return;
+    refocus.current = false;
+    action.current?.focus();
+  });
   if (!game) return null;
   const { lesson } = game.tutorial;
   const active = lesson !== 'off' && lesson !== 'complete';
@@ -160,6 +168,7 @@ export function JournalPanel() {
       <div className="row">
         {active ? (
           <button
+            ref={action}
             type="button"
             className="btn btn-quiet"
             onClick={() => {
@@ -170,6 +179,7 @@ export function JournalPanel() {
           </button>
         ) : (
           <button
+            ref={action}
             type="button"
             className="btn btn-quiet"
             onClick={() => {
@@ -185,6 +195,7 @@ export function JournalPanel() {
       {confirm && (
         <SkipConfirm
           onClose={() => {
+            refocus.current = true;
             setConfirm(false);
           }}
         />

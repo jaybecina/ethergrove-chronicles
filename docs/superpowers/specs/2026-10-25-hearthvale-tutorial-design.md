@@ -142,6 +142,8 @@ export interface TutorialState {
   count: number;
   /** Notes already shown in this save. A note is shown at most once per save. */
   notesSeen: NoteId[];
+  /** The completion gift was given. It is given once per save, however often lessons restart. */
+  gifted: boolean;
 }
 
 // GameState: `version: 1` becomes `version: 2`, and add:
@@ -203,7 +205,7 @@ Steps, in order:
 2. Update `count` for counted lessons (`till`, `plant`) from this command's events.
 3. If the active lesson's done condition (§3.2) holds: append `{ type: 'lessonDone', id }`, then **start the next lesson** in `LESSON_ORDER` (§3.4).
 4. Apply the adaptive rules (§3.5).
-5. If the path just moved past `buySeeds`: set `lesson: 'complete'`, add `LESSONS_GIFT` to `gold`, append `{ type: 'goldChanged', gold, delta: LESSONS_GIFT }` and `{ type: 'lessonsComplete', gift: LESSONS_GIFT }`.
+5. If the path just moved past `buySeeds`: if the player has no `firstShipment` milestone yet (they reached `buySeeds` through §3.5 after losing their crops), start `plant` again instead, so harvest, ship and sell are still taught. Otherwise set `lesson: 'complete'`. On completion, if `gifted` is false, add `LESSONS_GIFT` to `gold`, set `gifted: true`, and append `{ type: 'goldChanged', gold, delta: LESSONS_GIFT }` and `{ type: 'lessonsComplete', gift: LESSONS_GIFT }`; if `gifted` is already true, append `{ type: 'lessonsComplete', gift: 0 }` only (the panel then omits the gift line).
 6. Notes (§3.7).
 
 `applyCommand` also handles the two new commands:
@@ -433,7 +435,7 @@ tutorial: z.object({
 
 ### 6.2 Migration 1 → 2
 
-Input: a v1 `SaveFile`. Output: the same file with `version: 2`, `state.version: 2`, and `state.tutorial = { lesson: 'off', count: 0, notesSeen: [...NOTE_IDS] }`. Everything else is unchanged. Existing players know the basics, so their lessons and notes are off; they can start the lessons from the Journal.
+Input: a v1 `SaveFile`. Output: the same file with `version: 2`, `state.version: 2`, and `state.tutorial = { lesson: 'off', count: 0, notesSeen: [...NOTE_IDS], gifted: false }`. Everything else is unchanged. Existing players know the basics, so their lessons and notes are off; they can start the lessons from the Journal.
 
 ### 6.3 Fixture
 

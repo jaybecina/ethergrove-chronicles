@@ -119,7 +119,8 @@ describe('lesson progression', () => {
   });
 
   it('buySeeds completes the path and gives 100 gold once', () => {
-    const s = atMinute(lessonAt(farm(30, 17, 'e'), 'buySeeds'), 600);
+    const sold = { ...farm(30, 17, 'e'), milestones: ['firstShipment' as const] };
+    const s = atMinute(lessonAt(sold, 'buySeeds'), 600);
     const r = applyCommand(s, { type: 'buyItem', itemId: 'seed:turnip', qty: 1 });
     expect(r.state.tutorial.lesson).toBe('complete');
     expect(r.state.gold).toBe(s.gold - CROPS.turnip.seedCost + 100);
@@ -132,7 +133,7 @@ describe('lesson progression', () => {
   it('restartLessons passes through lessons the farm already satisfies', () => {
     let s: GameState = {
       ...farm(10, 10, 'e'),
-      tutorial: { lesson: 'off', count: 0, notesSeen: [] },
+      tutorial: { lesson: 'off', count: 0, notesSeen: [], gifted: false },
     };
     for (const x of [11, 12, 13]) s = withTile(s, x, 10, { ...crop(), watered: true });
     const r = applyCommand(s, { type: 'restartLessons' });
@@ -144,7 +145,12 @@ describe('lesson progression', () => {
     const s = lessonAt(farm(), 'plant', 2);
     const seen = { ...s, tutorial: { ...s.tutorial, notesSeen: ['rain' as const] } };
     const r = applyCommand(seen, { type: 'skipLessons' });
-    expect(r.state.tutorial).toEqual({ lesson: 'off', count: 0, notesSeen: ['rain'] });
+    expect(r.state.tutorial).toEqual({
+      lesson: 'off',
+      count: 0,
+      notesSeen: ['rain'],
+      gifted: false,
+    });
     expect(r.events).toEqual([]);
   });
 
@@ -306,5 +312,29 @@ describe('notes', () => {
     expect(
       notes(applyCommand({ ...off, tutorial: { ...off.tutorial, lesson: 'complete' } }, cmd)),
     ).toEqual(['canEmpty']);
+  });
+});
+
+describe('review fixes', () => {
+  it('gives the gift once per save, however often lessons restart', () => {
+    // Winter, no seeds, no crops, standing in the field with bare soil: a restart completes at once.
+    let s: GameState = withBag(farm(10, 10, 'e'), []);
+    for (const x of [11, 12, 13]) s = withTile(s, x, 10, { kind: 'tilled' });
+    s = { ...s, calendar: { ...s.calendar, season: 'winter' } };
+    const gold = s.gold;
+    for (let i = 0; i < 5; i++) s = applyCommand(s, { type: 'restartLessons' }).state;
+    expect(s.tutorial.lesson).toBe('complete');
+    expect(s.gold).toBe(gold + 100);
+    const again = applyCommand(s, { type: 'restartLessons' });
+    expect(again.events).toContainEqual({ type: 'lessonsComplete', gift: 0 });
+    expect(again.events.some((e) => e.type === 'goldChanged')).toBe(false);
+  });
+
+  it('after crops die mid-path, buying seeds goes back to planting until the first sale', () => {
+    const s = atMinute(lessonAt(farm(30, 17, 'e'), 'buySeeds'), 600);
+    const r = applyCommand(s, { type: 'buyItem', itemId: 'seed:turnip', qty: 1 });
+    expect(done(r)).toEqual(['buySeeds']);
+    expect(r.state.tutorial.lesson).toBe('plant');
+    expect(r.events.some((e) => e.type === 'lessonsComplete')).toBe(false);
   });
 });

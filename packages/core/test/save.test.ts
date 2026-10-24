@@ -95,7 +95,12 @@ describe('save files', () => {
     if (!r.ok) return;
     expect(r.file.version).toBe(2);
     expect(r.file.state.version).toBe(2);
-    expect(r.file.state.tutorial).toEqual({ lesson: 'off', count: 0, notesSeen: [...NOTE_IDS] });
+    expect(r.file.state.tutorial).toEqual({
+      lesson: 'off',
+      count: 0,
+      notesSeen: [...NOTE_IDS],
+      gifted: false,
+    });
     const { tutorial: _t, version: _v, ...rest } = r.file.state;
     const { version: _v1, ...restV1 } = v1.state;
     expect(rest).toEqual(restV1);

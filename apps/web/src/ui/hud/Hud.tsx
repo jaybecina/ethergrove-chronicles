@@ -1,5 +1,4 @@
-import { GoalCard, LessonAnnouncer } from '../lessons/GoalCard';
-import { NoteCard } from '../lessons/NoteCard';
+import { LessonAnnouncer } from '../lessons/GoalCard';
 import { Clock } from './Clock';
 import { MarkerPointer } from './MarkerPointer';
 import { Gold } from './Gold';
@@ -11,10 +10,6 @@ export function Hud() {
   return (
     <div className="hud">
       <Clock />
-      <div className="hud-lessons">
-        <NoteCard />
-        <GoalCard />
-      </div>
       <LessonAnnouncer />
       <MarkerPointer />
       <Gold />

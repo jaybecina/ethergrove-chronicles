@@ -14,7 +14,7 @@ export function LessonsComplete() {
   return (
     <Panel title={COMPLETE_TEXT.title} onClose={close}>
       <p className="lessons-complete-body">{COMPLETE_TEXT.body}</p>
-      <p className="lessons-complete-gift">{COMPLETE_TEXT.gift(gift)}</p>
+      {gift > 0 && <p className="lessons-complete-gift">{COMPLETE_TEXT.gift(gift)}</p>}
       <button type="button" className="btn btn-primary" onClick={close}>
         {COMPLETE_TEXT.button}
       </button>

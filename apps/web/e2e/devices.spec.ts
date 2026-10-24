@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { newGame, state } from './helpers';
+import { act, newGame, state } from './helpers';
 
 test.describe('phones', () => {
   test.skip(({ isMobile }) => !isMobile, 'touch layout only');
@@ -79,5 +79,36 @@ test.describe('phones', () => {
     expect(box.x + box.width).toBeLessThanOrEqual(vp.width);
     expect(box.y + box.height).toBeLessThan(hotbar.y);
     if (stick) expect(box.y + box.height).toBeLessThanOrEqual(stick.y + stick.height / 2);
+  });
+
+  test('lesson cards clear the stamina bar, fit, and stay tappable over the joystick', async ({
+    page,
+  }) => {
+    await newGame(page, 3, { lessons: true });
+    const fits = async (size: { width: number; height: number }) => {
+      const column = await page.locator('.hud-lessons').boundingBox();
+      const stamina = await page.locator('.hud-stamina').boundingBox();
+      if (!column || !stamina) throw new Error('missing layout');
+      expect(column.y).toBeGreaterThanOrEqual(stamina.y + stamina.height);
+      expect(column.y + column.height).toBeLessThanOrEqual(size.height);
+    };
+    // Landscape is the tight case: the joystick zone covers the lower-left of the screen.
+    const landscape = { width: 812, height: 375 };
+    await page.setViewportSize(landscape);
+    // 6 AM: the cart is closed, so buying queues a note above the goal card (it lasts 10 s).
+    await act(page, { type: 'buyItem', itemId: 'seed:turnip', qty: 1 });
+    const gotIt = page.locator('.note-card').getByRole('button', { name: 'Got it' });
+    await gotIt.scrollIntoViewIfNeeded();
+    const b = await gotIt.boundingBox();
+    if (!b) throw new Error('no Got it');
+    const hit = await page.evaluate(
+      ([x, y]) => document.elementFromPoint(x, y)?.closest('.note-card') !== null,
+      [b.x + b.width / 2, b.y + b.height / 2] as const,
+    );
+    expect(hit).toBe(true);
+    await fits(landscape);
+    const portrait = { width: 375, height: 667 };
+    await page.setViewportSize(portrait);
+    await fits(portrait);
   });
 });

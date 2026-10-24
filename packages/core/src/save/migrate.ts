@@ -20,7 +20,7 @@ export const MIGRATIONS: Record<number, Migration> = {
       state: {
         ...f.state,
         version: 2,
-        tutorial: { lesson: 'off', count: 0, notesSeen: [...NOTE_IDS] },
+        tutorial: { lesson: 'off', count: 0, notesSeen: [...NOTE_IDS], gifted: false },
       },
     };
   },

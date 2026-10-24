@@ -94,6 +94,7 @@ export const gameStateSchema: z.ZodType<GameState> = z.object({
     lesson: z.enum([...LESSON_ORDER, 'complete', 'off']),
     count: int.min(0),
     notesSeen: z.array(z.enum(NOTE_IDS)),
+    gifted: z.boolean(),
   }),
 });
 

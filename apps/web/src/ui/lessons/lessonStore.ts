@@ -49,6 +49,23 @@ export function useLessons<T>(selector: (s: LessonUi) => T): T {
 export function installLessonBridge(store: StoreApi<GameStore>, bus: EventBus): () => void {
   let collapse: ReturnType<typeof setTimeout> | undefined;
   let flash: ReturnType<typeof setTimeout> | undefined;
+  const visible = (s: GameStore) => s.screen === 'game' && s.overlay === null;
+  // Timers run only while the card can be seen, so a lesson that starts behind a menu or a
+  // report is still shown open (and its tick still flashes) once that closes.
+  const arm = () => {
+    clearTimeout(collapse);
+    clearTimeout(flash);
+    if (!visible(store.getState())) return;
+    const ui = lessonStore.getState();
+    if (ui.expanded)
+      collapse = setTimeout(() => {
+        lessonStore.setState({ expanded: false });
+      }, COLLAPSE_MS);
+    if (ui.doneFlash)
+      flash = setTimeout(() => {
+        lessonStore.setState({ doneFlash: null });
+      }, DONE_FLASH_MS);
+  };
   const openComplete = () => {
     if (lessonStore.getState().completeGift !== null && store.getState().overlay === null)
       store.getState().setOverlay('lessons');
@@ -56,10 +73,7 @@ export function installLessonBridge(store: StoreApi<GameStore>, bus: EventBus): 
   const expandFor = (id: LessonId) => {
     const t = LESSON_TEXT[id];
     lessonStore.setState({ expanded: true, announce: `New goal: ${t.title}. ${t.body}` });
-    clearTimeout(collapse);
-    collapse = setTimeout(() => {
-      lessonStore.setState({ expanded: false });
-    }, COLLAPSE_MS);
+    arm();
   };
   const offs = [
     bus.on('lessonStarted', (e) => {
@@ -67,10 +81,7 @@ export function installLessonBridge(store: StoreApi<GameStore>, bus: EventBus): 
     }),
     bus.on('lessonDone', (e) => {
       lessonStore.setState({ doneFlash: e.id, announce: `Done: ${LESSON_TEXT[e.id].title}` });
-      clearTimeout(flash);
-      flash = setTimeout(() => {
-        lessonStore.setState({ doneFlash: null });
-      }, DONE_FLASH_MS);
+      arm();
     }),
     bus.on('noteShown', (e) => {
       const t = NOTE_TEXT[e.id];
@@ -84,17 +95,15 @@ export function installLessonBridge(store: StoreApi<GameStore>, bus: EventBus): 
       openComplete();
     }),
     store.subscribe((s, p) => {
+      // However the panel closes (its button, Escape, B, Start), it is done.
+      if (p.overlay === 'lessons' && s.overlay !== 'lessons')
+        lessonStore.getState().clearComplete();
       if (s.overlay === null && p.overlay !== null) openComplete();
       // A new game or a loaded save emits no lessonStarted: open the card when the farm shows.
       const lesson = s.game?.tutorial.lesson;
-      if (
-        s.screen === 'game' &&
-        p.screen !== 'game' &&
-        lesson &&
-        lesson !== 'off' &&
-        lesson !== 'complete'
-      )
-        expandFor(lesson);
+      const entered = s.screen === 'game' && p.screen !== 'game';
+      if (entered && lesson && lesson !== 'off' && lesson !== 'complete') expandFor(lesson);
+      else if (visible(s) !== visible(p)) arm();
     }),
   ];
   return () => {

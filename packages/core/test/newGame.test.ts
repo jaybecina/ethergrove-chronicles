@@ -63,9 +63,14 @@ describe('createNewGame', () => {
   });
 
   it('starts lessons only when asked', () => {
-    expect(createNewGame(opts).tutorial).toEqual({ lesson: 'off', count: 0, notesSeen: [] });
+    expect(createNewGame(opts).tutorial).toEqual({
+      lesson: 'off',
+      count: 0,
+      notesSeen: [],
+      gifted: false,
+    });
     const on = createNewGame({ ...opts, lessons: true });
-    expect(on.tutorial).toEqual({ lesson: 'walkToField', count: 0, notesSeen: [] });
+    expect(on.tutorial).toEqual({ lesson: 'walkToField', count: 0, notesSeen: [], gifted: false });
     expect(on.version).toBe(2);
   });
 });

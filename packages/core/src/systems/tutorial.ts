@@ -83,13 +83,19 @@ function doneAtStart(id: LessonId, s: GameState): boolean {
   }
 }
 
+/** Ends the path. The gift is paid once per save; a restarted path completes with no gift. */
 function complete(state: GameState, events: GameEvent[]): GameState {
+  const tutorial = { ...state.tutorial, lesson: 'complete' as const, count: 0, gifted: true };
+  if (state.tutorial.gifted) {
+    events.push({ type: 'lessonsComplete', gift: 0 });
+    return { ...state, tutorial };
+  }
   const gold = state.gold + LESSONS_GIFT;
   events.push(
     { type: 'goldChanged', gold, delta: LESSONS_GIFT },
     { type: 'lessonsComplete', gift: LESSONS_GIFT },
   );
-  return { ...state, gold, tutorial: { ...state.tutorial, lesson: 'complete', count: 0 } };
+  return { ...state, gold, tutorial };
 }
 
 /** Start a lesson, passing straight through any the farm already satisfies (spec §3.4). */
@@ -182,7 +188,11 @@ export function advanceTutorial(prev: GameState, next: GameState, events: GameEv
     if (isDone(lesson, prev, s, events)) {
       out.push({ type: 'lessonDone', id: lesson });
       const following = LESSON_ORDER[LESSON_ORDER.indexOf(lesson) + 1];
-      s = following ? startLesson(s, following, out) : complete(s, out);
+      // Seeds bought after losing every crop (adaptive rule) lead back to planting until the
+      // player has made a first sale, so harvest, ship and sell still get taught.
+      const replant = lesson === 'buySeeds' && !s.milestones.includes('firstShipment');
+      if (replant) s = startLesson(s, 'plant', out);
+      else s = following ? startLesson(s, following, out) : complete(s, out);
     }
     // 3. adaptive rules
     s = adapt(s, out);

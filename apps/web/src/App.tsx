@@ -1,3 +1,4 @@
+import { LessonColumn } from './ui/lessons/LessonColumn';
 import { LessonsComplete } from './ui/lessons/LessonsComplete';
 import { createNewGame } from '@hearthvale/core';
 import { Suspense, lazy, useEffect, useState } from 'react';
@@ -118,6 +119,7 @@ export function App() {
           <Hud />
           {showTouch && overlay === null && <Joystick source={touch} />}
           {showTouch && overlay === null && <ActionButtons source={touch} />}
+          <LessonColumn />
           {overlay === 'pause' && <Pause />}
           {overlay === 'bin' && <ShippingBin />}
           {overlay === 'cart' && <MerchantCart />}

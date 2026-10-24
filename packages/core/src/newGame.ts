@@ -67,6 +67,11 @@ export function createNewGame(opts: NewGameOptions): GameState {
     maps: { farm, house: parseLayout(HOUSE_LAYOUT, HOUSE_LEGEND) },
     milestones: [],
     harvested: {},
-    tutorial: { lesson: opts.lessons === true ? 'walkToField' : 'off', count: 0, notesSeen: [] },
+    tutorial: {
+      lesson: opts.lessons === true ? 'walkToField' : 'off',
+      count: 0,
+      notesSeen: [],
+      gifted: false,
+    },
   };
 }
