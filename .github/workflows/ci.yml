@@ -21,16 +21,10 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm typecheck
-      - run: pnpm test:coverage
-      - run: pnpm --filter web build
-      - run: pnpm --filter web check:build
-      - run: pnpm --filter web size
+      # Same scripts as the local pre-push hook, so a push that passed locally passes here.
+      - run: pnpm verify
       - run: pnpm --filter web exec playwright install --with-deps chromium webkit
-      - run: pnpm --filter web e2e --project=chromium --project=webkit
-        env:
-          CI: 'true'
+      - run: pnpm verify:e2e
       - name: Load-time report (not gating)
         run: pnpm --filter web perf
         continue-on-error: true

@@ -1,1 +1,4 @@
+# Fast checks (~15 s): fix and lint staged files, then typecheck and unit-test everything.
 pnpm exec lint-staged --quiet
+pnpm typecheck
+pnpm test

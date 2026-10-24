@@ -50,6 +50,13 @@ pnpm e2e          # Playwright: Chromium, WebKit, Pixel 7, iPhone 14
 | `pnpm build`                   | Production build into `apps/web/dist`                     |
 | `pnpm --filter web size`       | Bundle budget: initial JS ≤ 500 KB gzipped                |
 | `pnpm --filter web perf`       | Load time on a throttled phone profile (production build) |
+| `pnpm ci:local`                | The whole GitHub CI run (`verify` + `verify:e2e`) locally |
+
+Git hooks (Husky) catch CI failures before GitHub does:
+
+- **pre-commit** (~15 s): lint and format staged files, then typecheck and run all unit tests.
+- **pre-push** (~4 min): `pnpm ci:local`, the same scripts CI runs. It needs a clean working tree
+  and a free port 5199 (stop any `pnpm dev:e2e` first). Skip once with `git push --no-verify`.
 
 ## How it's built
 

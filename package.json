@@ -15,7 +15,10 @@
     "prepare": "husky",
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
-    "e2e": "pnpm --filter web e2e"
+    "e2e": "pnpm --filter web e2e",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test:coverage && pnpm build && pnpm --filter web check:build && pnpm --filter web size",
+    "verify:e2e": "CI=true pnpm --filter web e2e --project=chromium --project=webkit",
+    "ci:local": "pnpm verify && pnpm verify:e2e"
   },
   "lint-staged": {
     "*.{ts,tsx,js,mjs}": [
