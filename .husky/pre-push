@@ -1,8 +1,8 @@
-# The full GitHub CI run, locally (~4 min). Skip once with: git push --no-verify
+# The full check suite (~2.5 min). This replaces GitHub CI. Skip once with: git push --no-verify
 # The checks run on the working tree, so it must match what is being pushed.
 if [ -n "$(git status --porcelain)" ]; then
   echo "pre-push: uncommitted or untracked files would change the result; commit or stash them first."
   git status --short
   exit 1
 fi
-pnpm ci:local
+node scripts/checks.mjs push
