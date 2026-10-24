@@ -14,7 +14,13 @@ const setup = () => {
 
 beforeEach(() => {
   vi.useFakeTimers();
-  lessonStore.setState({ expanded: false, doneFlash: null, noteQueue: [], completeGift: null });
+  lessonStore.setState({
+    expanded: false,
+    doneFlash: null,
+    noteQueue: [],
+    completeGift: null,
+    announce: '',
+  });
 });
 afterEach(() => {
   off();

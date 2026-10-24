@@ -3,6 +3,7 @@ import { useStore } from 'zustand';
 import { createStore, type StoreApi } from 'zustand/vanilla';
 import type { EventBus } from '../../game/eventBus';
 import type { GameStore } from '../../game/store';
+import { LESSON_TEXT, NOTE_TEXT } from './lessonText';
 
 const COLLAPSE_MS = 8000;
 const DONE_FLASH_MS = 1200;
@@ -15,6 +16,8 @@ interface LessonUi {
   noteQueue: NoteId[];
   /** Set when the path completes; the panel opens once no other overlay is open. */
   completeGift: number | null;
+  /** Text for the screen-reader live region; changes only on lesson and note events. */
+  announce: string;
   setExpanded(expanded: boolean): void;
   dismissNote(): void;
   clearComplete(): void;
@@ -26,6 +29,7 @@ export const lessonStore = createStore<LessonUi>()((set) => ({
   doneFlash: null,
   noteQueue: [],
   completeGift: null,
+  announce: '',
   setExpanded: (expanded) => {
     set({ expanded });
   },
@@ -50,22 +54,27 @@ export function installLessonBridge(store: StoreApi<GameStore>, bus: EventBus): 
       store.getState().setOverlay('lessons');
   };
   const offs = [
-    bus.on('lessonStarted', () => {
-      lessonStore.setState({ expanded: true });
+    bus.on('lessonStarted', (e) => {
+      const t = LESSON_TEXT[e.id];
+      lessonStore.setState({ expanded: true, announce: `New goal: ${t.title}. ${t.body}` });
       clearTimeout(collapse);
       collapse = setTimeout(() => {
         lessonStore.setState({ expanded: false });
       }, COLLAPSE_MS);
     }),
     bus.on('lessonDone', (e) => {
-      lessonStore.setState({ doneFlash: e.id });
+      lessonStore.setState({ doneFlash: e.id, announce: `Done: ${LESSON_TEXT[e.id].title}` });
       clearTimeout(flash);
       flash = setTimeout(() => {
         lessonStore.setState({ doneFlash: null });
       }, DONE_FLASH_MS);
     }),
     bus.on('noteShown', (e) => {
-      lessonStore.setState((s) => ({ noteQueue: [...s.noteQueue, e.id] }));
+      const t = NOTE_TEXT[e.id];
+      lessonStore.setState((s) => ({
+        noteQueue: [...s.noteQueue, e.id],
+        announce: `Note: ${t.title}. ${t.body}`,
+      }));
     }),
     bus.on('lessonsComplete', (e) => {
       lessonStore.setState({ completeGift: e.gift });
