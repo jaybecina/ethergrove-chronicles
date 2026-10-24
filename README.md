@@ -43,13 +43,24 @@ pnpm test         # unit tests (core + web)
 pnpm e2e          # Playwright: Chromium, WebKit, Pixel 7, iPhone 14
 ```
 
-| Script                         | What it does                                              |
-| ------------------------------ | --------------------------------------------------------- |
-| `pnpm lint` / `pnpm typecheck` | ESLint (strict, type-checked) and TypeScript              |
-| `pnpm test:coverage`           | Unit tests; `packages/core` must stay at ≥ 90% coverage   |
-| `pnpm build`                   | Production build into `apps/web/dist`                     |
-| `pnpm --filter web size`       | Bundle budget: initial JS ≤ 500 KB gzipped                |
-| `pnpm --filter web perf`       | Load time on a throttled phone profile (production build) |
+| Script                         | What it does                                               |
+| ------------------------------ | ---------------------------------------------------------- |
+| `pnpm lint` / `pnpm typecheck` | ESLint (strict, type-checked) and TypeScript               |
+| `pnpm test:coverage`           | Unit tests; `packages/core` must stay at ≥ 90% coverage    |
+| `pnpm build`                   | Production build into `apps/web/dist`                      |
+| `pnpm --filter web size`       | Bundle budget: initial JS ≤ 500 KB gzipped                 |
+| `pnpm --filter web perf`       | Load time on a throttled phone profile (production build)  |
+| `pnpm checks`                  | All the checks above with live progress (pre-push runs it) |
+
+There is no GitHub CI: Husky git hooks run the checks on your machine before code leaves it.
+
+- **pre-commit** (~10 s): lint and format staged files, then typecheck and run all unit tests.
+- **pre-push** (~2.5 min): `pnpm checks`: lint, typecheck, unit tests with coverage, production
+  build, debug-hook check, bundle size, and e2e on Chromium and WebKit. It needs a clean working
+  tree and a free port 5199 (stop any `pnpm dev:e2e` first). Skip once with `git push --no-verify`.
+
+Each step shows a spinner and its time, and prints its output only if it fails; e2e prints one live
+line per test.
 
 ## How it's built
 

@@ -1,1 +1,3 @@
-pnpm exec lint-staged --quiet
+# Fast checks (~10 s): fix and lint staged files, then typecheck and unit-test everything.
+pnpm exec lint-staged
+node scripts/checks.mjs commit

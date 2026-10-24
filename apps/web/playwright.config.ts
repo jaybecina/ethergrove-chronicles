@@ -10,7 +10,8 @@ export default defineConfig({
   fullyParallel: false,
   workers: process.env.CI ? 1 : 2,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
+  // One live line per test, so a long run shows what is running and what passed.
+  reporter: 'list',
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: 'retain-on-failure',

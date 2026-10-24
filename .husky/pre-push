@@ -1,0 +1,8 @@
+# The full check suite (~2.5 min). This replaces GitHub CI. Skip once with: git push --no-verify
+# The checks run on the working tree, so it must match what is being pushed.
+if [ -n "$(git status --porcelain)" ]; then
+  echo "pre-push: uncommitted or untracked files would change the result; commit or stash them first."
+  git status --short
+  exit 1
+fi
+node scripts/checks.mjs push

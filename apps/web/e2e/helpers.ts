@@ -2,10 +2,18 @@ import { expect, type Page } from '@playwright/test';
 import type { Command, GameEvent, GameState } from '@hearthvale/core';
 import type {} from '../src/game/debugHook';
 
+const BLANK = '/__e2e-blank';
+
 /** Fresh browser storage, then the title screen with the test hook ready. */
 export async function boot(page: Page): Promise<void> {
-  await page.goto('/');
-  // CI renders on a software GPU; the Low tier keeps frames fast enough for input-driven tests.
+  // Clear storage on an empty same-origin page. Loading the game here would start model
+  // downloads that the next navigation aborts ("GLTFLoader: Couldn't load texture").
+  await page.route(BLANK, (route) =>
+    route.fulfill({ contentType: 'text/html', body: '<!doctype html><title>blank</title>' }),
+  );
+  await page.goto(BLANK);
+  await page.unroute(BLANK);
+  // Headless browsers render on a software GPU; the Low tier keeps frames fast enough for input-driven tests.
   // README screenshots (SAVE_MEDIA) use High.
   const quality = process.env.SAVE_MEDIA ? 'high' : 'low';
   await page.evaluate(async (q) => {
@@ -21,7 +29,7 @@ export async function boot(page: Page): Promise<void> {
           };
     });
   }, quality);
-  await page.reload();
+  await page.goto('/');
   await page.waitForFunction(() => window.__hearthvale !== undefined);
 }
 
