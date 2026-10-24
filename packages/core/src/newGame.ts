@@ -41,7 +41,7 @@ export function createNewGame(opts: NewGameOptions): GameState {
   const bag: GameState['bag'] = Array.from({ length: BALANCE.bagSlots }, () => null);
   bag[0] = { id: 'seed:turnip', qty: BALANCE.startTurnipSeeds };
   return {
-    version: 1,
+    version: 2,
     seed: opts.seed,
     rng,
     farmName: opts.farmName,
@@ -67,5 +67,6 @@ export function createNewGame(opts: NewGameOptions): GameState {
     maps: { farm, house: parseLayout(HOUSE_LAYOUT, HOUSE_LEGEND) },
     milestones: [],
     harvested: {},
+    tutorial: { lesson: opts.lessons === true ? 'walkToField' : 'off', count: 0, notesSeen: [] },
   };
 }

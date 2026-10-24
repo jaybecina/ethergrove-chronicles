@@ -41,6 +41,9 @@ function dispatch(state: GameState, cmd: Command): Result {
       return unshipItem(state, cmd.binIndex, cmd.qty);
     case 'buyItem':
       return buyItem(state, cmd.itemId, cmd.qty);
+    case 'skipLessons':
+    case 'restartLessons':
+      return only(state);
   }
 }
 

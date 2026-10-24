@@ -32,7 +32,7 @@ describe('createNewGame', () => {
     expect(s.milestones).toEqual([]);
     expect(s.farmName).toBe('Elm');
     expect(s.playerName).toBe('Ari');
-    expect(s.version).toBe(1);
+    expect(s.version).toBe(2);
   });
 
   it('field obstacles are seeded: same seed same map, different seed different map', () => {
@@ -60,5 +60,12 @@ describe('createNewGame', () => {
     expect(isBlocked(tileAt(s.maps.farm, Math.floor(s.player.x), Math.floor(s.player.z)))).toBe(
       false,
     );
+  });
+
+  it('starts lessons only when asked', () => {
+    expect(createNewGame(opts).tutorial).toEqual({ lesson: 'off', count: 0, notesSeen: [] });
+    const on = createNewGame({ ...opts, lessons: true });
+    expect(on.tutorial).toEqual({ lesson: 'walkToField', count: 0, notesSeen: [] });
+    expect(on.version).toBe(2);
   });
 });

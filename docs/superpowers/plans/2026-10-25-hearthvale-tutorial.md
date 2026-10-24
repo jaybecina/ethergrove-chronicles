@@ -48,7 +48,7 @@
 - Test: `packages/core/test/lessonsData.test.ts`, `packages/core/test/save.test.ts`, `packages/core/test/newGame.test.ts`
 
 **Interfaces:**
-- Produces: types `LessonId`, `NoteId`, `TutorialState { lesson: LessonId | 'complete' | 'off'; count: number; notesSeen: NoteId[] }`; commands `{ type: 'skipLessons' }`, `{ type: 'restartLessons' }`; events `lessonStarted { id: LessonId }`, `lessonDone { id: LessonId }`, `lessonsComplete { gift: number }`, `noteShown { id: NoteId }`; constants above; `FIELD_RECT = { x0: 3, y0: 6, x1: 26, y1: 16 }` (inclusive).
+- Produces: types `LessonId`, `NoteId`, `TutorialState { lesson: LessonId | 'complete' | 'off'; count: number; notesSeen: NoteId[] }`; commands `{ type: 'skipLessons' }`, `{ type: 'restartLessons' }`; events `lessonStarted { id: LessonId }`, `lessonDone { id: LessonId }`, `lessonsComplete { gift: number }`, `noteShown { id: NoteId }`; constants above; `FIELD_RECT = { x0: 3, y0: 6, x1: 27, y1: 16 }` (inclusive).
 
 - [ ] **Step 1: Write the failing tests**
 

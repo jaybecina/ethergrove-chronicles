@@ -230,7 +230,7 @@ Do not otherwise move backwards. In particular, crops that die or get harvested 
 
 ```ts
 /** The farm's crop field: the '.' cells of FARM_LAYOUT. */
-export const FIELD_RECT = { x0: 3, y0: 6, x1: 26, y1: 16 } as const; // inclusive
+export const FIELD_RECT = { x0: 3, y0: 6, x1: 27, y1: 16 } as const; // inclusive
 ```
 
 A unit test MUST assert that every cell inside `FIELD_RECT` is `'.'` in `FARM_LAYOUT` and every `'.'` cell is inside it, so the two cannot drift.
