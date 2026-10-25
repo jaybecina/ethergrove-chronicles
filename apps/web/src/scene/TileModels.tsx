@@ -41,6 +41,7 @@ export function TileModels({ rocks, stumps, weeds, fences, capacity }: Props) {
           fit={{ width: 0.7 }}
           patch={snow}
           tint={ROCK_TINT}
+          matte
         />
       ))}
       {(['weed-1', 'weed-2'] as const).map((key, i) => (

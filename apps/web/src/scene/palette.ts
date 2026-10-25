@@ -6,7 +6,7 @@ export const COLORS = {
   watered: '#47301d',
   floor: '#b98a5a',
   wall: '#e8dcc4',
-  rock: '#8d8a84',
+  rock: '#8f979e',
   stump: '#7a5434',
   weed: '#5d8a34',
   fence: '#a57a4d',

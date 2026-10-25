@@ -203,6 +203,9 @@ server Playwright starts on port 5199. `check:build` fails the production build 
 - **Farm layout.** The farm is 32×24. The field is `FIELD_RECT` (x 3–27, y 6–16) with seeded weeds, rocks
   and stumps. The pond is at x 2–6, y 18–20, and the cart tile is (31, 17). Don't teleport test players
   into the pond.
+- **Kenney models render as metal.** Their glTFs omit `metallicFactor`, which three.js reads as 1.0.
+  With no environment map that hides the base colour: tinted grey rocks came out dark brown, like the
+  stumps. Pass `matte` to `ModelInstances` when a model's tint must read true (rocks do).
 - **Stacking.** `.hud` is `position: fixed`, so it is its own stacking context. Anything that must sit
   above the touch joystick zone (`z-index: 1`) has to be mounted outside `.hud`; see `ui/lessons/LessonColumn.tsx`.
 

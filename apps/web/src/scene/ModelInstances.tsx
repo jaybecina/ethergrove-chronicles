@@ -19,6 +19,11 @@ interface Props {
   patch?: PatchOptions;
   /** Material colour override by glTF material name (e.g. seasonal leaves). */
   tint?: (materialName: string) => string | null;
+  /**
+   * Render as non-metal. Kenney glTFs omit `metallicFactor`, which three.js reads as fully metallic;
+   * with no environment map that hides the base colour, so a grey rock comes out dark brown.
+   */
+  matte?: boolean;
   /** Which materials take each item's own `color` (others keep their texture colour). */
   colorParts?: (materialName: string) => boolean;
   /** Extra per-item scale, re-applied every frame while `animating()` is true (crop pops). */
@@ -30,7 +35,18 @@ interface Props {
 
 /** Draws one glTF model many times with one InstancedMesh per material. */
 export function ModelInstances(props: Props) {
-  const { url, items, capacity, fit, patch, tint: tintOf, colorParts, scaleOf, animating } = props;
+  const {
+    url,
+    items,
+    capacity,
+    fit,
+    patch,
+    tint: tintOf,
+    matte,
+    colorParts,
+    scaleOf,
+    animating,
+  } = props;
   const gltf = useGLTF(url);
   const { parts, box } = useMemo(() => extractParts(gltf.scene), [gltf.scene]);
   const fitKey = 'height' in fit ? `h${fit.height}` : `w${fit.width}`;
@@ -40,9 +56,13 @@ export function ModelInstances(props: Props) {
     () =>
       parts.map((p) => {
         const m = p.material.clone();
+        if (matte && m instanceof MeshStandardMaterial) {
+          m.metalness = 0;
+          m.roughness = 0.9;
+        }
         return patch ? patchMaterial(m, { ...patch, height: t.height }) : m;
       }),
-    [parts, patchKey, t.height], // eslint-disable-line react-hooks/exhaustive-deps
+    [parts, patchKey, t.height, matte], // eslint-disable-line react-hooks/exhaustive-deps
   );
   const refs = useRef<(InstancedMesh | null)[]>([]);
 

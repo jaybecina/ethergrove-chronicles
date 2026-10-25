@@ -19,6 +19,7 @@ export function kenneyTint(
   return (name) => map[name] ?? null;
 }
 
-export const ROCK_TINT = kenneyTint({ dirt: '#9c978d', grass: '#6c8a48' });
+/** Cool slate grey, so rocks never read as the warm brown of stumps and fences. */
+export const ROCK_TINT = kenneyTint({ dirt: '#8f979e', grass: '#6c8a48' });
 export const CROP_TINT = kenneyTint();
 export const WOOD_TINT = kenneyTint();
