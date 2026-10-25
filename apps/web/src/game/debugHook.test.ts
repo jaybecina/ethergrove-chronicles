@@ -18,6 +18,10 @@ describe('debug hook', () => {
     if (!hv) throw new Error('hook missing');
     hv.setSeed(7);
     expect(hv.getState()?.seed).toBe(7);
+    expect(hv.getState()?.tutorial.lesson).toBe('off');
+    hv.setSeed(8, { lessons: true });
+    expect(hv.getState()?.tutorial.lesson).toBe('walkToField');
+    hv.setSeed(7);
     expect(store.getState().screen).toBe('game');
     hv.skipMinutes(60);
     expect(hv.getState()?.calendar.minute).toBe(420);

@@ -1,4 +1,4 @@
-import { BALANCE, TOOL_ORDER, type HotbarIndex } from '@hearthvale/core';
+import { BALANCE, lessonSlot, TOOL_ORDER, type HotbarIndex } from '@hearthvale/core';
 import { gameStore, useGame } from '../../game/store';
 import { ItemIcon, ToolIcon } from '../icons';
 import { displayName } from '../labels';
@@ -8,6 +8,9 @@ export function Hotbar() {
   const charges = useGame((s) => s.game?.canCharges ?? 0);
   const quick = useGame((s) => s.game?.quickSlots);
   const bag = useGame((s) => s.game?.bag);
+  const wanted = useGame((s) => (s.game ? lessonSlot(s.game) : null));
+  /** The slot the current lesson wants, unless it is already picked. */
+  const lesson = (i: number) => (wanted === i && active !== i ? ' is-lesson' : '');
   if (!quick || !bag) return null;
   const select = (index: HotbarIndex) => {
     gameStore.getState().dispatch({ type: 'selectHotbar', index });
@@ -22,7 +25,7 @@ export function Hotbar() {
           type="button"
           role="tab"
           aria-selected={active === i}
-          className="slot slot-tool"
+          className={`slot slot-tool${lesson(i)}`}
           onClick={() => {
             select(i as HotbarIndex);
           }}
@@ -55,7 +58,7 @@ export function Hotbar() {
             type="button"
             role="tab"
             aria-selected={active === index}
-            className={`slot slot-item${stack ? '' : ' is-empty'}`}
+            className={`slot slot-item${stack ? '' : ' is-empty'}${lesson(index)}`}
             onClick={() => {
               select(index);
             }}

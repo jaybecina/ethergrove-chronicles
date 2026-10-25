@@ -70,8 +70,43 @@ export type MilestoneId =
   | 'allCrops'
   | 'fullYear';
 
+export type LessonId =
+  | 'walkToField'
+  | 'till'
+  | 'plant'
+  | 'water'
+  | 'sleep'
+  | 'waterDaily'
+  | 'harvest'
+  | 'ship'
+  | 'sellOvernight'
+  | 'buySeeds';
+
+export type NoteId =
+  | 'canEmpty'
+  | 'staminaLow'
+  | 'exhausted'
+  | 'passedOut'
+  | 'rain'
+  | 'obstacles'
+  | 'wrongSeason'
+  | 'newSeason'
+  | 'bagFull'
+  | 'cartClosed';
+
+export interface TutorialState {
+  /** The active lesson; 'complete' after the last one; 'off' when skipped or never started. */
+  lesson: LessonId | 'complete' | 'off';
+  /** Progress inside a counted lesson (LESSON_GOAL); 0 when a lesson starts. */
+  count: number;
+  /** Notes already shown in this save; each shows at most once. */
+  notesSeen: NoteId[];
+  /** The completion gift was given; it is given once per save, however often lessons restart. */
+  gifted: boolean;
+}
+
 export interface GameState {
-  version: 1;
+  version: 2;
   seed: number;
   rng: number;
   farmName: string;
@@ -92,6 +127,7 @@ export interface GameState {
   maps: Record<LocationId, Grid>;
   milestones: MilestoneId[];
   harvested: Partial<Record<CropId, number>>;
+  tutorial: TutorialState;
 }
 
 export type Command =
@@ -107,7 +143,9 @@ export type Command =
   | { type: 'buyItem'; itemId: SeedId; qty: number }
   | { type: 'sleep' }
   | { type: 'moveBagItem'; from: number; to: number }
-  | { type: 'assignQuickSlot'; slot: 0 | 1 | 2; bagIndex: number | null };
+  | { type: 'assignQuickSlot'; slot: 0 | 1 | 2; bagIndex: number | null }
+  | { type: 'skipLessons' }
+  | { type: 'restartLessons' };
 
 export type FailReason =
   | 'noStamina'
@@ -143,7 +181,11 @@ export type GameEvent =
   | { type: 'milestoneReached'; id: MilestoneId }
   | { type: 'locationChanged'; location: LocationId }
   | { type: 'openUi'; ui: 'bin' | 'cart' | 'sleep' }
-  | { type: 'actionFailed'; reason: FailReason };
+  | { type: 'actionFailed'; reason: FailReason }
+  | { type: 'lessonStarted'; id: LessonId }
+  | { type: 'lessonDone'; id: LessonId }
+  | { type: 'lessonsComplete'; gift: number }
+  | { type: 'noteShown'; id: NoteId };
 
 export interface Result {
   state: GameState;
@@ -153,4 +195,6 @@ export interface NewGameOptions {
   seed: number;
   farmName: string;
   playerName: string;
+  /** Start Grandpa's lessons (default false). */
+  lessons?: boolean;
 }

@@ -1,3 +1,4 @@
+import { LESSON_ORDER, NOTE_IDS } from '../data/lessons';
 import { z } from 'zod';
 import { BALANCE } from '../data/balance';
 import { CROP_IDS } from '../data/crops';
@@ -52,7 +53,7 @@ export const calendarSchema = z.object({
 });
 
 export const gameStateSchema: z.ZodType<GameState> = z.object({
-  version: z.literal(1),
+  version: z.literal(2),
   seed: int,
   rng: int,
   farmName: z.string(),
@@ -89,6 +90,12 @@ export const gameStateSchema: z.ZodType<GameState> = z.object({
     ]),
   ),
   harvested: z.partialRecord(cropId, nonNeg),
+  tutorial: z.object({
+    lesson: z.enum([...LESSON_ORDER, 'complete', 'off']),
+    count: int.min(0),
+    notesSeen: z.array(z.enum(NOTE_IDS)),
+    gifted: z.boolean(),
+  }),
 });
 
 export const saveFileSchema = z.object({

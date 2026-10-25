@@ -7,7 +7,7 @@ import { resolveTier, type QualityTier } from '../render/quality';
 import type { Device } from '../input/intents';
 
 export type Screen = 'title' | 'slots' | 'newGame' | 'intro' | 'game';
-export type Overlay = 'pause' | 'bin' | 'cart' | 'sleep' | 'morning' | 'restoring';
+export type Overlay = 'pause' | 'bin' | 'cart' | 'sleep' | 'morning' | 'restoring' | 'lessons';
 export type CameraYaw = 0 | 1 | 2 | 3;
 export type ZoomStep = 0 | 1 | 2;
 
@@ -17,7 +17,6 @@ export interface Settings {
   sfxVolume: number;
   reducedMotion: boolean;
   textScale: 1 | 1.25 | 1.5;
-  seenTips: string[];
   introSeen: boolean;
 }
 
@@ -27,7 +26,6 @@ export const DEFAULT_SETTINGS: Settings = {
   sfxVolume: 0.8,
   reducedMotion: false,
   textScale: 1,
-  seenTips: [],
   introSeen: false,
 };
 
@@ -38,7 +36,11 @@ function loadSettings(): Settings {
     const raw = localStorage.getItem(SETTINGS_KEY);
     if (!raw) return DEFAULT_SETTINGS;
     const parsed = JSON.parse(raw) as Partial<Settings>;
-    return { ...DEFAULT_SETTINGS, ...parsed };
+    // Copy known keys only, so retired settings (like the old seenTips) are dropped.
+    const known = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
+    return Object.fromEntries(
+      known.map((k) => [k, parsed[k] ?? DEFAULT_SETTINGS[k]]),
+    ) as unknown as Settings;
   } catch {
     return DEFAULT_SETTINGS;
   }

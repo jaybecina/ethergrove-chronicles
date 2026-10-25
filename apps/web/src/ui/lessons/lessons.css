@@ -1,0 +1,322 @@
+/* ---------- Grandpa's lessons (spec §4) ---------- */
+.hud-lessons {
+  /* Under the clock; on touch layouts the stamina bar sits there too, so go below it. */
+  --lessons-top: calc(var(--top) + 96px);
+  /* Room kept free at the bottom for the hotbar. */
+  --lessons-reserve: 84px;
+  position: fixed;
+  top: var(--lessons-top);
+  left: var(--gutter);
+  width: min(320px, calc(100vw - var(--gutter) - var(--gutter-r)));
+  max-height: calc(100dvh - var(--lessons-top) - var(--bottom) - var(--lessons-reserve));
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  /* Above the touch joystick zone, so taps on a card reach the card. */
+  z-index: 2;
+}
+.is-touch .hud-lessons {
+  --lessons-top: calc(var(--top) + 96px + 16px + 10px);
+}
+.hud-lessons > * {
+  pointer-events: auto;
+}
+.lesson-card {
+  background: var(--parchment);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: var(--panel-edge), var(--lift);
+  animation: lesson-in 250ms ease-out;
+}
+@keyframes lesson-in {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+.goal-card {
+  padding: 0;
+}
+.goal-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.goal-icon {
+  flex: none;
+  width: 24px;
+  text-align: center;
+  color: var(--wood);
+  font-weight: 800;
+}
+.goal-title-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.goal-title {
+  font-family: var(--font-display);
+  font-size: var(--step-0);
+  font-weight: 700;
+}
+.goal-title.is-done {
+  text-decoration: line-through;
+  color: var(--ink-soft);
+}
+.goal-sub {
+  font-size: var(--step--1);
+  color: var(--ink-soft);
+}
+.goal-pill {
+  flex: none;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--wood-dark);
+  color: var(--gold);
+  font-weight: 800;
+  font-size: var(--step--1);
+  font-variant-numeric: tabular-nums;
+}
+.goal-body {
+  padding: 0 12px 12px 46px;
+}
+.goal-body p,
+.note-card p {
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.45;
+}
+.goal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.goal-chips .prompt-chip {
+  font-size: var(--step--1);
+}
+.note-card {
+  display: grid;
+  gap: 4px;
+}
+.note-card .note-eyebrow {
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.note-card .note-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--step-0);
+}
+.note-card .btn {
+  justify-self: end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lesson-card {
+    animation: none;
+  }
+}
+.reduced-motion .lesson-card {
+  animation: none;
+}
+
+/* Marker pointer and hotbar ring (spec §4.6) */
+.marker-pointer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--wood-dark);
+  color: var(--gold);
+  font-size: 20px;
+  box-shadow:
+    0 0 0 1.5px var(--gold),
+    var(--lift);
+  pointer-events: none;
+  z-index: 5;
+}
+.slot.is-lesson {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
+  animation: lesson-ring 1.6s ease-in-out infinite;
+}
+@keyframes lesson-ring {
+  50% {
+    outline-color: rgb(243 207 114 / 0.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slot.is-lesson {
+    animation: none;
+  }
+}
+.reduced-motion .slot.is-lesson {
+  animation: none;
+}
+
+/* Journal tab (spec §4.8) */
+.journal h3 {
+  margin: 16px 0 8px;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+}
+.journal h3:first-child {
+  margin-top: 0;
+}
+.journal-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.journal-row-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.journal-row-head:hover,
+.journal-row-head:focus-visible {
+  background: var(--parchment-deep);
+}
+.journal-row-head::before {
+  content: '';
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 2px solid var(--ink-soft);
+}
+.journal-row.is-done .journal-row-head::before {
+  background: var(--leaf);
+  border-color: var(--leaf);
+}
+.journal-row.is-current .journal-row-head::before {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.journal-state {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.journal-row-body {
+  padding: 0 10px 10px 30px;
+}
+.journal-row-body p,
+.journal-notes dd {
+  margin: 0;
+  font-size: var(--step--1);
+}
+.journal-notes {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.journal-notes dt {
+  font-weight: 800;
+}
+.journal-controls {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+}
+.journal-controls th,
+.journal-controls td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--parchment-deep);
+}
+.journal-controls .is-current {
+  background: var(--parchment-deep);
+}
+.journal-controls kbd {
+  display: inline-block;
+  margin: 0 4px 2px 0;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--wood-dark);
+  color: var(--parchment);
+}
+.journal-show-all {
+  display: none;
+}
+@media (max-width: 479px) {
+  .journal-controls:not(.show-all) th:not(:first-child):not(.is-current),
+  .journal-controls:not(.show-all) td:not(.is-current) {
+    display: none;
+  }
+  .journal-show-all {
+    display: inline-flex;
+  }
+}
+.journal-confirm {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--parchment-deep);
+  box-shadow: var(--panel-edge);
+}
+.journal-confirm-title {
+  margin: 0 0 4px;
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.field-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.field.field-check input {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  padding: 0;
+  box-shadow: none;
+  accent-color: var(--wood);
+}
+.field-check small {
+  display: block;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+.lessons-complete-gift {
+  font-family: var(--font-display);
+  font-style: italic;
+}

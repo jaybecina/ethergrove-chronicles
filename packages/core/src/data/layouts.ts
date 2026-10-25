@@ -57,5 +57,8 @@ export const HOUSE_LEGEND: Record<string, Tile> = {
   S: { kind: 'floor' },
 };
 
+/** The farm's crop field: the '.' cells of FARM_LAYOUT (inclusive). */
+export const FIELD_RECT = { x0: 3, y0: 6, x1: 27, y1: 16 } as const;
+
 export const FARM_SPAWN_CHAR = 'P';
 export const HOUSE_SPAWN_CHAR = 'S';

@@ -4,6 +4,7 @@ import { gameStore } from '../../game/store';
 import { saveNow } from '../../save/autosave';
 import { saveRepo } from '../../save/repo';
 import { useMenuNavigation } from '../focus';
+import { JOURNAL_TEXT } from '../lessons/lessonText';
 import { uiStore, useUi } from '../uiStore';
 
 const MAX = 16;
@@ -18,6 +19,7 @@ export function NewGame({ repo = saveRepo }: { repo?: SaveRepository }) {
   const slot = useUi((s) => s.pendingSlot) ?? 1;
   const [name, setName] = useState('');
   const [farm, setFarm] = useState('');
+  const [lessons, setLessons] = useState(true);
   const ref = useRef<HTMLFormElement>(null);
   useMenuNavigation(ref);
   const ready = name.trim().length > 0 && farm.trim().length > 0;
@@ -33,7 +35,12 @@ export function NewGame({ repo = saveRepo }: { repo?: SaveRepository }) {
           if (!ready) return;
           const s = gameStore.getState();
           s.startGame(
-            createNewGame({ seed: randomSeed(), playerName: name.trim(), farmName: farm.trim() }),
+            createNewGame({
+              seed: randomSeed(),
+              playerName: name.trim(),
+              farmName: farm.trim(),
+              lessons,
+            }),
             slot,
           );
           s.setScreen('intro');
@@ -62,6 +69,19 @@ export function NewGame({ repo = saveRepo }: { repo?: SaveRepository }) {
               setFarm(e.target.value);
             }}
           />
+        </label>
+        <label className="field field-check">
+          <input
+            type="checkbox"
+            checked={lessons}
+            onChange={(e) => {
+              setLessons(e.target.checked);
+            }}
+          />
+          <span>
+            {JOURNAL_TEXT.newGameLabel}
+            <small>{JOURNAL_TEXT.newGameHint}</small>
+          </span>
         </label>
         <div className="row">
           <button

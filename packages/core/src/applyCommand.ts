@@ -7,6 +7,7 @@ import { useItem } from './systems/crops';
 import { buyItem, shipItem, unshipItem } from './systems/economy';
 import { interact } from './systems/interact';
 import { checkMilestones } from './systems/milestones';
+import { advanceTutorial, restartLessons, skipLessons } from './systems/tutorial';
 import type { Command, GameState, Result } from './types';
 
 const only = (state: GameState): Result => ({ state, events: [] });
@@ -41,11 +42,16 @@ function dispatch(state: GameState, cmd: Command): Result {
       return unshipItem(state, cmd.binIndex, cmd.qty);
     case 'buyItem':
       return buyItem(state, cmd.itemId, cmd.qty);
+    case 'skipLessons':
+      return skipLessons(state);
+    case 'restartLessons':
+      return restartLessons(state);
   }
 }
 
 export function applyCommand(state: GameState, cmd: Command): Result {
   const result = dispatch(state, cmd);
   const next = result.state.bag === state.bag ? result.state : prunePins(result.state);
-  return checkMilestones(state, next, result.events);
+  const m = checkMilestones(state, next, result.events);
+  return advanceTutorial(state, m.state, m.events);
 }

@@ -1,8 +1,12 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 import { applyCommand } from '../src/applyCommand';
 import { CURRENT_SAVE_VERSION, makeSaveFile, migrate } from '../src/save/migrate';
 import type { SaveFile } from '../src/save/repository';
+import { saveFileSchema } from '../src/save/schema';
+import { NOTE_IDS } from '../src/data/lessons';
 import type { GameState } from '../src/types';
 import { arbCommand } from './arbitraries';
 import { fresh } from './helpers';
@@ -64,16 +68,42 @@ describe('save files', () => {
   });
 
   it('runs injected migrations step by step', () => {
-    const v1 = makeSaveFile(fresh(), 0, now);
-    const { harvested: _h, ...oldState } = v1.state;
-    const v0 = { ...v1, version: 0, state: oldState };
+    const current = makeSaveFile(fresh(), 0, now);
+    const { tutorial: _t, ...oldState } = current.state;
+    const prev = CURRENT_SAVE_VERSION - 1;
+    const older = { ...current, version: prev, state: { ...oldState, version: prev } };
     const migrations = {
-      0: (f: unknown) => {
+      [prev]: (f: unknown) => {
         const old = f as SaveFile;
-        return { ...old, version: 1, state: { ...old.state, harvested: {} } };
+        return {
+          ...old,
+          version: CURRENT_SAVE_VERSION,
+          state: { ...old.state, version: CURRENT_SAVE_VERSION, tutorial: current.state.tutorial },
+        };
       },
     };
-    expect(migrate(v0, migrations)).toEqual({ ok: true, file: v1 });
-    expect(migrate(v0)).toEqual({ ok: false, error: 'unsupportedVersion' });
+    expect(migrate(older, migrations)).toEqual({ ok: true, file: current });
+    expect(migrate(older, {})).toEqual({ ok: false, error: 'unsupportedVersion' });
+  });
+
+  it('migrates a real Part 1 save to v2 with lessons off', () => {
+    const v1 = JSON.parse(
+      readFileSync(join(import.meta.dirname, 'fixtures/part1-save-v1.json'), 'utf8'),
+    ) as { state: Record<string, unknown> };
+    const r = migrate(v1);
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.file.version).toBe(2);
+    expect(r.file.state.version).toBe(2);
+    expect(r.file.state.tutorial).toEqual({
+      lesson: 'off',
+      count: 0,
+      notesSeen: [...NOTE_IDS],
+      gifted: false,
+    });
+    const { tutorial: _t, version: _v, ...rest } = r.file.state;
+    const { version: _v1, ...restV1 } = v1.state;
+    expect(rest).toEqual(restV1);
+    expect(saveFileSchema.safeParse(r.file).success).toBe(true);
   });
 });

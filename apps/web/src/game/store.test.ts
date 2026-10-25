@@ -65,4 +65,16 @@ describe('game store', () => {
     localStorage.setItem('hearthvale:settings', '{not json');
     expect(createGameStore().getState().settings).toEqual(DEFAULT_SETTINGS);
   });
+
+  it('loadSettings drops unknown keys like the old seenTips', () => {
+    localStorage.setItem(
+      'hearthvale:settings',
+      JSON.stringify({ musicVolume: 0.4, seenTips: ['hoe'], bogus: 1 }),
+    );
+    const settings = createGameStore().getState().settings;
+    expect(settings.musicVolume).toBe(0.4);
+    expect(settings).not.toHaveProperty('seenTips');
+    expect(settings).not.toHaveProperty('bogus');
+    expect(Object.keys(settings).sort()).toEqual(Object.keys(DEFAULT_SETTINGS).sort());
+  });
 });

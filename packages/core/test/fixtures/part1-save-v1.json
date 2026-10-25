@@ -1,0 +1,2590 @@
+{
+  "version": 1,
+  "savedAt": "2026-10-24T00:00:00.000Z",
+  "playTimeMs": 1234000,
+  "summary": {
+    "farmName": "Willow Hill",
+    "playerName": "Tester",
+    "calendar": {
+      "year": 1,
+      "season": "spring",
+      "day": 6,
+      "minute": 360
+    },
+    "gold": 500
+  },
+  "state": {
+    "version": 1,
+    "seed": 7,
+    "rng": -726082060,
+    "farmName": "Willow Hill",
+    "playerName": "Tester",
+    "calendar": {
+      "year": 1,
+      "season": "spring",
+      "day": 6,
+      "minute": 360
+    },
+    "weather": {
+      "today": "rain",
+      "tomorrow": "rain"
+    },
+    "player": {
+      "location": "farm",
+      "x": 30.5,
+      "z": 17.5,
+      "facing": "e",
+      "stamina": 100
+    },
+    "canCharges": 8,
+    "activeSlot": 1,
+    "selectedQuick": 0,
+    "quickSlots": [0, null, null],
+    "bag": [
+      {
+        "id": "seed:turnip",
+        "qty": 3
+      },
+      {
+        "id": "wood",
+        "qty": 4
+      },
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "maps": {
+      "farm": {
+        "width": 32,
+        "height": 24,
+        "tiles": [
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "feature",
+            "feature": "houseDoor"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "building"
+          },
+          {
+            "kind": "feature",
+            "feature": "bin"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "tilled",
+            "watered": true,
+            "crop": {
+              "id": "turnip",
+              "age": 4,
+              "regrowing": false
+            }
+          },
+          {
+            "kind": "tilled",
+            "watered": true,
+            "crop": {
+              "id": "turnip",
+              "age": 4,
+              "regrowing": false
+            }
+          },
+          {
+            "kind": "tilled",
+            "watered": true,
+            "crop": {
+              "id": "turnip",
+              "age": 4,
+              "regrowing": false
+            }
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "stump",
+            "hits": 0
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "weed"
+          },
+          {
+            "kind": "grass"
+          },
+          {
+            "kind": "rock",
+            "hits": 0
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "feature",
+            "feature": "cart"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "water"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "path"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          },
+          {
+            "kind": "fence"
+          }
+        ]
+      },
+      "house": {
+        "width": 8,
+        "height": 6,
+        "tiles": [
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "feature",
+            "feature": "bed"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "floor"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "feature",
+            "feature": "exitDoor"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          },
+          {
+            "kind": "wall"
+          }
+        ]
+      }
+    },
+    "milestones": ["firstTill", "firstPlant"],
+    "harvested": {}
+  }
+}

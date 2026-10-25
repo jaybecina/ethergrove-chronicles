@@ -1,3 +1,4 @@
+import { LessonMarker } from './LessonMarker';
 import { useGame } from '../game/store';
 import { SunLight } from '../render/SunLight';
 import { CameraRig } from './CameraRig';
@@ -60,6 +61,7 @@ export function World() {
       {location === 'farm' ? <Features grid={grid} /> : <HouseInterior grid={grid} />}
       <Player />
       <TargetHighlight />
+      <LessonMarker />
       <FxLayer />
       <Kindling />
       <CameraRig />

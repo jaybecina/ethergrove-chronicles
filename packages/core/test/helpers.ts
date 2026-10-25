@@ -1,6 +1,6 @@
 import { createNewGame } from '../src/newGame';
 import { setTile } from '../src/grid';
-import type { GameState, ItemStack, Tile } from '../src/types';
+import type { GameState, ItemStack, LessonId, Tile } from '../src/types';
 
 export const fresh = (seed = 1): GameState =>
   createNewGame({ seed, farmName: 'Elm', playerName: 'Ari' });
@@ -31,4 +31,9 @@ export function standAt(
   facing: GameState['player']['facing'],
 ): GameState {
   return { ...state, player: { ...state.player, x: x + 0.5, z: y + 0.5, facing } };
+}
+
+/** Put the save on a given lesson (lessons on). */
+export function lessonAt(state: GameState, id: LessonId, count = 0): GameState {
+  return { ...state, tutorial: { ...state.tutorial, lesson: id, count } };
 }

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web-e2e",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "web", "dev:e2e"],
+      "port": 5199
+    }
+  ]
+}

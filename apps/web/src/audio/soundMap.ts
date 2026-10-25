@@ -47,6 +47,8 @@ export function soundsFor(event: GameEvent, _ctx: { surface: Surface }): (SoundI
     case 'locationChanged':
       return ['door'];
     case 'milestoneReached':
+    case 'lessonDone':
+    case 'lessonsComplete':
       return ['chime'];
     case 'actionFailed':
       return ['deny'];

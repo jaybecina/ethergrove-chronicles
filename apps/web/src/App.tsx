@@ -1,3 +1,5 @@
+import { LessonColumn } from './ui/lessons/LessonColumn';
+import { LessonsComplete } from './ui/lessons/LessonsComplete';
 import { createNewGame } from '@hearthvale/core';
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { installAudio } from './audio/install';
@@ -15,7 +17,6 @@ import { Pause } from './ui/screens/Pause';
 import { SaveSlots } from './ui/screens/SaveSlots';
 import { ShippingBin } from './ui/screens/ShippingBin';
 import { SleepConfirm } from './ui/screens/SleepConfirm';
-import { Tips, offerTip } from './ui/screens/Tips';
 import { Title } from './ui/screens/Title';
 import { Toasts } from './ui/screens/Toasts';
 import { ActionButtons } from './ui/touch/ActionButtons';
@@ -94,10 +95,6 @@ export function App() {
   }, [settings.textScale, settings.reducedMotion]);
 
   useEffect(() => {
-    if (screen === 'game') offerTip('move');
-  }, [screen]);
-
-  useEffect(() => {
     if (screen === 'title') {
       const g = gameStore.getState().game;
       if (g?.farmName) gameStore.getState().replaceGame(showcase());
@@ -122,13 +119,14 @@ export function App() {
           <Hud />
           {showTouch && overlay === null && <Joystick source={touch} />}
           {showTouch && overlay === null && <ActionButtons source={touch} />}
+          <LessonColumn />
           {overlay === 'pause' && <Pause />}
           {overlay === 'bin' && <ShippingBin />}
           {overlay === 'cart' && <MerchantCart />}
           {overlay === 'sleep' && <SleepConfirm />}
           {overlay === 'morning' && <MorningReport />}
           {overlay === 'restoring' && <Restoring />}
-          <Tips />
+          {overlay === 'lessons' && <LessonsComplete />}
         </>
       )}
       <Toasts />
