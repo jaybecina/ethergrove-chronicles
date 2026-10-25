@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Runs the project checks one by one with live progress: `node scripts/checks.mjs commit|push`.
+// Runs every project check one by one with live progress: `node scripts/checks.mjs`.
 // In a terminal each step shows a spinner and elapsed time, and its output is printed only if it
 // fails. Long steps (e2e) stream their own live progress. Outside a terminal it prints plain lines.
 import { spawn } from 'node:child_process';
@@ -9,11 +9,7 @@ import { stripVTControlCharacters } from 'node:util';
 
 /** @type {Record<string, Step[]>} */
 const PLANS = {
-  commit: [
-    { name: 'Typecheck', cmd: 'pnpm typecheck' },
-    { name: 'Unit tests', cmd: 'pnpm test' },
-  ],
-  push: [
+  all: [
     { name: 'Lint', cmd: 'pnpm lint' },
     { name: 'Typecheck', cmd: 'pnpm typecheck' },
     { name: 'Unit tests + coverage', cmd: 'pnpm test:coverage' },
@@ -80,9 +76,7 @@ async function main(planName) {
   }
   const total = plan.length;
   const started = performance.now();
-  console.log(
-    bold(`\n${planName === 'push' ? 'Pre-push' : 'Pre-commit'} checks (${total} steps)\n`),
-  );
+  console.log(bold(`\nPre-commit checks (${total} steps)\n`));
 
   for (const [i, step] of plan.entries()) {
     const label = `${dim(`[${i + 1}/${total}]`)} ${step.name}`;
@@ -128,4 +122,4 @@ async function main(planName) {
   );
 }
 
-await main(process.argv[2] ?? 'push');
+await main(process.argv[2] ?? 'all');

@@ -1,3 +1,5 @@
-# Fast checks (~10 s): fix and lint staged files, then typecheck and unit-test everything.
+# Every check, before each commit (~4 min): this replaces GitHub CI.
+# Fix and lint the staged files, then lint, typecheck, test, build, size-check and run e2e.
+# Skip once with: git commit --no-verify
 pnpm exec lint-staged
-node scripts/checks.mjs commit
+node scripts/checks.mjs
