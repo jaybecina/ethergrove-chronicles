@@ -28,7 +28,7 @@ flowchart TB
   end
 
   subgraph gate["🛡️ Gate: is it safe"]
-    hook["pre-commit hook<br/>all 7 checks"]
+    hook["pre-commit hook<br/>all 8 checks"]
   end
 
   agent --> rules
@@ -46,6 +46,7 @@ flowchart TB
 | **Map**    | `graphify-out/` (generated)    | Answers "where is X / what calls Y" in one command        |
 | **Skill**  | `.claude/skills/second-brain/` | Claude's step-by-step routine for using the memory        |
 | **Gate**   | `.husky/pre-commit`            | Runs every check before a commit is allowed               |
+| **Upkeep** | `scripts/brain/` + hooks       | Briefs every prompt, asks for captures, refreshes the map |
 | **You**    | your terminal                  | The only one who commits on your own and pushes           |
 
 ## 2. Where everything lives
@@ -64,10 +65,13 @@ hearthvale/
 │   └── inbox/                 ←   quick notes waiting to be sorted
 │
 ├── .claude/
-│   ├── settings.json          ← hooks that nudge Claude to use the map
+│   ├── settings.json          ← hooks: prompt briefing, capture prompt, map nudges
 │   └── skills/
 │       ├── second-brain/      ← 🧠 routine: recall · capture · close · review · audit
 │       └── graphify/          ← 🗺️ Graphify's own skill (installed, don't edit)
+│
+├── scripts/brain/             ← 🔁 the automation behind those hooks (+ tests)
+├── .husky/post-commit         ← refreshes the map after commits (also post-merge, post-checkout)
 │
 ├── graphify-out/              ← 🗺️ generated map (gitignored, rebuilt in ~4 s)
 │   ├── GRAPH_REPORT.md
@@ -176,13 +180,40 @@ Type these in Claude Code. Plain English works too, e.g. "capture this as a less
 
 Other agents (Codex, Cursor and so on) don't have the skill, but `AGENTS.md` gives them the same rules.
 
+## 6b. It runs itself: automatic upkeep
+
+You don't have to ask for any of this; hooks do it ([decision 0006](../brain/decisions/0006-automated-second-brain.md)).
+
+```mermaid
+flowchart TB
+  start(["Session starts"]) --> s1["Load brain/MEMORY.md + the standing rule:<br/>always follow best practices and standards"]
+  s1 --> prompt(["You send a prompt"])
+  prompt --> p1["Live briefing added for the agent:<br/>branch · last 5 commits · uncommitted files<br/>related brain notes · graphify query hits"]
+  p1 --> work["Agent works: edits, runs tests"]
+  work --> stop{"Turn ending: files changed<br/>but brain/ and AGENTS.md didn't?"}
+  stop -->|yes, once| cap["Agent captures: decision · lesson ·<br/>new AGENTS.md rule · or a session-log line"]
+  stop -->|no| done(["Reply + handoff"])
+  cap --> done
+  work -. code changed .-> map["graphify update in the background (~2 s)"]
+  commit(["You commit / merge / checkout"]) -. git hook .-> map
+```
+
+| When                        | What happens automatically                                        |
+| --------------------------- | ----------------------------------------------------------------- |
+| Session starts              | Memory index and standing rule loaded; stale map rebuilt          |
+| Every prompt                | Briefing on what changed, related notes, code-map starting points |
+| A turn changed files        | One capture pass so the lesson lands in `brain/` or `AGENTS.md`   |
+| Code changed, or you commit | Map refreshed in the background                                   |
+
+Prompts themselves are never saved: notes are committed, so only the distilled lesson is kept.
+
 ## 7. The finish line: you push, not the agent
 
 Agents **never push** and only commit when you ask. When work is done, the last message is a handoff
 you can paste:
 
 ````markdown
-✅ Ready to push: branch `feat/tutorial` (6 changed files, checks: all 7 passed)
+✅ Ready to push: branch `feat/tutorial` (6 changed files, checks: all 8 passed)
 
 Commit:
 
@@ -206,7 +237,7 @@ Then you:
 
 ```mermaid
 flowchart LR
-  h["📋 copy the handoff"] --> c["git add + git commit<br/><small>hook runs 7 checks, ~4 min</small>"]
+  h["📋 copy the handoff"] --> c["git add + git commit<br/><small>hook runs 8 checks, ~4 min</small>"]
   c -->|"✓ all green"| p["git push"] --> pr["open the PR on GitHub<br/>paste title + description"]
   c -->|"✗ a check fails"| fix["paste the failing step<br/>to the agent to fix"] --> c
 ```

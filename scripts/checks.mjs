@@ -12,6 +12,7 @@ const PLANS = {
   all: [
     { name: 'Lint', cmd: 'pnpm lint' },
     { name: 'Typecheck', cmd: 'pnpm typecheck' },
+    { name: 'Script tests', cmd: 'pnpm test:scripts' },
     { name: 'Unit tests + coverage', cmd: 'pnpm test:coverage' },
     { name: 'Production build', cmd: 'pnpm build' },
     { name: 'No debug hook in build', cmd: 'pnpm --filter web check:build' },

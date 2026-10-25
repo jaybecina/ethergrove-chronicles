@@ -9,6 +9,9 @@ or other games. Third-party assets are CC0 only (see `CREDITS.md`); verify a pac
 
 ## Working standard
 
+**Always follow best practices and standards.** This is a standing instruction from the owner: it applies
+to every task, whether or not the prompt says so, and the owner should never have to repeat it.
+
 Work as a senior team in one person. Each role is a check to apply before calling work done:
 
 - **Full-stack engineer:** `packages/core` stays pure and deterministic. Types stay strict, with no `any`.
@@ -89,8 +92,17 @@ Work as a senior team in one person. Each role is a check to apply before callin
   `graphify-out/`, which is gitignored and regenerated.
   - Before searching code, run `graphify query "<question>"`, `graphify explain "<symbol>"` or
     `graphify path "<A>" "<B>"`.
-  - After changing code or notes, run `graphify update .` (about 4 s, local, no LLM).
+  - After changing code or notes, run `graphify update .` (about 2 s, local, no LLM).
   - The graph is a map: confirm what it says against the source before acting on it.
+- **Both update themselves** ([[decisions/0006-automated-second-brain]], code in `scripts/brain/`).
+  - In Claude Code, hooks in `.claude/settings.json` load `brain/MEMORY.md` at session start and add a
+    live briefing to every prompt: branch, recent commits, uncommitted files, related brain notes and
+    `graphify query` hits. Read the notes it lists when they bear on the request.
+  - When a turn changed files but not `brain/` or `AGENTS.md`, the Stop hook asks once for a capture.
+    Answer it properly: a decision, a lesson, a new rule for this file, or one session-log line. Never
+    paste raw prompts, secrets or command output.
+  - Husky `post-commit`, `post-merge` and `post-checkout` refresh the map in the background, for every
+    agent. Other agents should still read `brain/MEMORY.md` first and capture lessons by hand.
 
 ## Commands
 
@@ -102,6 +114,7 @@ pnpm dev              # game at http://localhost:5173
 pnpm lint             # ESLint (strict, type-checked) over the whole repo
 pnpm typecheck        # tsc in every package
 pnpm test             # Vitest, core + web
+pnpm test:scripts     # node:test for repo scripts (second-brain hooks)
 pnpm test:coverage    # packages/core must stay ≥ 90%
 pnpm build            # production build → apps/web/dist
 pnpm checks           # every check with live progress (what the pre-commit hook runs)
@@ -124,8 +137,8 @@ The phone projects only run `devices` and `a11y` specs.
 ## No GitHub CI: the pre-commit hook is the gate
 
 There is no GitHub Actions workflow. `.husky/pre-commit` runs lint-staged, then `node scripts/checks.mjs`.
-That script runs lint, typecheck, coverage, build, the no-debug-hook check, the bundle size check, and e2e
-on Chromium and WebKit. Every commit therefore takes about 4 minutes.
+That script runs lint, typecheck, the `scripts/` tests, coverage, build, the no-debug-hook check, the bundle
+size check, and e2e on Chromium and WebKit. Every commit therefore takes about 4 minutes.
 
 - The checks run on the working tree, so unstaged files count too.
 - Port 5199 must be free.

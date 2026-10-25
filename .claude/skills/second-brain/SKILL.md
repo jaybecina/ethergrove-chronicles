@@ -11,6 +11,13 @@ remembered fact against them before acting on it.
 
 Start every use by reading `brain/MEMORY.md`. It is the index.
 
+## What runs automatically
+
+Hooks do the routine part ([[decisions/0006-automated-second-brain]]). Session start loads `MEMORY.md`.
+Every prompt gets a briefing with related notes and `graphify query` hits, and the map refreshes itself.
+When a turn changed files but not `brain/` or `AGENTS.md`, the Stop hook asks for a capture: answer with
+the **capture** mode below. The modes here are still for anything that needs judgement.
+
 ## Modes
 
 Use the mode the user names. With no mode named, pick the one that fits the moment.
