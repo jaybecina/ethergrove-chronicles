@@ -9,3 +9,6 @@ test-results/
 .superpowers/
 assets-src/
 *.tsbuildinfo
+
+# Graphify output (regenerate with: graphify update .)
+graphify-out/

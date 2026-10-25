@@ -1,0 +1,18 @@
+# Graphify reads .gitignore too; this file only adds more exclusions.
+# Generated output and tool copies
+graphify-out/
+.claude/skills/graphify/
+# Binary and bulky assets (models, textures, audio, screenshots)
+apps/web/public/
+docs/media/
+apps/web/e2e/visual.spec.ts-snapshots/
+*.glb
+*.gltf
+*.png
+*.jpg
+*.webp
+*.ogg
+*.mp3
+# Lockfiles and fixtures that only add noise
+pnpm-lock.yaml
+packages/core/test/fixtures/

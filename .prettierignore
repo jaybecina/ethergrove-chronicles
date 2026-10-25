@@ -3,3 +3,7 @@ dist
 coverage
 .superpowers
 docs/superpowers
+
+# Generated graph and the vendored Graphify skill (upgrades overwrite it)
+graphify-out/
+.claude/skills/graphify/
