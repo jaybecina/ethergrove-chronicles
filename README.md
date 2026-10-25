@@ -79,7 +79,7 @@ apps/web        Vite + React 19 + React Three Fiber. Fixed 50 ms simulation step
 - **Tested:** property-based invariants, a scripted bot that plays a full year, component tests, and
   Playwright end-to-end tests with axe accessibility checks.
 
-More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Asset credits: [CREDITS.md](CREDITS.md).
+More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). How AI agents work in this repo (rules, project memory, code map): [docs/agent-workflow.md](docs/agent-workflow.md). Asset credits: [CREDITS.md](CREDITS.md).
 
 ## Roadmap
 

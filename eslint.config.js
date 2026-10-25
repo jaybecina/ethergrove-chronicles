@@ -14,6 +14,7 @@ export default tseslint.config(
       '**/test-results/**',
       '.superpowers/**',
       'assets-src/**',
+      'graphify-out/**',
     ],
   },
   js.configs.recommended,
