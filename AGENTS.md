@@ -25,9 +25,12 @@ Work as a senior team in one person. Each role is a check to apply before callin
   tokens. Check by eye at phone and desktop sizes before finishing.
 - **AI/LLM engineer:** specs and plans are precise enough for a less capable model to implement: exact
   names, values and text. When you learn a non-obvious lesson, add it to this file.
-- **QA tester:** write the test first and watch it fail. Player-visible flows get an e2e test. Try the
-  awkward inputs: a save loaded mid-flow, an overlay already open, slow devices. Re-run a flaky test to
-  find its cause; don't just retry it.
+- **QA tester:** write the test first and watch it fail. **Every change to source ships with an added or
+  updated test in the same area** (core, web or scripts), and a commit guard enforces it (see below).
+  Player-visible flows get an e2e test. A test must fail without the change it covers: check that before
+  calling it done. Try the awkward inputs: a save loaded mid-flow, an overlay already open, slow
+  devices. Re-run a flaky test to find its cause; don't just retry it. Never commit `.only` (ESLint
+  rejects it).
 - **Business analyst:** confirm the player-facing goal and success criteria before building. Ask when
   the request is ambiguous. Keep to the spec's scope. When finishing, report trade-offs and what you
   did not verify.
@@ -77,6 +80,9 @@ Work as a senior team in one person. Each role is a check to apply before callin
 
 - Commit types: `feat`, `fix`, `docs`, `test`, `build`, `refactor`, `chore`. List every file in `git add`; never
   use `git add -A` in a handoff. The pre-commit hook will run every check (~4 min) when the owner commits.
+- Every source file in `git add` needs a test file beside it in the same list. When no test can cover a change
+  (types only, copy text, assets), say why and prefix the commit line with it:
+  `NO_TEST_REASON="<why, 10+ chars>" git commit …`. The reason lands in the message as a `No-Test:` trailer.
 
 ## Project memory and code graph
 
@@ -136,10 +142,16 @@ The phone projects only run `devices` and `a11y` specs.
 
 ## No GitHub CI: the pre-commit hook is the gate
 
-There is no GitHub Actions workflow. `.husky/pre-commit` runs lint-staged, then `node scripts/checks.mjs`.
+There is no GitHub Actions workflow. `.husky/pre-commit` first runs the **test guard**
+(`scripts/testGuard.mjs`, about 1 s), then lint-staged, then `node scripts/checks.mjs`.
 That script runs lint, typecheck, the `scripts/` tests, coverage, build, the no-debug-hook check, the bundle
 size check, and e2e on Chromium and WebKit. Every commit therefore takes about 4 minutes.
 
+- The test guard reads the staged files. Each area with a staged source change needs a staged test:
+  core (`packages/core/src/**` → `packages/core/{src,test}/**/*.test.ts`), web (`apps/web/src/**` →
+  `apps/web/src/**/*.test.ts(x)` or `apps/web/e2e/*.spec.ts`), scripts (`scripts/**/*.mjs` →
+  `scripts/**/*.test.mjs`). Deletions and `.d.ts` files are exempt. `.husky/commit-msg` records a
+  `NO_TEST_REASON` as a `No-Test:` trailer ([[decisions/0007-every-change-ships-a-test]]).
 - The checks run on the working tree, so unstaged files count too.
 - Port 5199 must be free.
 - `git commit --no-verify` skips the hook. Don't use it unless the user asks.

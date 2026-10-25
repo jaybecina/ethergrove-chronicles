@@ -45,7 +45,7 @@ flowchart TB
 | **Memory** | `brain/`                       | Decisions and lessons, so nobody re-learns them           |
 | **Map**    | `graphify-out/` (generated)    | Answers "where is X / what calls Y" in one command        |
 | **Skill**  | `.claude/skills/second-brain/` | Claude's step-by-step routine for using the memory        |
-| **Gate**   | `.husky/pre-commit`            | Runs every check before a commit is allowed               |
+| **Gate**   | `.husky/pre-commit`            | Test guard, then every check, before a commit is allowed  |
 | **Upkeep** | `scripts/brain/` + hooks       | Briefs every prompt, asks for captures, refreshes the map |
 | **You**    | your terminal                  | The only one who commits on your own and pushes           |
 
@@ -198,12 +198,14 @@ flowchart TB
   commit(["You commit / merge / checkout"]) -. git hook .-> map
 ```
 
-| When                        | What happens automatically                                        |
-| --------------------------- | ----------------------------------------------------------------- |
-| Session starts              | Memory index and standing rule loaded; stale map rebuilt          |
-| Every prompt                | Briefing on what changed, related notes, code-map starting points |
-| A turn changed files        | One capture pass so the lesson lands in `brain/` or `AGENTS.md`   |
-| Code changed, or you commit | Map refreshed in the background                                   |
+| When                        | What happens automatically                                              |
+| --------------------------- | ----------------------------------------------------------------------- |
+| Session starts              | Memory index and standing rule loaded; stale map rebuilt                |
+| Every prompt                | Briefing on what changed, related notes, code-map starting points       |
+| A turn changed files        | One capture pass so the lesson lands in `brain/` or `AGENTS.md`         |
+| Source changed with no test | The agent is asked for the test before it finishes its turn             |
+| You commit                  | Test guard: each changed area needs a staged test (or a written reason) |
+| Code changed, or you commit | Map refreshed in the background                                         |
 
 Prompts themselves are never saved: notes are committed, so only the distilled lesson is kept.
 

@@ -59,6 +59,20 @@ export default tseslint.config(
     },
   },
   {
+    // A focused test (`test.only`, `describe.only`, `test.describe.only`) silently skips the rest, so the
+    // checks pass green while testing almost nothing (decision 0007).
+    files: ['**/*.test.{ts,tsx,mjs}', '**/*.spec.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression > MemberExpression.callee[property.name='only']",
+          message: 'Focused tests skip the rest of the suite. Remove .only before committing.',
+        },
+      ],
+    },
+  },
+  {
     // R3F scene code mutates three.js objects inside useFrame by design; the React
     // Compiler's immutability rule does not model that, so it is off for 3D code only.
     files: ['apps/web/src/scene/**/*.tsx', 'apps/web/src/render/**/*.tsx'],

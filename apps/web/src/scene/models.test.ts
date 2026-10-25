@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Box3, BoxGeometry, Group, Mesh, MeshStandardMaterial, Vector3 } from 'three';
-import { extractParts, fitTransform } from './models';
+import { extractParts, fitTransform, makeMatte } from './models';
 
 describe('fitTransform', () => {
   const box = new Box3(new Vector3(-1, 2, -3), new Vector3(3, 6, 1)); // 4 × 4 × 4, base at y = 2
@@ -30,5 +30,14 @@ describe('extractParts', () => {
     expect(parts.map((p) => p.material.name)).toEqual(['Bark', 'Leaves']);
     expect(box.min.y).toBeCloseTo(0);
     expect(box.max.y).toBeCloseTo(3);
+  });
+});
+
+describe('makeMatte', () => {
+  it('turns a glTF-default metal material into a rough non-metal one', () => {
+    const m = new MeshStandardMaterial({ metalness: 1, roughness: 1 });
+    makeMatte(m);
+    expect(m.metalness).toBe(0);
+    expect(m.roughness).toBeCloseTo(0.9);
   });
 });

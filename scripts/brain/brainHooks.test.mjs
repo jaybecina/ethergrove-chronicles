@@ -45,8 +45,12 @@ test('stopDecision blocks once when work changed and memory did not', () => {
   assert.equal(again.block, false);
 });
 
-test('stopDecision lets the turn end when memory was updated', () => {
-  const s = recordChanges(emptyState(), ['apps/web/src/a.ts', 'brain/sessions/2026-10-25.md']);
+test('stopDecision lets the turn end when memory and tests were updated', () => {
+  const s = recordChanges(emptyState(), [
+    'apps/web/src/a.ts',
+    'apps/web/src/a.test.ts',
+    'brain/sessions/2026-10-25.md',
+  ]);
   const d = stopDecision(s, { stopHookActive: false, today: '2026-10-25' });
   assert.equal(d.block, false);
   assert.equal(d.next.memoryTouched, false);
@@ -156,4 +160,22 @@ test('parsePorcelain reads paths from `git status -z`, skipping rename sources',
   const z = ' M src/a.ts\0R  src/new.ts\0src/old.ts\0?? brain/x.md\0';
   assert.deepEqual(parsePorcelain(z), ['src/a.ts', 'src/new.ts', 'brain/x.md']);
   assert.deepEqual(parsePorcelain(''), []);
+});
+
+test('stopDecision asks for a test when source changed without one, even after a capture', () => {
+  const s = recordChanges(emptyState(), ['packages/core/src/grid.ts', 'brain/lessons/x.md']);
+  const d = stopDecision(s, { stopHookActive: false, today: '2026-10-25' });
+  assert.equal(d.block, true);
+  assert.match(d.reason ?? '', /no added or updated test/);
+  assert.match(d.reason ?? '', /packages\/core\/src\/grid\.ts/);
+  assert.doesNotMatch(d.reason ?? '', /nothing in brain/);
+});
+
+test('stopDecision asks for both a capture and a test when both are missing', () => {
+  const d = stopDecision(recordChanges(emptyState(), ['apps/web/src/a.ts']), {
+    stopHookActive: false,
+    today: '2026-10-25',
+  });
+  assert.match(d.reason ?? '', /nothing in brain/);
+  assert.match(d.reason ?? '', /no added or updated test/);
 });

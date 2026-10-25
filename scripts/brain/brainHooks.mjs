@@ -1,4 +1,5 @@
-// Pure logic behind the second-brain automation (decision 0006). `hook.mjs` does the I/O.
+// Pure logic behind the second-brain automation (decisions 0006, 0007). `hook.mjs` does the I/O.
+import { checkTests } from '../testGuard.mjs';
 
 /** @typedef {{ pending: string[], memoryTouched: boolean, head?: string, dirty?: string[] }} BrainState */
 
@@ -49,21 +50,36 @@ export function recordChanges(state, paths) {
 export function stopDecision(state, { stopHookActive, today }) {
   const next = { ...state, pending: [], memoryTouched: false };
   const refreshGraph = state.pending.some((p) => CODE.test(p));
-  if (stopHookActive || state.pending.length === 0 || state.memoryTouched)
-    return { block: false, refreshGraph, next };
-  const shown = state.pending.slice(0, MAX_LISTED).map((p) => `- ${p}`);
-  const more = state.pending.length - shown.length;
-  if (more > 0) shown.push(`- …and ${more} more`);
-  const reason = [
-    `Second brain: this turn changed ${state.pending.length} file(s) but nothing in brain/ or AGENTS.md:`,
-    ...shown,
-    'Before you finish, capture what a future session could not cheaply rediscover (second-brain skill, capture rules):',
-    '1. A decision and why, or a root cause: write or update the note in brain/decisions/ or brain/lessons/.',
-    '2. A rule every agent should follow from now on (a better practice or standard): add one line to AGENTS.md.',
-    `3. Otherwise: append one line under "Done" in brain/sessions/${today}.md (create it from the template) saying what changed and why.`,
+  if (stopHookActive || state.pending.length === 0) return { block: false, refreshGraph, next };
+  const needCapture = !state.memoryTouched;
+  // Same rule as the commit guard, so an agent hears about a missing test before the owner commits.
+  const untested = checkTests(state.pending.map((path) => ({ status: 'M', path }))).missing;
+  if (!needCapture && untested.length === 0) return { block: false, refreshGraph, next };
+  /** @type {string[]} */
+  const reason = [];
+  if (needCapture) {
+    const shown = state.pending.slice(0, MAX_LISTED).map((p) => `- ${p}`);
+    const more = state.pending.length - shown.length;
+    if (more > 0) shown.push(`- …and ${more} more`);
+    reason.push(
+      `Second brain: this turn changed ${state.pending.length} file(s) but nothing in brain/ or AGENTS.md:`,
+      ...shown,
+      'Before you finish, capture what a future session could not cheaply rediscover (second-brain skill, capture rules):',
+      '1. A decision and why, or a root cause: write or update the note in brain/decisions/ or brain/lessons/.',
+      '2. A rule every agent should follow from now on (a better practice or standard): add one line to AGENTS.md.',
+      `3. Otherwise: append one line under "Done" in brain/sessions/${today}.md (create it from the template) saying what changed and why.`,
+    );
+  }
+  if (untested.length > 0)
+    reason.push(
+      'Tests: these changes have no added or updated test in the same area, so the commit test guard will reject them:',
+      ...untested.map((m) => `- ${m.area}: ${m.files.join(', ')}`),
+      'Add or update the test now, and check that it fails without your change. If no test can cover it (types only, copy text, assets), say why in your reply and put it in the handoff as NO_TEST_REASON.',
+    );
+  reason.push(
     'Never record secrets, personal data, raw prompts or command output. Then finish your reply as planned.',
-  ].join('\n');
-  return { block: true, reason, refreshGraph, next };
+  );
+  return { block: true, reason: reason.join('\n'), refreshGraph, next };
 }
 
 /**

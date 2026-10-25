@@ -1,0 +1,2 @@
+# Records NO_TEST_REASON as a "No-Test:" trailer when the test guard let a change through without a test.
+node scripts/testGuard.mjs --trailer "$1"

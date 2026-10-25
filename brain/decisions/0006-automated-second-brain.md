@@ -24,8 +24,9 @@ Claude Code hooks in `.claude/settings.json` call `node scripts/brain/hook.mjs <
   `.claude/.brain-state/<session>.json` (gitignored).
 - **Stop:** also finds shell-made changes and commits through `git status` and `git diff`. If work files
   changed but nothing in `brain/` or `AGENTS.md` did, it blocks the stop once and asks the agent to
-  capture a decision, a lesson or a new rule, or at least one session-log line. It refreshes the map
-  after code changes.
+  capture a decision, a lesson or a new rule, or at least one session-log line. Since
+  [[decisions/0007-every-change-ships-a-test]] it also asks for a test when source changed without one.
+  It refreshes the map after code changes.
 - **SessionEnd:** deletes the session state and refreshes a stale map.
 
 Husky `post-commit`, `post-merge` and `post-checkout` run `scripts/brain/refreshGraph.mjs`, so the map

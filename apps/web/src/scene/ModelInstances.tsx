@@ -4,7 +4,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 import { Color, Matrix4, MeshStandardMaterial, Object3D, type InstancedMesh } from 'three';
 import { patchMaterial, type PatchOptions } from '../render/shaders/patch';
 import type { InstanceItem } from './InstancedSet';
-import { extractParts, fitTransform } from './models';
+import { extractParts, fitTransform, makeMatte } from './models';
 
 const dummy = new Object3D();
 const base = new Matrix4();
@@ -19,10 +19,7 @@ interface Props {
   patch?: PatchOptions;
   /** Material colour override by glTF material name (e.g. seasonal leaves). */
   tint?: (materialName: string) => string | null;
-  /**
-   * Render as non-metal. Kenney glTFs omit `metallicFactor`, which three.js reads as fully metallic;
-   * with no environment map that hides the base colour, so a grey rock comes out dark brown.
-   */
+  /** Render as non-metal so the tint reads true (see `makeMatte`). */
   matte?: boolean;
   /** Which materials take each item's own `color` (others keep their texture colour). */
   colorParts?: (materialName: string) => boolean;
@@ -56,10 +53,7 @@ export function ModelInstances(props: Props) {
     () =>
       parts.map((p) => {
         const m = p.material.clone();
-        if (matte && m instanceof MeshStandardMaterial) {
-          m.metalness = 0;
-          m.roughness = 0.9;
-        }
+        if (matte) makeMatte(m);
         return patch ? patchMaterial(m, { ...patch, height: t.height }) : m;
       }),
     [parts, patchKey, t.height, matte], // eslint-disable-line react-hooks/exhaustive-deps

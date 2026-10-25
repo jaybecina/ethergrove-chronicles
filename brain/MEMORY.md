@@ -18,6 +18,8 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
   [[decisions/0005-vercel-builds-from-repo-root]]
 - The brain and the code map update themselves: Claude Code hooks brief every prompt and ask for a capture
   after changes; git hooks refresh the map. — verified, [[decisions/0006-automated-second-brain]]
+- Every source change ships with a test in the same area; the pre-commit test guard rejects commits
+  without one unless `NO_TEST_REASON` is given. — verified, [[decisions/0007-every-change-ships-a-test]]
 - Standing owner instruction: always follow best practices and standards (`AGENTS.md`, Working standard).
   — verified
 

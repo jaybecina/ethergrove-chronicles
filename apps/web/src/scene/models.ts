@@ -1,4 +1,12 @@
-import { Box3, Vector3, type BufferGeometry, type Material, type Mesh, type Object3D } from 'three';
+import {
+  Box3,
+  MeshStandardMaterial,
+  Vector3,
+  type BufferGeometry,
+  type Material,
+  type Mesh,
+  type Object3D,
+} from 'three';
 
 const isMesh = (o: Object3D): o is Mesh => (o as { isMesh?: boolean }).isMesh === true;
 
@@ -31,4 +39,14 @@ export function fitTransform(box: Box3, fit: { height: number } | { width: numbe
   const center = box.getCenter(new Vector3());
   const scale = 'height' in fit ? fit.height / size.y : fit.width / Math.max(size.x, size.z);
   return { scale, offset: new Vector3(-center.x, -box.min.y, -center.z), height: size.y };
+}
+
+/**
+ * Render a material as non-metal. Kenney glTFs omit `metallicFactor`, which three.js reads as fully
+ * metallic; with no environment map that hides the base colour, so a grey rock comes out dark brown.
+ */
+export function makeMatte(material: Material): void {
+  if (!(material instanceof MeshStandardMaterial)) return;
+  material.metalness = 0;
+  material.roughness = 0.9;
 }
