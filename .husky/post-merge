@@ -1,0 +1,2 @@
+# Refresh the Graphify code map in the background (decision 0006). Never blocks or fails git.
+node scripts/brain/refreshGraph.mjs

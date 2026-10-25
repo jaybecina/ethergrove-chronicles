@@ -12,3 +12,6 @@ assets-src/
 
 # Graphify output (regenerate with: graphify update .)
 graphify-out/
+
+# Second-brain hook state, per Claude Code session (scripts/brain/hook.mjs)
+.claude/.brain-state/

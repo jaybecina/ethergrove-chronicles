@@ -105,7 +105,7 @@ export function ItemIcon({ id, size }: { id: ItemId; size?: number | undefined }
   if (id === 'stone')
     return (
       <Svg size={size}>
-        <path d="M6 22 L10 11 L20 8 L27 15 L24 24 L12 26 Z" fill="#9a968f" {...STROKE} />
+        <path d="M6 22 L10 11 L20 8 L27 15 L24 24 L12 26 Z" fill="#8f979e" {...STROKE} />
       </Svg>
     );
   if (id === 'fiber')

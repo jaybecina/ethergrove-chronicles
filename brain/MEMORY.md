@@ -16,6 +16,10 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
 - The game must stay original, and assets are CC0 only. — verified, [[decisions/0004-original-ip-cc0-only]]
 - Vercel deploys from the root `vercel.json`, and the project's Root Directory must be empty. — verified,
   [[decisions/0005-vercel-builds-from-repo-root]]
+- The brain and the code map update themselves: Claude Code hooks brief every prompt and ask for a capture
+  after changes; git hooks refresh the map. — verified, [[decisions/0006-automated-second-brain]]
+- Standing owner instruction: always follow best practices and standards (`AGENTS.md`, Working standard).
+  — verified
 
 ## Where things are
 
