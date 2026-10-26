@@ -172,7 +172,8 @@ The checks are split by cost ([[decisions/0009-pre-commit-and-pr-ci]]):
   `scripts/` tests and every unit test (core + web).
 - **GitHub CI** (`.github/workflows/ci.yml`) runs on every pull request and on `main`: a job for lint,
   typecheck, the `scripts/` tests, coverage, build, the no-debug-hook check and the bundle size check, and
-  an e2e job each for Chromium and WebKit on Linux. These three jobs are the required checks for `main`.
+  e2e jobs on Linux: Chromium in two shards and WebKit, one worker each
+  ([[lessons/ci-e2e-one-worker]]). These four jobs are the required checks for `main`.
   `pnpm checks` runs the same steps locally; `scripts/checks.test.mjs` fails if the two drift apart, so
   change both together. There is no pre-push hook.
 

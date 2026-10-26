@@ -63,7 +63,8 @@ The checks are split by cost:
   `git commit --no-verify`.
 - **GitHub CI on each pull request and on `main`:** lint, typecheck, unit tests with coverage,
   production build, debug-hook check and bundle size in one job, plus e2e on Chromium and WebKit
-  (Linux) in parallel jobs. Failed tests upload their Playwright traces. Make the three jobs
+  (Linux) in parallel jobs, Chromium split in two shards. Failed tests upload their Playwright
+  traces. Make all four jobs
   required checks for `main` in branch protection.
 
 `pnpm checks` runs everything CI runs on your machine. It needs a free port 5199 (stop any

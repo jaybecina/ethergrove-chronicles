@@ -25,6 +25,11 @@ test('the all plan keeps the full gate: lint, coverage, build, debug-hook, size 
 test('GitHub CI runs every step of the all plan', () => {
   for (const step of PLANS.all.steps.filter((s) => s.live !== true))
     assert.ok(ci.includes(`- run: ${step.cmd}\n`), `ci.yml is missing: ${step.cmd}`);
-  assert.match(ci, /project: \[chromium, webkit\]/);
-  assert.match(ci, /- run: pnpm --filter web e2e --project=\$\{\{ matrix\.project \}\}\n/);
+  assert.match(ci, /project: chromium, shard: 1\/2/);
+  assert.match(ci, /project: chromium, shard: 2\/2/);
+  assert.match(ci, /project: webkit, shard: 1\/1/);
+  assert.match(
+    ci,
+    /- run: pnpm --filter web e2e --project=\$\{\{ matrix\.project \}\} --shard=\$\{\{ matrix\.shard \}\}\n/,
+  );
 });

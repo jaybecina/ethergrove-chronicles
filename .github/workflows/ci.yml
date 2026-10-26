@@ -1,5 +1,5 @@
 # Every check on each pull request and on main (decision 0009). Mirrors `pnpm checks` (scripts/checks.mjs,
-# plan `all`); scripts/checks.test.mjs fails if the two drift apart. Make the three jobs required checks
+# plan `all`); scripts/checks.test.mjs fails if the two drift apart. Make all four jobs required checks
 # for `main` in the repository's branch protection.
 name: CI
 
@@ -38,13 +38,17 @@ jobs:
       - run: pnpm --filter web size
 
   e2e:
-    name: E2E (${{ matrix.project }})
+    name: E2E (${{ matrix.project }} ${{ matrix.shard }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
       fail-fast: false
+      # One worker per runner (playwright.config.ts); Chromium is the slowest, so it is split in two.
       matrix:
-        project: [chromium, webkit]
+        include:
+          - { project: chromium, shard: 1/2 }
+          - { project: chromium, shard: 2/2 }
+          - { project: webkit, shard: 1/1 }
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -54,11 +58,11 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter web exec playwright install --with-deps ${{ matrix.project }}
-      - run: pnpm --filter web e2e --project=${{ matrix.project }}
+      - run: pnpm --filter web e2e --project=${{ matrix.project }} --shard=${{ matrix.shard }}
       # Traces are kept only for failed tests (playwright.config.ts); open them at trace.playwright.dev.
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: e2e-traces-${{ matrix.project }}
+          name: e2e-traces-${{ matrix.project }}-${{ strategy.job-index }}
           path: apps/web/test-results
           retention-days: 7

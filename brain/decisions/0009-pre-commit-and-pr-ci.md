@@ -18,12 +18,13 @@ fast local feedback, and the full suite on a clean machine before anything merge
 - **GitHub CI** (`.github/workflows/ci.yml`) on every pull request, on pushes to `main` and by hand:
   - job `Lint, types, tests, build`: lint, typecheck, `scripts/` tests, coverage, build, debug-hook
     check, bundle size;
-  - jobs `E2E (chromium)` and `E2E (webkit)` in parallel on Linux, `fail-fast: false`, uploading the
-    traces of failed tests for 7 days.
+  - jobs `E2E (chromium 1/2)`, `E2E (chromium 2/2)` and `E2E (webkit 1/1)` in parallel on Linux, one
+    Playwright worker each ([[lessons/ci-e2e-one-worker]]), `fail-fast: false`, uploading the traces of
+    failed tests for 7 days.
   - Read-only token, a 15/20 minute timeout per job, and a newer push cancels the older run.
   - Actions at their current major versions: checkout v7, setup-node v7 (Node 24, pnpm cache),
     pnpm/action-setup v6, upload-artifact v7.
-- **Branch protection (owner, in GitHub settings):** pull request required for `main`, with the three
+- **Branch protection (owner, in GitHub settings):** pull request required for `main`, with the four
   jobs as required checks.
 - `pnpm checks` (plan `all`) runs the same steps locally. `checks.test.mjs` fails when a step is in the
   plan but not in `ci.yml`.

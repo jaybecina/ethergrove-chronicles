@@ -41,5 +41,6 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
 ## Lessons worth knowing before you touch…
 
 - …e2e timing tests: [[lessons/webkit-speed-test-sampling]]
+- …e2e parallelism on CI: [[lessons/ci-e2e-one-worker]]
 - …R3F components and Zustand selectors: [[lessons/lesson-marker-render-loop]]
 - …the e2e `boot()` helper: [[lessons/e2e-boot-aborted-textures]]
