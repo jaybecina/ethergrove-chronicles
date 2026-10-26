@@ -28,26 +28,26 @@ flowchart TB
   end
 
   subgraph gate["🛡️ Gate: is it safe"]
-    hook["pre-commit hook<br/>all 8 checks"]
+    hook["git hooks<br/>commit: fast · push: all 8 checks"]
   end
 
   agent --> rules
   agent --> memory
   agent --> map
   agent -->|"✅ ready-to-push handoff"| you
-  you -->|"git commit"| hook
-  hook -->|"all green"| push(["git push → PR"])
+  you -->|"git commit, git push"| hook
+  hook -->|"all green"| push(["pushed → PR"])
 ```
 
-| Piece      | File or folder                 | One-line job                                              |
-| ---------- | ------------------------------ | --------------------------------------------------------- |
-| **Rules**  | `AGENTS.md` (+ `CLAUDE.md`)    | How agents behave here: commands, standards, the git rule |
-| **Memory** | `brain/`                       | Decisions and lessons, so nobody re-learns them           |
-| **Map**    | `graphify-out/` (generated)    | Answers "where is X / what calls Y" in one command        |
-| **Skill**  | `.claude/skills/second-brain/` | Claude's step-by-step routine for using the memory        |
-| **Gate**   | `.husky/pre-commit`            | Test guard, then every check, before a commit is allowed  |
-| **Upkeep** | `scripts/brain/` + hooks       | Briefs every prompt, asks for captures, refreshes the map |
-| **You**    | your terminal                  | The only one who commits on your own and pushes           |
+| Piece      | File or folder                  | One-line job                                              |
+| ---------- | ------------------------------- | --------------------------------------------------------- |
+| **Rules**  | `AGENTS.md` (+ `CLAUDE.md`)     | How agents behave here: commands, standards, the git rule |
+| **Memory** | `brain/`                        | Decisions and lessons, so nobody re-learns them           |
+| **Map**    | `graphify-out/` (generated)     | Answers "where is X / what calls Y" in one command        |
+| **Skill**  | `.claude/skills/second-brain/`  | Claude's step-by-step routine for using the memory        |
+| **Gate**   | `.husky/pre-commit`, `pre-push` | Commit: test guard + fast checks. Push: every check       |
+| **Upkeep** | `scripts/brain/` + hooks        | Briefs every prompt, asks for captures, refreshes the map |
+| **You**    | your terminal                   | The only one who commits on your own and pushes           |
 
 ## 2. Where everything lives
 
@@ -239,9 +239,10 @@ Then you:
 
 ```mermaid
 flowchart LR
-  h["📋 copy the handoff"] --> c["git add + git commit<br/><small>hook runs 8 checks, ~4 min</small>"]
-  c -->|"✓ all green"| p["git push"] --> pr["open the PR on GitHub<br/>paste title + description"]
-  c -->|"✗ a check fails"| fix["paste the failing step<br/>to the agent to fix"] --> c
+  h["📋 copy the handoff"] --> c["git add + git commit<br/><small>fast checks, ~15 s</small>"]
+  c -->|"✓ green"| p["git push<br/><small>all 8 checks, ~3 min</small>"] --> pr["open the PR on GitHub<br/>paste title + description"]
+  c -->|"✗ a check fails"| fix["paste the failing step<br/>to the agent to fix"]
+  p -->|"✗ a check fails"| fix
 ```
 
 ## 8. Cheat sheet
@@ -252,7 +253,8 @@ graphify query "how do saves migrate"   # ask the map a question
 graphify explain "migrate"              # one symbol: callers, callees, docs
 graphify path "Hotbar" "lessonSlot"     # how two things connect
 open graphify-out/graph.html            # explore the map visually
-pnpm checks                             # run every check by hand (same as the hook)
+pnpm checks:commit                      # the fast commit checks by hand (~15 s)
+pnpm checks                             # every check by hand (same as pre-push, ~3 min)
 ```
 
 ## 9. Troubleshooting
@@ -262,7 +264,7 @@ pnpm checks                             # run every check by hand (same as the h
 | `graphify: command not found`         | Install it: `python3 -m venv ~/.local/share/graphify/venv && ~/.local/share/graphify/venv/bin/pip install graphifyy`, then `ln -s ~/.local/share/graphify/venv/bin/graphify /opt/homebrew/bin/graphify` |
 | Map answers look out of date          | `graphify update .` (the report header shows which commit it was built from)                                                                                                                            |
 | An agent says "pushed" or opened a PR | That breaks the rule in `AGENTS.md`. Tell it to stop, and check `git log origin/<branch>`                                                                                                               |
-| Commit seems stuck                    | The hook runs e2e tests for about 4 min. Make sure nothing else is using port 5199                                                                                                                      |
+| Push seems stuck                      | Pre-push runs e2e tests for about 2.5 min. Make sure nothing else is using port 5199                                                                                                                    |
 | A note contradicts the code           | The code wins. Run `/second-brain review` to mark the note superseded                                                                                                                                   |
 
 ## 10. Setting this up in another project

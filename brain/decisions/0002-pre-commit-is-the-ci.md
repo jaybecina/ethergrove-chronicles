@@ -1,6 +1,6 @@
 # 0002 — The pre-commit hook replaces GitHub CI
 
-- **Status:** accepted · **Date:** 2026-10-25 · **Evidence:** `.husky/pre-commit`, `scripts/checks.mjs`,
+- **Status:** superseded by [[decisions/0008-fast-commit-full-push]] · **Date:** 2026-10-25 · **Evidence:** `.husky/pre-commit`, `scripts/checks.mjs`,
   commits `26152ff` (CI workflow removed) and `c2cd2ac` (all checks moved into pre-commit)
 
 ## Context

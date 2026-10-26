@@ -8,7 +8,8 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 15_000 },
   fullyParallel: false,
-  workers: process.env.CI ? 1 : 2,
+  // 2 workers cut the pre-push e2e from 3m 47s to ~2m 30s with no flakes in 3 runs (decision 0008).
+  workers: 2,
   retries: process.env.CI ? 1 : 0,
   // One live line per test, so a long run shows what is running and what passed.
   reporter: 'list',
