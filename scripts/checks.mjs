@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Runs the project checks one by one with live progress: `node scripts/checks.mjs [commit|push]`.
-// `commit` (~15 s) is the pre-commit gate; `push` (~3 min, the default) is every check, run by pre-push
-// (decision 0008).
+// Runs the project checks one by one with live progress: `node scripts/checks.mjs [commit|all]`.
+// `commit` (~10 s) is the pre-commit gate. `all` (~3 min, the default) is every check: the same steps
+// GitHub CI runs on each pull request (.github/workflows/ci.yml, decision 0009).
 // In a terminal each step shows a spinner and elapsed time, and its output is printed only if it
 // fails. Long steps (e2e) stream their own live progress. Outside a terminal it prints plain lines.
 import { spawn } from 'node:child_process';
@@ -21,8 +21,8 @@ export const PLANS = {
       { name: 'Unit tests', cmd: 'pnpm test' },
     ],
   },
-  push: {
-    title: 'Pre-push checks',
+  all: {
+    title: 'All checks',
     steps: [
       { name: 'Lint', cmd: 'pnpm lint' },
       { name: 'Typecheck', cmd: 'pnpm typecheck' },
@@ -139,5 +139,5 @@ async function main(planName) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  await main(process.argv[2] ?? 'push');
+  await main(process.argv[2] ?? 'all');
 }

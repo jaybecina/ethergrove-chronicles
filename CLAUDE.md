@@ -11,8 +11,8 @@ not here, so the two never drift apart.
 
 - Features follow the superpowers flow: brainstorm, then a spec in `docs/superpowers/specs/`, then a plan in
   `docs/superpowers/plans/`, then implementation by TDD, then one final review.
-- The pre-commit hook takes about 15 seconds; pass the message with `-m` or `-F <file>`. You never push,
-  so the 3-minute pre-push gate is the owner's. When you run `pnpm checks` yourself, give it a timeout of
+- The pre-commit hook takes about 10 seconds; pass the message with `-m` or `-F <file>`. The full
+  suite runs in GitHub CI on the owner's pull request. When you run `pnpm checks` yourself, give it a timeout of
   at least 600000 ms or run it in the background.
 
 ## graphify

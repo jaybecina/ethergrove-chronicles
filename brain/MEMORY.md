@@ -9,8 +9,8 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
 
 - Rules live in `packages/core`, pure and deterministic; the web app only draws them. — verified,
   [[decisions/0001-pure-deterministic-core]]
-- There is no GitHub CI. Husky pre-commit runs fast checks (~15 s); pre-push runs every check (~3 min).
-  — verified, [[decisions/0008-fast-commit-full-push]]
+- Husky pre-commit runs fast checks (~10 s); GitHub CI runs every check on each PR and on `main`.
+  No pre-push hook. — verified, [[decisions/0009-pre-commit-and-pr-ci]]
 - Saves are version 2. v2 added `GameState.tutorial`; every shape change needs a migration. — verified,
   [[decisions/0003-tutorial-in-core-save-v2]]
 - The game must stay original, and assets are CC0 only. — verified, [[decisions/0004-original-ip-cc0-only]]

@@ -1,6 +1,6 @@
 # 0008 — Fast checks on commit, every check on push
 
-- **Status:** accepted · **Date:** 2026-10-26 · **Evidence:** `.husky/pre-commit`, `.husky/pre-push`,
+- **Status:** superseded by [[decisions/0009-pre-commit-and-pr-ci]] · **Date:** 2026-10-26 · **Evidence:** `.husky/pre-commit`, `.husky/pre-push`,
   `scripts/checks.mjs` (`PLANS.commit`, `PLANS.push`, tested in `scripts/checks.test.mjs`)
 - **Supersedes:** [[decisions/0002-pre-commit-is-the-ci]]
 

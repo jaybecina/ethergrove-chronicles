@@ -46,26 +46,28 @@ pnpm test         # unit tests (core + web)
 pnpm e2e          # Playwright: Chromium, WebKit, Pixel 7, iPhone 14
 ```
 
-| Script                         | What it does                                               |
-| ------------------------------ | ---------------------------------------------------------- |
-| `pnpm lint` / `pnpm typecheck` | ESLint (strict, type-checked) and TypeScript               |
-| `pnpm test:coverage`           | Unit tests; `packages/core` must stay at ≥ 90% coverage    |
-| `pnpm build`                   | Production build into `apps/web/dist`                      |
-| `pnpm --filter web size`       | Bundle budget: initial JS ≤ 500 KB gzipped                 |
-| `pnpm --filter web perf`       | Load time on a throttled phone profile (production build)  |
-| `pnpm checks:commit`           | Typecheck and every unit test, ~15 s (pre-commit runs it)  |
-| `pnpm checks`                  | All the checks above with live progress (pre-push runs it) |
+| Script                         | What it does                                                |
+| ------------------------------ | ----------------------------------------------------------- |
+| `pnpm lint` / `pnpm typecheck` | ESLint (strict, type-checked) and TypeScript                |
+| `pnpm test:coverage`           | Unit tests; `packages/core` must stay at ≥ 90% coverage     |
+| `pnpm build`                   | Production build into `apps/web/dist`                       |
+| `pnpm --filter web size`       | Bundle budget: initial JS ≤ 500 KB gzipped                  |
+| `pnpm --filter web perf`       | Load time on a throttled phone profile (production build)   |
+| `pnpm checks:commit`           | Typecheck and every unit test, ~10 s (pre-commit runs it)   |
+| `pnpm checks`                  | All the checks above with live progress (same as GitHub CI) |
 
-There is no GitHub CI: Husky hooks run the checks on your machine, split by cost.
+The checks are split by cost:
 
-- **pre-commit (~15 s):** checks that staged code changes come with a test, fixes and lints the staged
-  files, then runs `pnpm checks:commit`: typecheck and every unit test.
-- **pre-push (~3 min):** runs `pnpm checks`: lint, typecheck, unit tests with coverage, production
-  build, debug-hook check, bundle size, and e2e on Chromium and WebKit. It refuses a dirty working
-  tree, because the checks run on your files, not on the commits (`git stash -u` first). It needs a
-  free port 5199 (stop any `pnpm dev:e2e` first).
+- **pre-commit (~10 s):** checks that staged code changes come with a test, fixes and lints the staged
+  files, then runs `pnpm checks:commit`: typecheck and every unit test. Skip once with
+  `git commit --no-verify`.
+- **GitHub CI on each pull request and on `main`:** lint, typecheck, unit tests with coverage,
+  production build, debug-hook check and bundle size in one job, plus e2e on Chromium and WebKit
+  (Linux) in parallel jobs. Failed tests upload their Playwright traces. Make the three jobs
+  required checks for `main` in branch protection.
 
-Skip a hook once with `--no-verify`.
+`pnpm checks` runs everything CI runs on your machine. It needs a free port 5199 (stop any
+`pnpm dev:e2e` first).
 
 Each step shows a spinner and its time, and prints its output only if it fails; e2e prints one live
 line per test.

@@ -1,4 +1,4 @@
-# Fast gate before each commit (~15 s, decision 0008). The full suite runs in pre-push.
+# Fast gate before each commit (~10 s, decision 0009). GitHub CI runs every check on each pull request.
 # First the test guard (staged changes need a test, decision 0007), so a missing test fails in a second.
 # Then fix and lint the staged files, then typecheck and run every unit and script test.
 # Skip once with: git commit --no-verify

@@ -1,0 +1,64 @@
+# Every check on each pull request and on main (decision 0009). Mirrors `pnpm checks` (scripts/checks.mjs,
+# plan `all`); scripts/checks.test.mjs fails if the two drift apart. Make the three jobs required checks
+# for `main` in the repository's branch protection.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, types, tests, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test:scripts
+      - run: pnpm test:coverage
+      - run: pnpm build
+      - run: pnpm --filter web check:build
+      - run: pnpm --filter web size
+
+  e2e:
+    name: E2E (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter web exec playwright install --with-deps ${{ matrix.project }}
+      - run: pnpm --filter web e2e --project=${{ matrix.project }}
+      # Traces are kept only for failed tests (playwright.config.ts); open them at trace.playwright.dev.
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: e2e-traces-${{ matrix.project }}
+          path: apps/web/test-results
+          retention-days: 7

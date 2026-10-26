@@ -8,11 +8,12 @@ export default defineConfig({
   timeout: 90_000,
   expect: { timeout: 15_000 },
   fullyParallel: false,
-  // 2 workers cut the pre-push e2e from 3m 47s to ~2m 30s with no flakes in 3 runs (decision 0008).
+  // 2 workers cut the full e2e run from 3m 47s to ~2m 30s with no flakes in 3 runs (decision 0008).
   workers: 2,
   retries: process.env.CI ? 1 : 0,
-  // One live line per test, so a long run shows what is running and what passed.
-  reporter: 'list',
+  // One live line per test, so a long run shows what is running and what passed. On GitHub Actions,
+  // failures are also annotated on the pull request.
+  reporter: process.env.GITHUB_ACTIONS ? [['list'], ['github']] : 'list',
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: 'retain-on-failure',
