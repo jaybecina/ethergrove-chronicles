@@ -28,15 +28,15 @@ flowchart TB
   end
 
   subgraph gate["🛡️ Gate: is it safe"]
-    hook["pre-commit hook<br/>all 8 checks"]
+    hook["pre-commit: fast checks<br/>GitHub CI on the PR: all 8"]
   end
 
   agent --> rules
   agent --> memory
   agent --> map
   agent -->|"✅ ready-to-push handoff"| you
-  you -->|"git commit"| hook
-  hook -->|"all green"| push(["git push → PR"])
+  you -->|"git commit, push, open PR"| hook
+  hook -->|"all green"| push(["merge"])
 ```
 
 | Piece      | File or folder                 | One-line job                                              |
@@ -45,7 +45,7 @@ flowchart TB
 | **Memory** | `brain/`                       | Decisions and lessons, so nobody re-learns them           |
 | **Map**    | `graphify-out/` (generated)    | Answers "where is X / what calls Y" in one command        |
 | **Skill**  | `.claude/skills/second-brain/` | Claude's step-by-step routine for using the memory        |
-| **Gate**   | `.husky/pre-commit`            | Test guard, then every check, before a commit is allowed  |
+| **Gate**   | `.husky/pre-commit`, GitHub CI | Commit: test guard + fast checks. PR: every check         |
 | **Upkeep** | `scripts/brain/` + hooks       | Briefs every prompt, asks for captures, refreshes the map |
 | **You**    | your terminal                  | The only one who commits on your own and pushes           |
 
@@ -239,9 +239,10 @@ Then you:
 
 ```mermaid
 flowchart LR
-  h["📋 copy the handoff"] --> c["git add + git commit<br/><small>hook runs 8 checks, ~4 min</small>"]
-  c -->|"✓ all green"| p["git push"] --> pr["open the PR on GitHub<br/>paste title + description"]
-  c -->|"✗ a check fails"| fix["paste the failing step<br/>to the agent to fix"] --> c
+  h["📋 copy the handoff"] --> c["git add + git commit<br/><small>fast checks, ~10 s</small>"]
+  c -->|"✓ green"| p["git push"] --> pr["open the PR on GitHub<br/>paste title + description"] --> ci["GitHub CI<br/><small>all 8 checks</small>"]
+  c -->|"✗ a check fails"| fix["paste the failing step<br/>to the agent to fix"]
+  ci -->|"✗ a check fails"| fix
 ```
 
 ## 8. Cheat sheet
@@ -252,7 +253,8 @@ graphify query "how do saves migrate"   # ask the map a question
 graphify explain "migrate"              # one symbol: callers, callees, docs
 graphify path "Hotbar" "lessonSlot"     # how two things connect
 open graphify-out/graph.html            # explore the map visually
-pnpm checks                             # run every check by hand (same as the hook)
+pnpm checks:commit                      # the fast commit checks by hand (~10 s)
+pnpm checks                             # every check by hand (same as GitHub CI, ~3 min)
 ```
 
 ## 9. Troubleshooting
@@ -262,7 +264,7 @@ pnpm checks                             # run every check by hand (same as the h
 | `graphify: command not found`         | Install it: `python3 -m venv ~/.local/share/graphify/venv && ~/.local/share/graphify/venv/bin/pip install graphifyy`, then `ln -s ~/.local/share/graphify/venv/bin/graphify /opt/homebrew/bin/graphify` |
 | Map answers look out of date          | `graphify update .` (the report header shows which commit it was built from)                                                                                                                            |
 | An agent says "pushed" or opened a PR | That breaks the rule in `AGENTS.md`. Tell it to stop, and check `git log origin/<branch>`                                                                                                               |
-| Commit seems stuck                    | The hook runs e2e tests for about 4 min. Make sure nothing else is using port 5199                                                                                                                      |
+| `pnpm checks` seems stuck             | Its e2e step takes about 2.5 min. Make sure nothing else is using port 5199                                                                                                                             |
 | A note contradicts the code           | The code wins. Run `/second-brain review` to mark the note superseded                                                                                                                                   |
 
 ## 10. Setting this up in another project

@@ -1,7 +1,7 @@
-# Every check, before each commit (~4 min): this replaces GitHub CI.
+# Fast gate before each commit (~10 s, decision 0009). GitHub CI runs every check on each pull request.
 # First the test guard (staged changes need a test, decision 0007), so a missing test fails in a second.
-# Then fix and lint the staged files, then lint, typecheck, test, build, size-check and run e2e.
+# Then fix and lint the staged files, then typecheck and run every unit and script test.
 # Skip once with: git commit --no-verify
 node scripts/testGuard.mjs
 pnpm exec lint-staged
-node scripts/checks.mjs
+node scripts/checks.mjs commit

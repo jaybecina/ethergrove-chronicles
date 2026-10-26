@@ -79,7 +79,8 @@ Work as a senior team in one person. Each role is a check to apply before callin
   ````
 
 - Commit types: `feat`, `fix`, `docs`, `test`, `build`, `refactor`, `chore`. List every file in `git add`; never
-  use `git add -A` in a handoff. The pre-commit hook will run every check (~4 min) when the owner commits.
+  use `git add -A` in a handoff. On commit the hook runs the fast gate (~10 s); GitHub CI runs every check
+  on the pull request.
 - Every source file in `git add` needs a test file beside it in the same list. When no test can cover a change
   (types only, copy text, assets), say why and prefix the commit line with it:
   `NO_TEST_REASON="<why, 10+ chars>" git commit …`. The reason lands in the message as a `No-Test:` trailer.
@@ -123,7 +124,8 @@ pnpm test             # Vitest, core + web
 pnpm test:scripts     # node:test for repo scripts (second-brain hooks)
 pnpm test:coverage    # packages/core must stay ≥ 90%
 pnpm build            # production build → apps/web/dist
-pnpm checks           # every check with live progress (what the pre-commit hook runs)
+pnpm checks:commit    # the fast gate with live progress (what pre-commit runs, ~10 s)
+pnpm checks           # every check with live progress (what GitHub CI runs, ~3 min)
 pnpm --filter web size   # bundle budget (size-limit)
 pnpm --filter web perf   # load time on a throttled phone profile (not gating)
 ```
@@ -136,29 +138,57 @@ pnpm --filter web exec vitest run src/ui/lessons/cards.test.tsx
 cd apps/web && CI=true pnpm exec playwright test e2e/lessons.spec.ts --project=chromium -g "skipped"
 ```
 
-`CI=true` gives the hook's settings for Playwright: one worker, one retry, a fresh dev server. Without it,
+`CI=true` gives GitHub CI's settings for Playwright: one retry and a fresh dev server (two workers either way). Without it,
 an already-running server on port 5199 is reused. Projects: `chromium`, `webkit`, `pixel-7`, `iphone-14`.
 The phone projects only run `devices` and `a11y` specs.
 
-## No GitHub CI: the pre-commit hook is the gate
+### Which checks to run while you work
 
-There is no GitHub Actions workflow. `.husky/pre-commit` first runs the **test guard**
-(`scripts/testGuard.mjs`, about 1 s), then lint-staged, then `node scripts/checks.mjs`.
-That script runs lint, typecheck, the `scripts/` tests, coverage, build, the no-debug-hook check, the bundle
-size check, and e2e on Chromium and WebKit. Every commit therefore takes about 4 minutes.
+Run the smallest check that proves the change; the hooks run the rest. This keeps runs (and tokens) small.
+
+- **After each edit:** the single-test commands above for the file or flow you touched. Don't run
+  `pnpm checks`, `pnpm test:coverage` or the whole e2e suite after every edit.
+- **Before the handoff:** `pnpm checks:commit`, plus the e2e specs for any player-visible flow you changed
+  (`--project=chromium`). Run the full `pnpm checks` too when the change is broad: a refactor, the
+  `GameState` shape or saves, the loop, build or test config.
+- **A shared module changed** (`game/store.ts`, `systems/day.ts`, `e2e/helpers.ts` and the like): run the
+  whole suite of that package, not just the nearest test file.
+- **Writing the test:** read the nearby tests first and extend the existing file when one fits; don't
+  repeat what another test already checks. Game rules (crops, day order, saves) get core unit tests;
+  e2e is for what a player sees and does, not for logic the core can test in milliseconds.
+- **Checking in a browser:** read the page as text (`read_page`, `get_page_text`) or query state through
+  `window.__hearthvale`; take screenshots only for visual checks, and close the preview server after.
+- **A test fails:** find out whether your change, an older bug or flakiness caused it before editing code.
+  Never weaken, skip or delete a test to get green.
+- **Report** which checks ran and their results, and name what did not run. Never say a check passed
+  without running it.
+
+## Checks: pre-commit, then GitHub CI on the pull request
+
+The checks are split by cost ([[decisions/0009-pre-commit-and-pr-ci]]):
+
+- **`.husky/pre-commit` (~10 s)** runs the **test guard** (`scripts/testGuard.mjs`, about 1 s), then
+  lint-staged (ESLint and Prettier on staged files), then `node scripts/checks.mjs commit`: typecheck, the
+  `scripts/` tests and every unit test (core + web).
+- **GitHub CI** (`.github/workflows/ci.yml`) runs on every pull request and on `main`: a job for lint,
+  typecheck, the `scripts/` tests, coverage, build, the no-debug-hook check and the bundle size check, and
+  e2e jobs on Linux: Chromium in two shards and WebKit, one worker each
+  ([[lessons/ci-e2e-one-worker]]). These four jobs are the required checks for `main`.
+  `pnpm checks` runs the same steps locally; `scripts/checks.test.mjs` fails if the two drift apart, so
+  change both together. There is no pre-push hook.
 
 - The test guard reads the staged files. Each area with a staged source change needs a staged test:
   core (`packages/core/src/**` → `packages/core/{src,test}/**/*.test.ts`), web (`apps/web/src/**` →
   `apps/web/src/**/*.test.ts(x)` or `apps/web/e2e/*.spec.ts`), scripts (`scripts/**/*.mjs` →
   `scripts/**/*.test.mjs`). Deletions and `.d.ts` files are exempt. `.husky/commit-msg` records a
   `NO_TEST_REASON` as a `No-Test:` trailer ([[decisions/0007-every-change-ships-a-test]]).
-- The checks run on the working tree, so unstaged files count too.
-- Port 5199 must be free.
-- `git commit --no-verify` skips the hook. Don't use it unless the user asks.
+- The commit checks run on the working tree, so unstaged files count too.
+- `pnpm checks` run locally needs port 5199 free.
+- `git commit --no-verify` skips the hook. Don't use it unless the user asks. CI still runs on the PR.
 - Pass commit messages with `-m` or `-F <file>`, never `-F -`: git waits on stdin after the hook and hangs.
 
 Visual baseline tests (`e2e/visual.spec.ts`) are Chromium-only and macOS-only, and they skip under
-`CI=true`, so the hook never runs them. To regenerate:
+`CI=true`, so `pnpm checks` and GitHub CI never run them. To regenerate:
 `pnpm --filter web exec playwright test e2e/visual.spec.ts --project=chromium --update-snapshots=all`.
 Use `=all`: small UI changes fall inside the 2% tolerance and would otherwise leave stale baselines.
 

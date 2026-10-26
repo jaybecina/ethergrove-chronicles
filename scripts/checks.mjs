@@ -1,28 +1,43 @@
 #!/usr/bin/env node
-// Runs every project check one by one with live progress: `node scripts/checks.mjs`.
+// Runs the project checks one by one with live progress: `node scripts/checks.mjs [commit|all]`.
+// `commit` (~10 s) is the pre-commit gate. `all` (~3 min, the default) is every check: the same steps
+// GitHub CI runs on each pull request (.github/workflows/ci.yml, decision 0009).
 // In a terminal each step shows a spinner and elapsed time, and its output is printed only if it
 // fails. Long steps (e2e) stream their own live progress. Outside a terminal it prints plain lines.
 import { spawn } from 'node:child_process';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { stripVTControlCharacters } from 'node:util';
 
 /** @typedef {{ name: string, cmd: string, live?: boolean }} Step */
 
-/** @type {Record<string, Step[]>} */
-const PLANS = {
-  all: [
-    { name: 'Lint', cmd: 'pnpm lint' },
-    { name: 'Typecheck', cmd: 'pnpm typecheck' },
-    { name: 'Script tests', cmd: 'pnpm test:scripts' },
-    { name: 'Unit tests + coverage', cmd: 'pnpm test:coverage' },
-    { name: 'Production build', cmd: 'pnpm build' },
-    { name: 'No debug hook in build', cmd: 'pnpm --filter web check:build' },
-    { name: 'Bundle size budget', cmd: 'pnpm --filter web size' },
-    {
-      name: 'E2E: Chromium + WebKit',
-      cmd: 'CI=true pnpm --filter web e2e --project=chromium --project=webkit',
-      live: true,
-    },
-  ],
+/** @type {Record<string, { title: string, steps: Step[] }>} */
+export const PLANS = {
+  commit: {
+    title: 'Pre-commit checks',
+    steps: [
+      { name: 'Typecheck', cmd: 'pnpm typecheck' },
+      { name: 'Script tests', cmd: 'pnpm test:scripts' },
+      { name: 'Unit tests', cmd: 'pnpm test' },
+    ],
+  },
+  all: {
+    title: 'All checks',
+    steps: [
+      { name: 'Lint', cmd: 'pnpm lint' },
+      { name: 'Typecheck', cmd: 'pnpm typecheck' },
+      { name: 'Script tests', cmd: 'pnpm test:scripts' },
+      { name: 'Unit tests + coverage', cmd: 'pnpm test:coverage' },
+      { name: 'Production build', cmd: 'pnpm build' },
+      { name: 'No debug hook in build', cmd: 'pnpm --filter web check:build' },
+      { name: 'Bundle size budget', cmd: 'pnpm --filter web size' },
+      {
+        name: 'E2E: Chromium + WebKit',
+        cmd: 'CI=true pnpm --filter web e2e --project=chromium --project=webkit',
+        live: true,
+      },
+    ],
+  },
 };
 
 const tty = process.stdout.isTTY === true && !process.env.NO_COLOR;
@@ -75,11 +90,11 @@ async function main(planName) {
     console.error(`Unknown plan "${planName}". Use one of: ${Object.keys(PLANS).join(', ')}`);
     process.exit(2);
   }
-  const total = plan.length;
+  const total = plan.steps.length;
   const started = performance.now();
-  console.log(bold(`\nPre-commit checks (${total} steps)\n`));
+  console.log(bold(`\n${plan.title} (${total} steps)\n`));
 
-  for (const [i, step] of plan.entries()) {
+  for (const [i, step] of plan.steps.entries()) {
     const label = `${dim(`[${i + 1}/${total}]`)} ${step.name}`;
     const t0 = performance.now();
     let timer;
@@ -123,4 +138,6 @@ async function main(planName) {
   );
 }
 
-await main(process.argv[2] ?? 'all');
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  await main(process.argv[2] ?? 'all');
+}
