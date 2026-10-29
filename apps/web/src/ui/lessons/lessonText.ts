@@ -1,4 +1,4 @@
-import type { LessonId, NoteId } from '@hearthvale/core';
+import type { LessonId, NoteId } from '@ethergrove/core';
 
 export interface LessonCopy {
   title: string;

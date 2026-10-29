@@ -1,4 +1,4 @@
-import { CROPS, cropStage, type CropState, type Grid } from '@hearthvale/core';
+import { CROPS, cropStage, type CropState, type Grid } from '@ethergrove/core';
 import { useEffect, useMemo, useRef } from 'react';
 import { eventBus } from '../game/eventBus';
 import { ASSETS, type AssetKey } from './assets';

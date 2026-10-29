@@ -1,4 +1,4 @@
-import { BALANCE } from '@hearthvale/core';
+import { BALANCE } from '@ethergrove/core';
 import { useGame } from '../../game/store';
 
 export function Stamina() {

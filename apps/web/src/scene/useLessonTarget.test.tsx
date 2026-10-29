@@ -1,4 +1,4 @@
-import { createNewGame } from '@hearthvale/core';
+import { createNewGame } from '@ethergrove/core';
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { gameStore } from '../game/store';

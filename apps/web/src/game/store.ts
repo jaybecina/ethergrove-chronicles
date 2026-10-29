@@ -1,5 +1,5 @@
-import { applyCommand } from '@hearthvale/core';
-import type { Command, GameEvent, GameState, SlotId } from '@hearthvale/core';
+import { applyCommand } from '@ethergrove/core';
+import type { Command, GameEvent, GameState, SlotId } from '@ethergrove/core';
 import { useStore } from 'zustand';
 import { createStore, type StoreApi } from 'zustand/vanilla';
 import { eventBus as defaultBus, type EventBus } from './eventBus';
@@ -29,28 +29,52 @@ export const DEFAULT_SETTINGS: Settings = {
   introSeen: false,
 };
 
-const SETTINGS_KEY = 'hearthvale:settings';
+const SETTINGS_KEY = 'ethergrove:settings';
+/** Where settings lived before the rename to Ethergrove (spec §3.4): read once, then removed. */
+const LEGACY_SETTINGS_KEY = 'hearthvale:settings';
+
+/** Throws on invalid JSON. */
+function parseSettings(raw: string): Settings {
+  const parsed = JSON.parse(raw) as Partial<Settings>;
+  // Copy known keys only, so retired settings (like the old seenTips) are dropped.
+  const known = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
+  return Object.fromEntries(
+    known.map((k) => [k, parsed[k] ?? DEFAULT_SETTINGS[k]]),
+  ) as unknown as Settings;
+}
 
 function loadSettings(): Settings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
-    if (!raw) return DEFAULT_SETTINGS;
-    const parsed = JSON.parse(raw) as Partial<Settings>;
-    // Copy known keys only, so retired settings (like the old seenTips) are dropped.
-    const known = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
-    return Object.fromEntries(
-      known.map((k) => [k, parsed[k] ?? DEFAULT_SETTINGS[k]]),
-    ) as unknown as Settings;
+    const legacy = localStorage.getItem(LEGACY_SETTINGS_KEY);
+    if (raw) {
+      if (legacy !== null) localStorage.removeItem(LEGACY_SETTINGS_KEY);
+      return parseSettings(raw);
+    }
+    if (legacy === null) return DEFAULT_SETTINGS;
+    let settings: Settings;
+    try {
+      settings = parseSettings(legacy);
+    } catch {
+      localStorage.removeItem(LEGACY_SETTINGS_KEY);
+      return DEFAULT_SETTINGS;
+    }
+    // Write first, then remove: if the write fails, the old key stays for the next launch.
+    if (saveSettings(settings)) localStorage.removeItem(LEGACY_SETTINGS_KEY);
+    return settings;
   } catch {
     return DEFAULT_SETTINGS;
   }
 }
 
-function saveSettings(settings: Settings): void {
+/** Returns false when storage is blocked (private mode, quota). */
+function saveSettings(settings: Settings): boolean {
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    return true;
   } catch {
     // Storage blocked (private mode): settings live for this session only.
+    return false;
   }
 }
 

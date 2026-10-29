@@ -1,4 +1,4 @@
-import type { LoadResult, SaveSlotSummary, SlotId } from '@hearthvale/core';
+import type { LoadResult, SaveSlotSummary, SlotId } from '@ethergrove/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { gameStore } from '../../game/store';
 import type { IdbSaveRepository } from '../../save/idbRepository';
@@ -202,7 +202,7 @@ export function SaveSlots({ repo = saveRepo, mode }: Props) {
               void f.text().then(async (text) => {
                 const result = importSave(text);
                 if (!result.ok) {
-                  setMessage("This file isn't a Hearthvale save.");
+                  setMessage("This file isn't an Ethergrove save.");
                   return;
                 }
                 const empty = (slots ?? []).find((s) => !s.summary && !s.corrupt);

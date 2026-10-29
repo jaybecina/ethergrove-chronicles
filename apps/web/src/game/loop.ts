@@ -1,4 +1,4 @@
-import type { Command } from '@hearthvale/core';
+import type { Command } from '@ethergrove/core';
 import type { StoreApi } from 'zustand/vanilla';
 import { GAME_MINUTES_PER_REAL_MS, MAX_FRAME_MS, STEP_MS } from './config';
 import type { GameStore } from './store';

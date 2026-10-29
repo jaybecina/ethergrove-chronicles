@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createNewGame } from '@hearthvale/core';
+import { createNewGame } from '@ethergrove/core';
 import { createEventBus } from './eventBus';
 import { DEFAULT_SETTINGS, createGameStore } from './store';
 
@@ -62,13 +62,13 @@ describe('game store', () => {
     const store = createGameStore();
     store.getState().updateSettings({ musicVolume: 0.3 });
     expect(createGameStore().getState().settings.musicVolume).toBe(0.3);
-    localStorage.setItem('hearthvale:settings', '{not json');
+    localStorage.setItem('ethergrove:settings', '{not json');
     expect(createGameStore().getState().settings).toEqual(DEFAULT_SETTINGS);
   });
 
   it('loadSettings drops unknown keys like the old seenTips', () => {
     localStorage.setItem(
-      'hearthvale:settings',
+      'ethergrove:settings',
       JSON.stringify({ musicVolume: 0.4, seenTips: ['hoe'], bogus: 1 }),
     );
     const settings = createGameStore().getState().settings;
@@ -76,5 +76,40 @@ describe('game store', () => {
     expect(settings).not.toHaveProperty('seenTips');
     expect(settings).not.toHaveProperty('bogus');
     expect(Object.keys(settings).sort()).toEqual(Object.keys(DEFAULT_SETTINGS).sort());
+  });
+});
+
+describe('settings carry-over from Hearthvale', () => {
+  it('moves old settings to the new key', () => {
+    localStorage.setItem('hearthvale:settings', JSON.stringify({ musicVolume: 0.2 }));
+    expect(createGameStore().getState().settings.musicVolume).toBe(0.2);
+    expect(JSON.parse(localStorage.getItem('ethergrove:settings') ?? '{}')).toMatchObject({
+      musicVolume: 0.2,
+    });
+    expect(localStorage.getItem('hearthvale:settings')).toBeNull();
+  });
+
+  it('drops broken old settings and removes the old key', () => {
+    localStorage.setItem('hearthvale:settings', '{not json');
+    expect(createGameStore().getState().settings).toEqual(DEFAULT_SETTINGS);
+    expect(localStorage.getItem('hearthvale:settings')).toBeNull();
+  });
+
+  it('prefers the new key', () => {
+    localStorage.setItem('ethergrove:settings', JSON.stringify({ musicVolume: 0.9 }));
+    localStorage.setItem('hearthvale:settings', JSON.stringify({ musicVolume: 0.1 }));
+    expect(createGameStore().getState().settings.musicVolume).toBe(0.9);
+    expect(localStorage.getItem('hearthvale:settings')).toBeNull();
+  });
+
+  it('survives blocked storage', () => {
+    localStorage.setItem('hearthvale:settings', JSON.stringify({ musicVolume: 0.2 }));
+    const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    expect(createGameStore().getState().settings.musicVolume).toBe(0.2);
+    // Not written to the new key, so the old one stays for the next launch (spec §3.4: write, then remove).
+    expect(localStorage.getItem('hearthvale:settings')).not.toBeNull();
+    spy.mockRestore();
   });
 });

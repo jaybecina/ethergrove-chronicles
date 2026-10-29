@@ -1,4 +1,4 @@
-import type { Facing } from '@hearthvale/core';
+import type { Facing } from '@ethergrove/core';
 
 export const FACING_YAW: Record<Facing, number> = {
   n: Math.PI,

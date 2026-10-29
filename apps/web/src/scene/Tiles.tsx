@@ -1,4 +1,4 @@
-import type { Grid, Tile } from '@hearthvale/core';
+import type { Grid, Tile } from '@ethergrove/core';
 import { useFrame } from '@react-three/fiber';
 import { Suspense, useMemo } from 'react';
 import { weatherNow } from '../render/weatherState';
@@ -10,7 +10,7 @@ import {
   DodecahedronGeometry,
   MeshStandardMaterial,
 } from 'three';
-import type { Season } from '@hearthvale/core';
+import type { Season } from '@ethergrove/core';
 import { paletteFor } from '../render/seasonPalette';
 import { patchMaterial } from '../render/shaders/patch';
 import { COLORS, hash01 } from './palette';

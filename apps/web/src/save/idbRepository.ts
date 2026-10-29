@@ -1,17 +1,16 @@
-import { migrate } from '@hearthvale/core';
+import { migrate } from '@ethergrove/core';
 import type {
   LoadResult,
   SaveFile,
   SaveRepository,
   SaveSlotSummary,
   SlotId,
-} from '@hearthvale/core';
+} from '@ethergrove/core';
 import { openDB, type IDBPDatabase } from 'idb';
+import { SLOTS, STORE, backupKey, key } from './idbKeys';
+import { LEGACY_DB_NAME, importLegacySaves } from './legacyImport';
 
-const STORE = 'saves';
-const SLOTS: SlotId[] = [1, 2, 3];
-const key = (slot: SlotId) => `slot:${slot}`;
-const backupKey = (slot: SlotId) => `slot:${slot}:backup`;
+const DB_NAME = 'ethergrove';
 
 export interface IdbSaveRepository extends SaveRepository {
   loadBackup(slot: SlotId): Promise<LoadResult>;
@@ -31,9 +30,17 @@ function toResult(raw: unknown): LoadResult | null {
   return m.ok ? { kind: 'ok', file: m.file } : null;
 }
 
-export function createIdbRepository(dbName = 'hearthvale'): IdbSaveRepository {
+export function createIdbRepository(
+  dbName = DB_NAME,
+  legacyName = LEGACY_DB_NAME,
+): IdbSaveRepository {
   let dbPromise: Promise<IDBPDatabase> | null = null;
-  const db = () => (dbPromise ??= open(dbName));
+  // Hearthvale saves are copied in once, before the first read (spec §3.4).
+  const db = () =>
+    (dbPromise ??= open(dbName).then(async (d) => {
+      await importLegacySaves(d, legacyName);
+      return d;
+    }));
   const read = async (k: string): Promise<unknown> => (await db()).get(STORE, k);
 
   const repo: IdbSaveRepository = {
@@ -85,7 +92,7 @@ export function createIdbRepository(dbName = 'hearthvale'): IdbSaveRepository {
   return repo;
 }
 
-export async function isStorageAvailable(dbName = 'hearthvale'): Promise<boolean> {
+export async function isStorageAvailable(dbName = DB_NAME): Promise<boolean> {
   try {
     const d = await open(dbName);
     await d.put(STORE, 1, '__probe');

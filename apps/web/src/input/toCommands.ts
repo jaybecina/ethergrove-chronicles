@@ -1,4 +1,4 @@
-import { resolveSecondary, type Command, type GameState } from '@hearthvale/core';
+import { resolveSecondary, type Command, type GameState } from '@ethergrove/core';
 import { STEP_MS } from '../game/config';
 import type { Intents } from './intents';
 import { cameraRelative } from './mapper';

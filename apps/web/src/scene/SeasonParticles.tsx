@@ -1,4 +1,4 @@
-import type { Season } from '@hearthvale/core';
+import type { Season } from '@ethergrove/core';
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import {

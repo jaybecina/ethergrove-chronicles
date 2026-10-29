@@ -1,4 +1,4 @@
-import type { Command } from '@hearthvale/core';
+import type { Command } from '@ethergrove/core';
 import { useState } from 'react';
 import { gameStore, useGame } from '../../game/store';
 import { ItemIcon } from '../icons';

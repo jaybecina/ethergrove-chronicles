@@ -19,7 +19,7 @@ test.beforeEach(async ({ page }) => {
 
 test('title, slots and new game screens', async ({ page }) => {
   await boot(page);
-  await expect(page.getByRole('heading', { name: 'Hearthvale' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Ethergrove Chronicles' })).toBeVisible();
   await expectNoSeriousViolations(page);
   await page.getByRole('button', { name: 'New game' }).click();
   await expect(page.getByText('Choose a slot for your farm')).toBeVisible();
@@ -37,8 +37,8 @@ test('pause, cart and bin', async ({ page }) => {
   await page.getByRole('button', { name: 'Resume' }).first().click();
 
   await page.evaluate(() => {
-    window.__hearthvale?.skipMinutes(200);
-    window.__hearthvale?.teleport('farm', 30.5, 17.5, 'e');
+    window.__ethergrove?.skipMinutes(200);
+    window.__ethergrove?.teleport('farm', 30.5, 17.5, 'e');
   });
   await page.keyboard.press('KeyF');
   await expect(page.getByRole('dialog', { name: "Sol's cart" })).toBeVisible();

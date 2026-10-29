@@ -1,4 +1,4 @@
-import { targetTile } from '@hearthvale/core';
+import { targetTile } from '@ethergrove/core';
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import type { Mesh, MeshBasicMaterial } from 'three';

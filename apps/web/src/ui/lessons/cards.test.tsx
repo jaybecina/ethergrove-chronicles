@@ -1,4 +1,4 @@
-import { CROPS, createNewGame, type GameState, type Tile } from '@hearthvale/core';
+import { CROPS, createNewGame, type GameState, type Tile } from '@ethergrove/core';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { gameStore } from '../../game/store';

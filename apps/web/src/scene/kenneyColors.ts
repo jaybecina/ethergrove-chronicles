@@ -1,6 +1,6 @@
 /**
  * Kenney Nature Kit models carry a pastel palette (mint "grass", orange "dirt").
- * Remap those material names to Hearthvale's palette; `overrides` adjust per model family.
+ * Remap those material names to Ethergrove's palette; `overrides` adjust per model family.
  */
 const BASE: Record<string, string> = {
   grass: '#5f9a3c',

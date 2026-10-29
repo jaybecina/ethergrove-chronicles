@@ -1,4 +1,4 @@
-import { sellPrice } from '@hearthvale/core';
+import { sellPrice } from '@ethergrove/core';
 import { gameStore } from '../../game/store';
 import { displayName } from '../labels';
 import { gold } from '../format';

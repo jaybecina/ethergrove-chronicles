@@ -1,4 +1,4 @@
-import type { Grid, Season } from '@hearthvale/core';
+import type { Grid, Season } from '@ethergrove/core';
 import { useMemo } from 'react';
 import { ASSETS, type AssetKey } from './assets';
 import type { InstanceItem } from './InstancedSet';

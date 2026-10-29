@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import { createNewGame } from '@hearthvale/core';
+import { createNewGame } from '@ethergrove/core';
 import { afterEach, describe, expect, it } from 'vitest';
 import { createEventBus } from '../game/eventBus';
 import { createGameStore } from '../game/store';

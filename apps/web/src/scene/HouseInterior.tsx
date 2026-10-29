@@ -1,4 +1,4 @@
-import { findFeature, type Grid } from '@hearthvale/core';
+import { findFeature, type Grid } from '@ethergrove/core';
 import { Suspense, useMemo } from 'react';
 import { Furniture } from './Furniture';
 import { COLORS } from './palette';

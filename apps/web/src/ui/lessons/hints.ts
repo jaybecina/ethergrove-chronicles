@@ -1,4 +1,4 @@
-import { lessonSlot, type GameState, type LessonId } from '@hearthvale/core';
+import { lessonSlot, type GameState, type LessonId } from '@ethergrove/core';
 import type { Device } from '../../input/intents';
 
 export type HintAction =

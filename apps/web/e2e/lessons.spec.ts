@@ -14,13 +14,13 @@ test('Grandpa walks a new farmer from Day 1 to the first seed purchase', async (
 
   // Walk north with real keys from the path below a field column whose first row is clear grass.
   const column = await page.evaluate(() => {
-    const g = window.__hearthvale?.getState()?.maps.farm;
+    const g = window.__ethergrove?.getState()?.maps.farm;
     if (!g) throw new Error('no farm');
     for (let x = 4; x < 27; x++) if (g.tiles[16 * g.width + x]?.kind === 'grass') return x;
     throw new Error('no open column');
   });
   await page.evaluate((x) => {
-    window.__hearthvale?.teleport('farm', x + 0.5, 17.5, 'n');
+    window.__ethergrove?.teleport('farm', x + 0.5, 17.5, 'n');
   }, column);
   await page.keyboard.down('KeyW');
   await goal(page, 'Break some ground');
@@ -93,8 +93,8 @@ test('Grandpa walks a new farmer from Day 1 to the first seed purchase', async (
   await goal(page, 'Buy more seeds');
 
   await page.evaluate(() => {
-    window.__hearthvale?.skipMinutes(240);
-    window.__hearthvale?.teleport('farm', 30.5, 17.5, 'e');
+    window.__ethergrove?.skipMinutes(240);
+    window.__ethergrove?.teleport('farm', 30.5, 17.5, 'e');
   });
   await page.keyboard.press('KeyF');
   const cart = page.getByRole('dialog', { name: "Sol's cart" });

@@ -1,4 +1,4 @@
-import { createNewGame, LESSON_ORDER, NOTE_IDS, type GameState } from '@hearthvale/core';
+import { createNewGame, LESSON_ORDER, NOTE_IDS, type GameState } from '@ethergrove/core';
 import { describe, expect, it } from 'vitest';
 import { chipFor, chipsFor, HINT_ACTIONS } from './hints';
 import { COMPLETE_TEXT, JOURNAL_TEXT, LESSON_TEXT, NOTE_TEXT } from './lessonText';

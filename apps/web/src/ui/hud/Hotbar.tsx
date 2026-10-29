@@ -1,4 +1,4 @@
-import { BALANCE, lessonSlot, TOOL_ORDER, type HotbarIndex } from '@hearthvale/core';
+import { BALANCE, lessonSlot, TOOL_ORDER, type HotbarIndex } from '@ethergrove/core';
 import { gameStore, useGame } from '../../game/store';
 import { ItemIcon, ToolIcon } from '../icons';
 import { displayName } from '../labels';

@@ -1,5 +1,5 @@
-import { makeSaveFile } from '@hearthvale/core';
-import type { GameState, LoadResult, SaveRepository, SlotId } from '@hearthvale/core';
+import { makeSaveFile } from '@ethergrove/core';
+import type { GameState, LoadResult, SaveRepository, SlotId } from '@ethergrove/core';
 import type { StoreApi } from 'zustand/vanilla';
 import type { EventBus } from '../game/eventBus';
 import type { GameStore } from '../game/store';

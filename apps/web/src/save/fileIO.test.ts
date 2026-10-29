@@ -1,4 +1,4 @@
-import { createNewGame, makeSaveFile } from '@hearthvale/core';
+import { createNewGame, makeSaveFile } from '@ethergrove/core';
 import { describe, expect, it } from 'vitest';
 import { exportFileName, exportSave, importSave } from './fileIO';
 
@@ -15,7 +15,16 @@ describe('save file export/import', () => {
   });
 
   it('names the file after the farm and date', () => {
-    expect(exportFileName(file)).toBe('hearthvale-elm-hollow-y1-spring1.hearthvale.json');
+    expect(exportFileName(file)).toBe('ethergrove-elm-hollow-y1-spring1.ethergrove.json');
+  });
+
+  it('imports a file exported by Hearthvale', async () => {
+    // Import reads the contents only, so old .hearthvale.json files still load.
+    const oldFile = new File(
+      [exportSave(file)],
+      'hearthvale-elm-hollow-y1-spring1.hearthvale.json',
+    );
+    expect(importSave(await oldFile.text())).toEqual({ ok: true, file });
   });
 
   it('rejects bad files', () => {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { SaveSlotSummary } from '@hearthvale/core';
+import type { SaveSlotSummary } from '@ethergrove/core';
 import { gameStore } from '../../game/store';
 import { loadSlot } from '../../save/autosave';
 import type { IdbSaveRepository } from '../../save/idbRepository';
@@ -31,7 +31,7 @@ export function Title({ repo = saveRepo }: { repo?: IdbSaveRepository }) {
   return (
     <main className="title-screen">
       <header className="title-mark">
-        <h1>Hearthvale</h1>
+        <h1>Ethergrove Chronicles</h1>
         <p>Grandpa's farm is waiting.</p>
       </header>
       <nav ref={ref} className="title-menu" aria-label="Main menu">

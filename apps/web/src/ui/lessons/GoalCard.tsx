@@ -1,4 +1,4 @@
-import { CROPS, isMature, LESSON_GOAL, type GameState, type LessonId } from '@hearthvale/core';
+import { CROPS, isMature, LESSON_GOAL, type GameState, type LessonId } from '@ethergrove/core';
 import { useGame } from '../../game/store';
 import { chipsFor } from './hints';
 import { useLessons, lessonStore } from './lessonStore';

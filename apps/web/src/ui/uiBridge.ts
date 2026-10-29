@@ -1,4 +1,4 @@
-import type { GameEvent, ItemStack } from '@hearthvale/core';
+import type { GameEvent, ItemStack } from '@ethergrove/core';
 import type { StoreApi } from 'zustand/vanilla';
 import type { EventBus } from '../game/eventBus';
 import type { GameStore } from '../game/store';

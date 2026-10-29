@@ -1,4 +1,4 @@
-import { createNewGame, makeSaveFile, type GameState } from '@hearthvale/core';
+import { createNewGame, makeSaveFile, type GameState } from '@ethergrove/core';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -11,6 +11,8 @@ import { Pause } from './Pause';
 import { SaveSlots } from './SaveSlots';
 import { ShippingBin } from './ShippingBin';
 import { SleepConfirm } from './SleepConfirm';
+import { Title } from './Title';
+import { WebGLFallback } from './WebGLFallback';
 import { uiStore } from '../uiStore';
 
 const game = (patch: Partial<GameState> = {}): GameState => ({
@@ -52,6 +54,37 @@ describe('NewGame', () => {
     expect(s.game?.farmName).toBe('A very long farm');
     expect(s.slot).toBe(2);
     expect(s.screen).toBe('intro');
+  });
+});
+
+describe('Game name (Ethergrove Chronicles spec §3.3)', () => {
+  it('Title shows the game name', async () => {
+    render(<Title repo={memoryRepo()} />);
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Ethergrove Chronicles' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Grandpa's farm is waiting.")).toBeInTheDocument();
+  });
+
+  it('WebGLFallback names the game', () => {
+    render(<WebGLFallback />);
+    expect(
+      screen.getByText(
+        'Ethergrove Chronicles needs WebGL 2. Try one of these, then reload the page:',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('SaveSlots rejects a file that is not a save', async () => {
+    const { container } = render(<SaveSlots repo={memoryRepo()} mode="load" />);
+    await screen.findAllByText('Empty slot');
+    const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+    if (!input) throw new Error('file input missing');
+    await userEvent.upload(
+      input,
+      new File(['not json'], 'notes.json', { type: 'application/json' }),
+    );
+    expect(await screen.findByText("This file isn't an Ethergrove save.")).toBeInTheDocument();
   });
 });
 

@@ -1,4 +1,4 @@
-import { createNewGame, NOTE_IDS, type GameState } from '@hearthvale/core';
+import { createNewGame, NOTE_IDS, type GameState } from '@ethergrove/core';
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it } from 'vitest';

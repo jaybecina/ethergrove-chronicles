@@ -15,7 +15,7 @@ export class ErrorBoundary extends Component<Props, { failed: boolean }> {
   }
 
   override componentDidCatch(error: Error, info: ErrorInfo): void {
-    console.error('Hearthvale UI error', error, info.componentStack);
+    console.error('Ethergrove UI error', error, info.componentStack);
   }
 
   reset = () => {

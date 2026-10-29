@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createNewGame } from '@hearthvale/core';
+import { createNewGame } from '@ethergrove/core';
 import { MAX_FRAME_MS, STEP_MS, advanceAccumulator, createStepper } from './loop';
 import { createGameStore } from './store';
 

@@ -1,6 +1,6 @@
 import { LessonColumn } from './ui/lessons/LessonColumn';
 import { LessonsComplete } from './ui/lessons/LessonsComplete';
-import { createNewGame } from '@hearthvale/core';
+import { createNewGame } from '@ethergrove/core';
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { installAudio } from './audio/install';
 import { eventBus } from './game/eventBus';

@@ -3,9 +3,9 @@ import { gameStore, useGame } from '../../game/store';
 import { INTRO_FLIGHT_MS } from '../../scene/introCamera';
 import { uiStore } from '../uiStore';
 
-/** Spec Appendix A.2, verbatim. */
+/** Ethergrove Chronicles spec §3.3, verbatim. */
 export const INTRO_LETTER =
-  "If you're reading this, the farm is yours. It's gone wild, I know. So did I, for a while. Plant something. Then plant something else. The valley remembers people who stay. — Grandpa Elias";
+  "If you're reading this, I've gone down into the Heartdeep and haven't come back up yet. Keep the farm alive until I do. It's gone wild, I know. So did I, for a while. Plant something. Then plant something else. The roots remember people who stay. — Grandpa Elias";
 
 const CHAR_MS = 30;
 

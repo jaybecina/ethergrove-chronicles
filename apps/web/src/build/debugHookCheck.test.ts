@@ -15,16 +15,21 @@ function fakeDist(files: Record<string, string>): string {
 describe('debug hook build check (review finding 10)', () => {
   it('flags a bundle that contains the test hook', () => {
     const dir = fakeDist({
-      'assets/index.js': 'window.__hearthvale={getState(){}}',
+      'assets/index.js': 'window.__ethergrove={getState(){}}',
       'index.html': '<html>',
     });
+    expect(findDebugHook(dir)).toEqual(['assets/index.js']);
+  });
+
+  it('still flags the old Hearthvale hook name', () => {
+    const dir = fakeDist({ 'assets/index.js': 'window.__hearthvale={}', 'index.html': '<html>' });
     expect(findDebugHook(dir)).toEqual(['assets/index.js']);
   });
 
   it('passes a clean bundle and ignores source maps', () => {
     const dir = fakeDist({
       'assets/index.js': 'console.log(1)',
-      'assets/index.js.map': '__hearthvale',
+      'assets/index.js.map': '__ethergrove __hearthvale',
     });
     expect(findDebugHook(dir)).toEqual([]);
   });
