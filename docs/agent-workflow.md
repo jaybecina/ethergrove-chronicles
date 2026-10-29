@@ -52,7 +52,7 @@ flowchart TB
 ## 2. Where everything lives
 
 ```text
-hearthvale/
+ethergrove-chronicles/
 ├── AGENTS.md                  ← 📜 the rules (edit this one)
 ├── CLAUDE.md                  ← tiny: "@AGENTS.md" + Claude-only notes
 ├── .graphifyignore            ← what the map should skip

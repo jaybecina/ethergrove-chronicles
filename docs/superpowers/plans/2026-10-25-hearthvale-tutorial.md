@@ -1,5 +1,7 @@
 # Grandpa's Lessons (Tutorial) Implementation Plan
 
+> Written when the game was named Hearthvale; it is now Ethergrove Chronicles (see [the 2026-10-29 spec](../specs/2026-10-29-ethergrove-chronicles-design.md)).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a guided, never-blocking tutorial (10 lessons + 10 one-time notes + a Journal tab) that teaches the farm loop from Day 1 to the first sale and seed purchase.

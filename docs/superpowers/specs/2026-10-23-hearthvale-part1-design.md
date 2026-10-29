@@ -1,5 +1,7 @@
 # Hearthvale — Part 1 Design: The Farm Loop
 
+> Written when the game was named Hearthvale; it is now Ethergrove Chronicles (see [the 2026-10-29 spec](2026-10-29-ethergrove-chronicles-design.md)).
+
 - **Date:** 2026-10-23
 - **Author:** Jay Becina (with Claude)
 - **Status:** Draft, awaiting review
@@ -400,6 +402,8 @@ Town and NPCs, dialogue, friendship, festivals, romance, animals, mining, fishin
 ---
 
 ## Appendix A — Story Bible (whole game)
+
+> Superseded by [the Ethergrove Chronicles spec](2026-10-29-ethergrove-chronicles-design.md) §4.
 
 ### A.1 Logline
 A burned-out city worker inherits grandpa's overgrown farm in a fading valley, wakes the spirits of a dying ancient tree, and has three years to rekindle it before a resort company buys the valley.

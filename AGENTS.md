@@ -3,7 +3,7 @@
 Guidance for AI coding agents (Claude Code, Codex, Cursor, Copilot, Gemini and others) working in this
 repository.
 
-Hearthvale is an original cozy 3D farming game for the browser (desktop and phones), inspired by the
+Ethergrove Chronicles is an original cozy farm-life RPG for the browser (desktop and phones), inspired by the
 farm-sim genre. It must stay original: no names, characters, art, music or text copied from Harvest Moon
 or other games. Third-party assets are CC0 only (see `CREDITS.md`); verify a pack's license before adding it.
 
@@ -133,7 +133,7 @@ pnpm --filter web perf   # load time on a throttled phone profile (not gating)
 Single tests:
 
 ```bash
-pnpm --filter @hearthvale/core exec vitest run test/tutorial.test.ts -t "buySeeds"
+pnpm --filter @ethergrove/core exec vitest run test/tutorial.test.ts -t "buySeeds"
 pnpm --filter web exec vitest run src/ui/lessons/cards.test.tsx
 cd apps/web && CI=true pnpm exec playwright test e2e/lessons.spec.ts --project=chromium -g "skipped"
 ```
@@ -157,7 +157,7 @@ Run the smallest check that proves the change; the hooks run the rest. This keep
   repeat what another test already checks. Game rules (crops, day order, saves) get core unit tests;
   e2e is for what a player sees and does, not for logic the core can test in milliseconds.
 - **Checking in a browser:** read the page as text (`read_page`, `get_page_text`) or query state through
-  `window.__hearthvale`; take screenshots only for visual checks, and close the preview server after.
+  `window.__ethergrove`; take screenshots only for visual checks, and close the preview server after.
 - **A test fails:** find out whether your change, an older bug or flakiness caused it before editing code.
   Never weaken, skip or delete a test to get green.
 - **Report** which checks ran and their results, and name what did not run. Never say a check passed
@@ -234,11 +234,16 @@ each version. `CURRENT_SAVE_VERSION` is 2 (v2 added `tutorial`).
 
 - Any `GameState` shape change needs a version bump, a migration, and a test against a real older fixture
   (`packages/core/test/fixtures/`).
-- The web side stores saves in IndexedDB (`apps/web/src/save/`): three slots plus a backup per slot.
+- The web side stores saves in IndexedDB (`apps/web/src/save/`): three slots plus a backup per slot, in the
+  `ethergrove` database. Saves from the `hearthvale` database (the game's old name) are copied in once by
+  `save/legacyImport.ts`; settings move from `hearthvale:settings` to `ethergrove:settings` the same way.
+  Never delete those legacy reads without a decision note.
+- Aborting an `idb` upgrade transaction (to open a database without creating it) rejects its `tx.done`
+  promise; catch it, or Vitest reports unhandled `AbortError`s (see `save/legacyImport.ts`).
 
 ### E2E debug hook
 
-`window.__hearthvale` exists only when built with `VITE_E2E=true`, i.e. `pnpm --filter web dev:e2e`, the
+`window.__ethergrove` exists only when built with `VITE_E2E=true`, i.e. `pnpm --filter web dev:e2e`, the
 server Playwright starts on port 5199. `check:build` fails the production build if the hook leaks into it.
 
 - e2e helpers are in `apps/web/e2e/helpers.ts`.

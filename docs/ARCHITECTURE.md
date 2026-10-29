@@ -1,12 +1,12 @@
 # Architecture
 
-Hearthvale is split into a pure rules engine and a web app that draws it.
+Ethergrove Chronicles is split into a pure rules engine and a web app that draws it.
 
 ```mermaid
 flowchart LR
   input["Keyboard · Gamepad · Touch"] --> mapper["InputMapper → Intents"]
   mapper --> cmds["intentsToCommands"]
-  cmds -->|"every 50 ms step"| core["@hearthvale/core<br/>applyCommand(state, cmd)"]
+  cmds -->|"every 50 ms step"| core["@ethergrove/core<br/>applyCommand(state, cmd)"]
   core -->|"new state"| store["Zustand store"]
   core -->|"events"| bus["Event bus"]
   store --> scene["R3F scene"]
@@ -40,7 +40,7 @@ flowchart LR
 - **UI** (`ui/`): DOM over the canvas so text stays sharp and accessible. Menus share one parchment `Panel`
   with arrow-key and gamepad focus navigation.
 - **Saves** (`save/`): IndexedDB with three slots and a backup of the previous good save per slot; autosave on
-  each new morning and when the page is hidden; export and import as `.hearthvale.json`.
+  each new morning and when the page is hidden; export and import as `.ethergrove.json` (old `.hearthvale.json` files still import).
 - **Resilience**: a WebGL fallback screen, GPU context-loss recovery, error boundaries, and a banner when
   storage is unavailable.
 

@@ -1,6 +1,6 @@
 # Credits
 
-Hearthvale is an original game. It uses no Harvest Moon or Story of Seasons names, characters or assets.
+Ethergrove Chronicles is an original game. It uses no Harvest Moon or Story of Seasons names, characters or assets.
 Every third-party asset below is free to use; the license was checked in each pack's own license file.
 
 ## 3D models (CC0 1.0)

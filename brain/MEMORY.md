@@ -1,4 +1,4 @@
-# Hearthvale memory
+# Ethergrove memory
 
 The entry point to the project brain. Keep this page short: facts every session needs, each linking to
 the note (or file) that proves it. Details live in the linked notes; code and tests are the final truth.
@@ -32,6 +32,10 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
 
 ## Open threads
 
+- The game is being renamed **Ethergrove Chronicles**, with a new story (the Rootwake), XP levels,
+  Outward-style real-time combat and a 2.5D look. The rename is built on `feat/ethergrove-chronicles`,
+  awaiting the owner's push; the owner renames the GitHub repo, Vercel project and local folder. —
+  verified, [[decisions/0011-ethergrove-name-and-rpg-direction]]
 - Part 2A (town and villagers) is specced on branch `docs/part2a-spec`. Building it moves saves to v3 and
   retargets the `buySeeds` lesson to the town store (tutorial spec §9). — verified
 - Background music choice is still open: CC0 tracks, generated original music, or licensed music. Never

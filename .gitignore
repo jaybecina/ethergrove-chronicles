@@ -15,3 +15,6 @@ graphify-out/
 
 # Second-brain hook state, per Claude Code session (scripts/brain/hook.mjs)
 .claude/.brain-state/
+
+# Git worktrees Claude Code creates for branches; each is its own checkout, never part of this repo
+.claude/worktrees/

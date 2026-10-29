@@ -1,12 +1,12 @@
-# Hearthvale
+# Ethergrove Chronicles
 
-A cozy 3D farming-life game that runs in the browser, on desktop and on phones. Take over grandpa's
-overgrown farm, clear the field, grow eight crops through four seasons, ship your harvest, and keep the farm
-going through rain, storms and snow.
+A farm-life RPG: grow magic crops, delve the sunken Deeps, and find out where Grandpa went. It runs in the
+browser, on desktop and on phones. Keep your missing grandpa's overgrown farm alive, clear the field, grow
+eight crops through four seasons, ship your harvest, and keep the farm going through rain, storms and snow.
 
-Hearthvale is an original game inspired by the classic farm-sim genre. Part 1 (this release) is the farm loop;
-the town, festivals, romance and the valley's story follow in later parts (see
-[the design spec](docs/superpowers/specs/2026-10-23-hearthvale-part1-design.md), Appendix A).
+Ethergrove is an original game inspired by the classic farm-sim genre, mixed with a real-time RPG. Part 1
+(this release) is the farm loop; the town, the Deeps, combat and the story follow in later parts (see
+[the Ethergrove Chronicles spec](docs/superpowers/specs/2026-10-29-ethergrove-chronicles-design.md)).
 
 | Spring                           | Summer                           |
 | -------------------------------- | -------------------------------- |
@@ -92,8 +92,12 @@ More detail: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). How AI agents work in
 
 ## Roadmap
 
-1. **Farm loop** — this release
-2. Town, villagers, friendship, cloud saves
-3. Story: the Hearth Tree, Kindlings, festivals, romance
-4. Animals, mining, fishing, upgrades
-5. Phone app (Expo shell around the web game)
+1. **Farm loop** and Grandpa's lessons — this release
+2. Rename to Ethergrove Chronicles, and the new story bible
+3. 2.5D renderer: fixed camera, baked backdrops, 3D characters
+4. Lowmere: town, villagers, friendship, shops
+5. Combat core (real time), XP and skills, gear, mining, Mossdeep and its boss, first magic crops
+6. Deeps 2–5, story chapters, journal pages, endings
+7. Farm life: animals, fishing, house and tool upgrades, romance, festivals
+8. Music, sound effects and BGM
+9. Phone app (Expo shell around the web game)
