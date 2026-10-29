@@ -3,18 +3,18 @@ import { createGameStore } from './store';
 import { installDebugHook } from './debugHook';
 
 afterEach(() => {
-  delete window.__hearthvale;
+  delete window.__ethergrove;
 });
 
 describe('debug hook', () => {
   it('is not on window until installed', () => {
-    expect(window.__hearthvale).toBeUndefined();
+    expect(window.__ethergrove).toBeUndefined();
   });
 
   it('exposes test controls', () => {
     const store = createGameStore();
     installDebugHook(store);
-    const hv = window.__hearthvale;
+    const hv = window.__ethergrove;
     if (!hv) throw new Error('hook missing');
     hv.setSeed(7);
     expect(hv.getState()?.seed).toBe(7);

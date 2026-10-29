@@ -1,4 +1,4 @@
-import { CROPS, addItem, cartStock, cropOfSeed, isCartOpen, type SeedId } from '@hearthvale/core';
+import { CROPS, addItem, cartStock, cropOfSeed, isCartOpen, type SeedId } from '@ethergrove/core';
 import { useState } from 'react';
 import { gameStore, useGame } from '../../game/store';
 import { ItemIcon } from '../icons';

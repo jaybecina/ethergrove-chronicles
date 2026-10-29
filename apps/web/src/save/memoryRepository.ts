@@ -1,4 +1,4 @@
-import type { LoadResult, SaveFile, SaveSlotSummary, SlotId } from '@hearthvale/core';
+import type { LoadResult, SaveFile, SaveSlotSummary, SlotId } from '@ethergrove/core';
 import type { IdbSaveRepository } from './idbRepository';
 
 const SLOTS: SlotId[] = [1, 2, 3];

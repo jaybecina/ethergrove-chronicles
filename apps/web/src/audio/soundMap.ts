@@ -1,4 +1,4 @@
-import type { GameEvent, Season } from '@hearthvale/core';
+import type { GameEvent, Season } from '@ethergrove/core';
 
 export type Surface = 'grass' | 'dirt' | 'wood' | 'snow';
 export type SoundId =

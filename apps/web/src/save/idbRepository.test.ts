@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import { createNewGame, makeSaveFile } from '@hearthvale/core';
+import { createNewGame, makeSaveFile } from '@ethergrove/core';
 import { openDB } from 'idb';
 import { describe, expect, it } from 'vitest';
 import { createIdbRepository, isStorageAvailable } from './idbRepository';
@@ -64,5 +64,12 @@ describe('IndexedDB save repository', () => {
 
   it('reports storage availability', async () => {
     expect(await isStorageAvailable(dbName())).toBe(true);
+  });
+
+  it('stores saves in the ethergrove database by default', async () => {
+    await createIdbRepository().save(1, file(10));
+    const names = (await indexedDB.databases()).map((d) => d.name);
+    expect(names).toContain('ethergrove');
+    expect(names).not.toContain('hearthvale');
   });
 });

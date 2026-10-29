@@ -1,4 +1,4 @@
-import type { GameEvent } from '@hearthvale/core';
+import type { GameEvent } from '@ethergrove/core';
 import { displayName } from '../../ui/labels';
 
 export type FxKind = 'dust' | 'splash' | 'chips' | 'sparkle' | 'leafPuff' | 'breath';

@@ -1,5 +1,7 @@
 # Hearthvale: Grandpa's Lessons (Tutorial) Design Spec
 
+> Written when the game was named Hearthvale; it is now Ethergrove Chronicles (see [the 2026-10-29 spec](2026-10-29-ethergrove-chronicles-design.md)).
+
 **Status:** draft for review · **Date:** 2026-10-25 · **Builds on:** Part 1 (merged to `main`) · **Comes before:** Part 2A (town and villagers)
 
 This spec is written so that an implementer with no context from the design conversation can build it. Every name, number, rule and line of player-facing text is given. Where the spec says "MUST", do exactly that; do not improvise new text, new lessons or new UI.

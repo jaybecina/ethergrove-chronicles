@@ -1,4 +1,4 @@
-import type { GameEvent } from '@hearthvale/core';
+import type { GameEvent } from '@ethergrove/core';
 
 type EventOf<T extends GameEvent['type']> = Extract<GameEvent, { type: T }>;
 type Listener = (event: GameEvent) => void;

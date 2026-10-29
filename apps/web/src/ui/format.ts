@@ -1,4 +1,4 @@
-import type { Calendar } from '@hearthvale/core';
+import type { Calendar } from '@ethergrove/core';
 
 export const gold = new Intl.NumberFormat('en-US');
 

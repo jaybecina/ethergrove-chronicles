@@ -1,4 +1,4 @@
-import { lessonTarget, type LessonTarget, type LocationId } from '@hearthvale/core';
+import { lessonTarget, type LessonTarget, type LocationId } from '@ethergrove/core';
 import { useMemo } from 'react';
 import { useGame } from '../game/store';
 

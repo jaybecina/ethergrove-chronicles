@@ -1,5 +1,5 @@
 import { expect, type Page } from '@playwright/test';
-import type { Command, GameEvent, GameState } from '@hearthvale/core';
+import type { Command, GameEvent, GameState } from '@ethergrove/core';
 import type {} from '../src/game/debugHook';
 
 const BLANK = '/__e2e-blank';
@@ -18,19 +18,22 @@ export async function boot(page: Page): Promise<void> {
   const quality = process.env.SAVE_MEDIA ? 'high' : 'low';
   await page.evaluate(async (q) => {
     localStorage.clear();
-    localStorage.setItem('hearthvale:settings', JSON.stringify({ quality: q }));
-    await new Promise<void>((resolve) => {
-      const req = indexedDB.deleteDatabase('hearthvale');
-      req.onsuccess =
-        req.onerror =
-        req.onblocked =
-          () => {
-            resolve();
-          };
-    });
+    localStorage.setItem('ethergrove:settings', JSON.stringify({ quality: q }));
+    // Delete the legacy Hearthvale database too, so no test inherits saves through the import.
+    for (const name of ['ethergrove', 'hearthvale']) {
+      await new Promise<void>((resolve) => {
+        const req = indexedDB.deleteDatabase(name);
+        req.onsuccess =
+          req.onerror =
+          req.onblocked =
+            () => {
+              resolve();
+            };
+      });
+    }
   }, quality);
   await page.goto('/');
-  await page.waitForFunction(() => window.__hearthvale !== undefined);
+  await page.waitForFunction(() => window.__ethergrove !== undefined);
 }
 
 /** A fresh farm. Lessons are off unless asked, so other tests see no goal card. */
@@ -42,7 +45,7 @@ export async function newGame(
   await boot(page);
   await page.evaluate(
     ([s, l]) => {
-      window.__hearthvale?.setSeed(s, { lessons: l });
+      window.__ethergrove?.setSeed(s, { lessons: l });
     },
     [seed, lessons] as const,
   );
@@ -51,19 +54,19 @@ export async function newGame(
 
 export const state = (page: Page): Promise<GameState> =>
   page.evaluate(() => {
-    const s = window.__hearthvale?.getState();
+    const s = window.__ethergrove?.getState();
     if (!s) throw new Error('no game');
     return s;
   });
 
 export const act = (page: Page, cmd: Command): Promise<GameEvent[]> =>
-  page.evaluate((c) => window.__hearthvale?.dispatch(c) ?? [], cmd);
+  page.evaluate((c) => window.__ethergrove?.dispatch(c) ?? [], cmd);
 
 /** Stand south of tile (x, y), facing it. */
 export const faceTile = (page: Page, x: number, y: number): Promise<void> =>
   page.evaluate(
     ([tx, ty]) => {
-      window.__hearthvale?.teleport('farm', tx + 0.5, ty + 1.5, 'n');
+      window.__ethergrove?.teleport('farm', tx + 0.5, ty + 1.5, 'n');
     },
     [x, y] as const,
   );
@@ -71,7 +74,7 @@ export const faceTile = (page: Page, x: number, y: number): Promise<void> =>
 /** First field tile that is grass with walkable grass/path just south of it. */
 export const findGrass = (page: Page): Promise<{ x: number; y: number }> =>
   page.evaluate(() => {
-    const g = window.__hearthvale?.getState()?.maps.farm;
+    const g = window.__ethergrove?.getState()?.maps.farm;
     if (!g) throw new Error('no farm');
     for (let y = 8; y < 16; y++)
       for (let x = 4; x < 27; x++) {
@@ -85,5 +88,5 @@ export const findGrass = (page: Page): Promise<{ x: number; y: number }> =>
 
 export const sleepNight = (page: Page): Promise<void> =>
   page.evaluate(() => {
-    window.__hearthvale?.sleep();
+    window.__ethergrove?.sleep();
   });

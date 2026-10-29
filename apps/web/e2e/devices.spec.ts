@@ -1,8 +1,42 @@
 import { expect, test } from '@playwright/test';
-import { act, newGame, state } from './helpers';
+import { act, boot, newGame, state } from './helpers';
 
 test.describe('phones', () => {
   test.skip(({ isMobile }) => !isMobile, 'touch layout only');
+
+  test('the game name and tagline fit narrow phones at 100% and 150% text', async ({ page }) => {
+    await boot(page);
+    // The narrowest phones in use; the tagline scales with text size, the title does not.
+    for (const width of [320, 360]) {
+      await page.setViewportSize({ width, height: 640 });
+      for (const textScale of [1, 1.5]) {
+        await page.evaluate((s) => {
+          localStorage.setItem(
+            'ethergrove:settings',
+            JSON.stringify({ quality: 'low', textScale: s }),
+          );
+        }, textScale);
+        await page.reload();
+        await expect(
+          page.getByRole('heading', { level: 1, name: 'Ethergrove Chronicles' }),
+        ).toBeVisible();
+        // Measure the text itself, not its box: a block box always fits even when its words overflow.
+        const spans = await page.evaluate(() =>
+          ['.title-mark h1', '.title-mark p'].map((sel) => {
+            const range = document.createRange();
+            const el = document.querySelector(sel);
+            if (el) range.selectNodeContents(el);
+            const r = range.getBoundingClientRect();
+            return { sel, left: r.left, right: r.right, width: window.innerWidth };
+          }),
+        );
+        for (const s of spans) {
+          expect(s.left, `${s.sel} at ${String(width)}px`).toBeGreaterThanOrEqual(0);
+          expect(s.right, `${s.sel} at ${String(width)}px`).toBeLessThanOrEqual(s.width);
+        }
+      }
+    }
+  });
 
   test('touch controls are big enough and the stick walks the farmer', async ({ page }) => {
     await newGame(page, 3);

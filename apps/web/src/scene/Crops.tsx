@@ -1,4 +1,4 @@
-import { cropStage, type CropId, type Grid } from '@hearthvale/core';
+import { cropStage, type CropId, type Grid } from '@ethergrove/core';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { Color, MeshStandardMaterial, Object3D, SphereGeometry, type InstancedMesh } from 'three';

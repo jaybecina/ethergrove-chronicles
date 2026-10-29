@@ -17,7 +17,7 @@ afterEach(() => {
 describe('Intro', () => {
   it("uses grandpa's letter verbatim from the story bible", () => {
     expect(INTRO_LETTER).toBe(
-      "If you're reading this, the farm is yours. It's gone wild, I know. So did I, for a while. Plant something. Then plant something else. The valley remembers people who stay. — Grandpa Elias",
+      "If you're reading this, I've gone down into the Heartdeep and haven't come back up yet. Keep the farm alive until I do. It's gone wild, I know. So did I, for a while. Plant something. Then plant something else. The roots remember people who stay. — Grandpa Elias",
     );
   });
 

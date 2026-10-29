@@ -1,4 +1,4 @@
-import type { GameState } from '@hearthvale/core';
+import type { GameState } from '@ethergrove/core';
 import { QUALITY, type QualityTier } from './quality';
 import { weatherVisuals, type WeatherVisuals } from './weatherVisuals';
 

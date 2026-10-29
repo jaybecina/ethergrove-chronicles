@@ -3,7 +3,7 @@ export function WebGLFallback() {
     <main className="screen screen-paper">
       <div className="panel">
         <h2>This browser can't show 3D right now</h2>
-        <p>Hearthvale needs WebGL 2. Try one of these, then reload the page:</p>
+        <p>Ethergrove Chronicles needs WebGL 2. Try one of these, then reload the page:</p>
         <ul>
           <li>Use a recent Chrome, Edge, Firefox or Safari.</li>
           <li>Turn on hardware acceleration in your browser settings.</li>

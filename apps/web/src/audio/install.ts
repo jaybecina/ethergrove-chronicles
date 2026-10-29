@@ -1,4 +1,4 @@
-import { tileAt } from '@hearthvale/core';
+import { tileAt } from '@ethergrove/core';
 import type { StoreApi } from 'zustand/vanilla';
 import type { EventBus } from '../game/eventBus';
 import type { GameStore } from '../game/store';

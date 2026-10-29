@@ -1,4 +1,4 @@
-import type { LoadResult, SaveFile, SlotId } from '@hearthvale/core';
+import type { LoadResult, SaveFile, SlotId } from '@ethergrove/core';
 import type { IdbSaveRepository } from '../save/idbRepository';
 
 /** In-memory stand-in for the IndexedDB repository. */

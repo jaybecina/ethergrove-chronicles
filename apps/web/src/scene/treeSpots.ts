@@ -1,4 +1,4 @@
-import type { Grid } from '@hearthvale/core';
+import type { Grid } from '@ethergrove/core';
 import { hash01 } from './palette';
 
 export interface TreeSpot {

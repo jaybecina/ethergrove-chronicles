@@ -1,11 +1,11 @@
 ---
 name: second-brain
-description: Read and maintain Hearthvale's project memory in brain/ (decisions, lessons, sessions, inbox) together with the Graphify code graph. Use when starting work that needs project history ("why is it like this", "what did we decide"), after finding a root cause or making a design decision worth keeping, when the user says capture, recall, remember, review the brain, audit, or close the session, and before ending a long session.
+description: Read and maintain Ethergrove's project memory in brain/ (decisions, lessons, sessions, inbox) together with the Graphify code graph. Use when starting work that needs project history ("why is it like this", "what did we decide"), after finding a root cause or making a design decision worth keeping, when the user says capture, recall, remember, review the brain, audit, or close the session, and before ending a long session.
 ---
 
 # Second brain
 
-`brain/` is Hearthvale's durable, human-readable project memory, kept in git. Markdown is the source of
+`brain/` is Ethergrove's durable, human-readable project memory, kept in git. Markdown is the source of
 truth. `graphify-out/` is a generated map over code and notes. Code and tests are the final truth: check any
 remembered fact against them before acting on it.
 

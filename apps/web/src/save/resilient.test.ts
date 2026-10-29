@@ -1,4 +1,4 @@
-import { createNewGame, makeSaveFile } from '@hearthvale/core';
+import { createNewGame, makeSaveFile } from '@ethergrove/core';
 import { describe, expect, it, vi } from 'vitest';
 import type { IdbSaveRepository } from './idbRepository';
 import { createResilientRepository } from './resilient';

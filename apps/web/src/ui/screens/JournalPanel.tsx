@@ -1,4 +1,4 @@
-import { LESSON_ORDER, NOTE_IDS, type LessonId } from '@hearthvale/core';
+import { LESSON_ORDER, NOTE_IDS, type LessonId } from '@ethergrove/core';
 import { useEffect, useRef, useState } from 'react';
 import type { Device } from '../../input/intents';
 import { gameStore, useGame } from '../../game/store';

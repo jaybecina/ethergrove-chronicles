@@ -105,11 +105,11 @@ test('staleInbox lists dated captures older than a week', () => {
 
 test('sessionContext carries the standing rule, the index and stale inbox items', () => {
   const ctx = sessionContext({
-    memory: '# Hearthvale memory',
+    memory: '# Ethergrove memory',
     staleInbox: ['2026-10-10-music.md'],
   });
   assert.match(ctx, /Always follow best practices and standards/);
-  assert.match(ctx, /# Hearthvale memory/);
+  assert.match(ctx, /# Ethergrove memory/);
   assert.match(ctx, /2026-10-10-music\.md/);
   assert.doesNotMatch(sessionContext({ memory: null, staleInbox: [] }), /inbox/i);
 });

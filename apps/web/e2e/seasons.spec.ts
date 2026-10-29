@@ -11,8 +11,8 @@ test('a full year turns through every season', async ({ page }, info) => {
   for (const season of ['Spring', 'Summer', 'Fall', 'Winter'] as const) {
     await expect(page.locator('.clock-date')).toContainText(season);
     await page.evaluate(() => {
-      window.__hearthvale?.teleport('farm', 9.5, 7.5, 's');
-      window.__hearthvale?.skipMinutes(260);
+      window.__ethergrove?.teleport('farm', 9.5, 7.5, 's');
+      window.__ethergrove?.skipMinutes(260);
     });
     await page.waitForTimeout(process.env.SAVE_MEDIA ? 12_000 : 1500);
     const shot = await page.screenshot();

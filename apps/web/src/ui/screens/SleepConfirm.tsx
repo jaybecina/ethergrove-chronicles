@@ -1,4 +1,4 @@
-import type { SaveRepository } from '@hearthvale/core';
+import type { SaveRepository } from '@ethergrove/core';
 import { gameStore } from '../../game/store';
 import { saveNow } from '../../save/autosave';
 import { saveRepo } from '../../save/repo';

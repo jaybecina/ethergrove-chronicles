@@ -1,4 +1,4 @@
-import type { Grid } from '@hearthvale/core';
+import type { Grid } from '@ethergrove/core';
 import { useFrame } from '@react-three/fiber';
 import { useMemo } from 'react';
 import { CircleGeometry, MeshStandardMaterial } from 'three';

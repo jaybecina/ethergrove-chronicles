@@ -1,4 +1,4 @@
-import { createNewGame } from '@hearthvale/core';
+import { createNewGame } from '@ethergrove/core';
 import { act } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createEventBus } from '../../game/eventBus';

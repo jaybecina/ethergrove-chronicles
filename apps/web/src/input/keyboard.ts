@@ -1,4 +1,4 @@
-import type { HotbarIndex } from '@hearthvale/core';
+import type { HotbarIndex } from '@ethergrove/core';
 import { createEdges, normalize, type InputSource, type Intents } from './intents';
 
 const EDGE_KEYS: Record<string, Partial<Intents>> = {

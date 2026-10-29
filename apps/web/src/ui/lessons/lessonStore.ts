@@ -1,4 +1,4 @@
-import type { LessonId, NoteId } from '@hearthvale/core';
+import type { LessonId, NoteId } from '@ethergrove/core';
 import { useStore } from 'zustand';
 import { createStore, type StoreApi } from 'zustand/vanilla';
 import type { EventBus } from '../../game/eventBus';

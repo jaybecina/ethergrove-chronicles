@@ -1,4 +1,4 @@
-import { SEASONS, formatClock, weekday } from '@hearthvale/core';
+import { SEASONS, formatClock, weekday } from '@ethergrove/core';
 import { useGame } from '../../game/store';
 import { SEASON_COLOR, WeatherIcon } from '../icons';
 

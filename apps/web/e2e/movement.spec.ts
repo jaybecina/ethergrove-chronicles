@@ -6,14 +6,14 @@ test.skip(({ isMobile }) => isMobile, 'keyboard movement');
 /** Position and simulated play time read in ONE call, so no frame can run between them. */
 const sample = (page: Page) =>
   page.evaluate(() => ({
-    x: window.__hearthvale?.getState()?.player.x ?? 0,
-    t: window.__hearthvale?.playTimeMs() ?? 0,
+    x: window.__ethergrove?.getState()?.player.x ?? 0,
+    t: window.__ethergrove?.playTimeMs() ?? 0,
   }));
 
 /** Hold keys and return tiles moved per simulated second (independent of the test machine's frame rate). */
 async function eastSpeed(page: Page, run: boolean): Promise<number> {
   await page.evaluate(() => {
-    window.__hearthvale?.teleport('farm', 4.5, 22.5, 'e');
+    window.__ethergrove?.teleport('farm', 4.5, 22.5, 'e');
   });
   // Wait until the loop is actually stepping (shader compiles can stall the first frames).
   const warm = (await sample(page)).t;

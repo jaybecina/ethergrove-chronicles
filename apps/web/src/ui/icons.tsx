@@ -1,5 +1,5 @@
-import type { CropId, ItemId, Season, ToolId, Weather } from '@hearthvale/core';
-import { cropOfSeed } from '@hearthvale/core';
+import type { CropId, ItemId, Season, ToolId, Weather } from '@ethergrove/core';
+import { cropOfSeed } from '@ethergrove/core';
 import type { ReactNode } from 'react';
 
 /** Small hand-drawn style SVG icons; decorative (aria-hidden) unless labelled by the caller. */

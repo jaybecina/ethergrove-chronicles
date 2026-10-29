@@ -1,4 +1,4 @@
-import type { HotbarIndex } from '@hearthvale/core';
+import type { HotbarIndex } from '@ethergrove/core';
 
 export type Device = 'keyboard' | 'gamepad' | 'touch';
 

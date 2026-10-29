@@ -1,4 +1,4 @@
-import type { Weather } from '@hearthvale/core';
+import type { Weather } from '@ethergrove/core';
 import type { QualityTier } from './quality';
 
 export interface WeatherVisuals {

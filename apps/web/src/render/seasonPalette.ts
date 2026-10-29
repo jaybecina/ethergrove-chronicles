@@ -1,4 +1,4 @@
-import type { Season } from '@hearthvale/core';
+import type { Season } from '@ethergrove/core';
 
 export interface SeasonPalette {
   grass: string;

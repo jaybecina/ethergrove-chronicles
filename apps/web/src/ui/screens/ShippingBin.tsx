@@ -1,4 +1,4 @@
-import { ITEMS, sellPrice, type Command } from '@hearthvale/core';
+import { ITEMS, sellPrice, type Command } from '@ethergrove/core';
 import { gameStore, useGame } from '../../game/store';
 import { ItemIcon } from '../icons';
 import { displayName } from '../labels';

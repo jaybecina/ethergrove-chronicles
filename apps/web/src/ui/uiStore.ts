@@ -1,4 +1,4 @@
-import type { ItemStack, SlotId } from '@hearthvale/core';
+import type { ItemStack, SlotId } from '@ethergrove/core';
 import { useStore } from 'zustand';
 import { createStore } from 'zustand/vanilla';
 

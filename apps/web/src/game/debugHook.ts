@@ -1,5 +1,5 @@
-import { createNewGame } from '@hearthvale/core';
-import type { Command, Facing, GameEvent, GameState, LocationId, Weather } from '@hearthvale/core';
+import { createNewGame } from '@ethergrove/core';
+import type { Command, Facing, GameEvent, GameState, LocationId, Weather } from '@ethergrove/core';
 import type { StoreApi } from 'zustand/vanilla';
 import type { GameStore } from './store';
 
@@ -19,7 +19,7 @@ export interface DebugHook {
 
 declare global {
   interface Window {
-    __hearthvale?: DebugHook;
+    __ethergrove?: DebugHook;
   }
 }
 
@@ -34,7 +34,7 @@ export function installDebugHook(store: StoreApi<GameStore>): void {
     if (s.overlay !== p.overlay) log.push(`overlay ${p.overlay} -> ${s.overlay}`);
     if (s.screen !== p.screen) log.push(`screen ${p.screen} -> ${s.screen}`);
   });
-  window.__hearthvale = {
+  window.__ethergrove = {
     log,
     playTimeMs: () => store.getState().playTimeMs,
     getState: () => store.getState().game,

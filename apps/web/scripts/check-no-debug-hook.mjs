@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Fails the build if the test-only window.__hearthvale hook leaked into production (spec §6.2).
+// Fails the build if the test-only window.__ethergrove hook (formerly __hearthvale) leaked into
+// production (spec §6.2).
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,7 +12,10 @@ export function findDebugHook(distDir) {
     for (const name of readdirSync(dir)) {
       const path = join(dir, name);
       if (statSync(path).isDirectory()) walk(path);
-      else if (/\.(js|mjs|html)$/.test(name) && readFileSync(path, 'utf8').includes('__hearthvale'))
+      else if (
+        /\.(js|mjs|html)$/.test(name) &&
+        /__ethergrove|__hearthvale/.test(readFileSync(path, 'utf8'))
+      )
         hits.push(relative(distDir, path));
     }
   };

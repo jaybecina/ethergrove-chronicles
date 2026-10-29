@@ -1,4 +1,4 @@
-import type { GameEvent } from '@hearthvale/core';
+import type { GameEvent } from '@ethergrove/core';
 
 export type Clip =
   | 'Idle'

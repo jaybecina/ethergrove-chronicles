@@ -1,4 +1,4 @@
-import type { Grid, Season } from '@hearthvale/core';
+import type { Grid, Season } from '@ethergrove/core';
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import {
   BufferGeometry,

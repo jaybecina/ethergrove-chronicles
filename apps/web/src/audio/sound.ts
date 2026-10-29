@@ -1,4 +1,4 @@
-import type { Season, Weather } from '@hearthvale/core';
+import type { Season, Weather } from '@ethergrove/core';
 import type { LoopId, SoundId, Surface } from './soundMap';
 
 export interface SoundHandle {

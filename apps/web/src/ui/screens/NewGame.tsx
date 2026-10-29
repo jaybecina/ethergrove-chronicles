@@ -1,4 +1,4 @@
-import { createNewGame, type SaveRepository } from '@hearthvale/core';
+import { createNewGame, type SaveRepository } from '@ethergrove/core';
 import { useRef, useState } from 'react';
 import { gameStore } from '../../game/store';
 import { saveNow } from '../../save/autosave';

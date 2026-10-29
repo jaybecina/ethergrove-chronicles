@@ -1,4 +1,4 @@
-import { createNewGame, type GameState } from '@hearthvale/core';
+import { createNewGame, type GameState } from '@ethergrove/core';
 import { describe, expect, it } from 'vitest';
 import { createActionGate } from './actionGate';
 import { createGamepadSource } from './gamepad';

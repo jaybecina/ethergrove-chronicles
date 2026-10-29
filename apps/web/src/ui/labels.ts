@@ -10,7 +10,7 @@ import {
   type GameState,
   type ItemId,
   type ToolId,
-} from '@hearthvale/core';
+} from '@ethergrove/core';
 
 const TOOL_NAMES: Record<ToolId, string> = {
   hoe: 'Hoe',

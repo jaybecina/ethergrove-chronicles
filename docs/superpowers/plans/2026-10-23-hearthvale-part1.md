@@ -1,5 +1,7 @@
 # Hearthvale Part 1 — Farm Loop Implementation Plan
 
+> Written when the game was named Hearthvale; it is now Ethergrove Chronicles (see [the 2026-10-29 spec](../specs/2026-10-29-ethergrove-chronicles-design.md)).
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build a playable, tested, deployed 3D browser farming game covering one full in-game year: clear land, 5 tools, 8 crops, 4 seasons, weather, stamina, shipping, merchant cart, and local saves, on desktop and phone.
