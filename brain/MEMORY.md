@@ -32,6 +32,12 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
 
 ## Open threads
 
+- The 2.5D renderer bakes backdrops in the browser with `three-gpu-pathtracer` (WebGPU only, Playwright's full
+  Chromium), keeps three.js for play, and likely needs an orthographic follow camera. — verified,
+  [[decisions/0013-baked-backdrops-in-the-browser]]
+- First frame-rate profile (M4, desktop): post-processing is ~80% of the frame and N8AO alone ~50%; pixel ratio
+  2 → 1 saves 65%; shadows ~20%; grass and particles nothing measurable. No real-phone run yet. — verified,
+  `docs/perf/2026-10-31-frame-rate-profile.md`
 - The game is being renamed **Ethergrove Chronicles**, with a new story (the Rootwake), XP levels,
   Outward-style real-time combat and a 2.5D look. The rename is built on `feat/ethergrove-chronicles`,
   awaiting the owner's push; the owner renames the GitHub repo, Vercel project and local folder. —

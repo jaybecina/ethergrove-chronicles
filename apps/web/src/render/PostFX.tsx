@@ -9,7 +9,7 @@ import {
 import { ToneMappingMode } from 'postprocessing';
 import { useGame } from '../game/store';
 import { Grade } from './GradeEffect';
-import type { QualityTier } from './quality';
+import { QUALITY, type QualityTier } from './quality';
 import { paletteFor } from './seasonPalette';
 
 function useGrade() {
@@ -23,12 +23,23 @@ function useGrade() {
 }
 
 // EffectComposer children must all be effects (no fragments/false), so each tier gets its own tree.
-export function PostFX({ tier }: { tier: QualityTier }) {
+// `ao` defaults to the tier's setting; the frame-rate profile can turn the AO pass off alone.
+export function PostFX({ tier, ao = QUALITY[tier].ao }: { tier: QualityTier; ao?: boolean }) {
   const grade = useGrade();
-  if (tier === 'high')
+  if (tier === 'high' && ao)
     return (
       <EffectComposer multisampling={0} enableNormalPass={false}>
         <N8AO aoRadius={1.2} intensity={2.2} distanceFalloff={0.8} quality="medium" halfRes />
+        <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.2} intensity={0.8} mipmapBlur />
+        <ToneMapping mode={ToneMappingMode.AGX} />
+        <Grade saturation={grade.saturation} warmth={grade.warmth} />
+        <Vignette offset={0.3} darkness={0.25} />
+        <SMAA />
+      </EffectComposer>
+    );
+  if (tier === 'high')
+    return (
+      <EffectComposer multisampling={0} enableNormalPass={false}>
         <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.2} intensity={0.8} mipmapBlur />
         <ToneMapping mode={ToneMappingMode.AGX} />
         <Grade saturation={grade.saturation} warmth={grade.warmth} />

@@ -1,6 +1,7 @@
 import 'fake-indexeddb/auto';
 import { createNewGame } from '@ethergrove/core';
-import { afterEach, describe, expect, it } from 'vitest';
+import type { SaveRepository, SlotId } from '@ethergrove/core';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createEventBus } from '../game/eventBus';
 import { createGameStore } from '../game/store';
 import { installAutosave, loadSlot } from './autosave';
@@ -8,6 +9,18 @@ import { createIdbRepository } from './idbRepository';
 
 let n = 0;
 const flush = () => new Promise((r) => setTimeout(r, 20));
+
+/**
+ * Autosave writes in the background, so poll until the slot holds a save. A fixed wait
+ * failed under the full suite's load, when the fake IndexedDB write took longer than 20 ms.
+ */
+async function savedIn(repo: SaveRepository, slot: SlotId) {
+  return vi.waitFor(async () => {
+    const loaded = await repo.load(slot);
+    if (loaded.kind !== 'ok') throw new Error(`slot ${String(slot)} not saved yet`);
+    return loaded;
+  });
+}
 
 afterEach(() => {
   Object.defineProperty(document, 'hidden', { configurable: true, value: false });
@@ -23,9 +36,8 @@ describe('autosave', () => {
     store.getState().setScreen('game');
     const dispose = installAutosave(store, repo, bus);
     store.getState().dispatch({ type: 'sleep' });
-    await flush();
-    const loaded = await repo.load(1);
-    expect(loaded.kind === 'ok' && loaded.file.state.calendar.day).toBe(2);
+    const loaded = await savedIn(repo, 1);
+    expect(loaded.file.state.calendar.day).toBe(2);
     dispose();
   });
 
@@ -46,7 +58,7 @@ describe('autosave', () => {
     const dispose = installAutosave(store, repo, bus);
     Object.defineProperty(document, 'hidden', { configurable: true, value: true });
     document.dispatchEvent(new Event('visibilitychange'));
-    await flush();
+    await savedIn(repo, 3);
     dispose();
 
     const fresh = createGameStore({ bus: createEventBus() });

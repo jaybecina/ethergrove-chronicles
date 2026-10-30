@@ -128,6 +128,7 @@ pnpm checks:commit    # the fast gate with live progress (what pre-commit runs, 
 pnpm checks           # every check with live progress (what GitHub CI runs, ~3 min)
 pnpm --filter web size   # bundle budget (size-limit)
 pnpm --filter web perf   # load time on a throttled phone profile (not gating)
+pnpm --filter web perf:frames   # frame-rate profile on the real GPU (not gating; report in docs/perf/)
 ```
 
 Single tests:
@@ -279,6 +280,11 @@ server Playwright starts on port 5199. `check:build` fails the production build 
 - **Farm layout.** The farm is 32×24. The field is `FIELD_RECT` (x 3–27, y 6–16) with seeded weeds, rocks
   and stumps. The pond is at x 2–6, y 18–20, and the cart tile is (31, 17). Don't teleport test players
   into the pond.
+- **Measuring frame rate.** The e2e configs render with SwiftShader (software), so their frame times mean
+  nothing. `perf:frames` uses Playwright's full Chromium (`channel: 'chromium'`) on the real GPU with vsync off;
+  `?perf-off=dpr,ao,shadows,grass,particles,post` (or `all`) turns costs off in E2E builds only
+  (`render/profileSwitches.ts`). CPU throttling does not slow the GPU, and on ANGLE Metal the WebGL timer-query
+  readings are 2–3× the frame time, so don't trust them there.
 - **Kenney models render as metal.** Their glTFs omit `metallicFactor`, which three.js reads as 1.0.
   With no environment map that hides the base colour: tinted grey rocks came out dark brown, like the
   stumps. Pass `matte` to `ModelInstances` when a model's tint must read true (rocks do).

@@ -9,6 +9,7 @@ import {
   ShaderMaterial,
 } from 'three';
 import { gameStore } from '../game/store';
+import { profileOff } from '../render/profileSwitches';
 import { emitThunder, visualsFor, weatherNow } from '../render/weatherState';
 import { flashSchedule } from '../render/weatherVisuals';
 
@@ -97,6 +98,8 @@ export function Weather() {
   const rainMat = useMemo(() => makeMaterial(rainFrag, 14, 0, 9, true), []);
   const snowMat = useMemo(() => makeMaterial(snowFrag, 1.2, 0.6, 6.5, false), []);
   const storm = useRef({ day: -1, start: 0, flashes: [] as number[], next: 0 });
+  // The frame-rate profile hides the rain and snow particles but keeps the weather's light and sky.
+  const particlesOff = profileOff().particles;
 
   useFrame(({ clock }, delta) => {
     const s = gameStore.getState();
@@ -110,7 +113,7 @@ export function Weather() {
       [snow.current, snowMat, v.snow],
     ] as const) {
       if (!pts) continue;
-      pts.visible = count > 0;
+      pts.visible = count > 0 && !particlesOff;
       pts.geometry.setDrawRange(0, count);
       const u = mat.uniforms;
       if (u.uTime) u.uTime.value = t;
