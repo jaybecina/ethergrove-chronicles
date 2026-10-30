@@ -227,6 +227,22 @@ The tutorial state lives in the core as `GameState.tutorial`.
 - Cards read the lesson from state, not events, so a loaded save is correct. Events only drive the
   expand/collapse animation and announcements.
 
+### Audio
+
+All music and SFX are original scores rendered offline by the dev-only studio (audio spec
+`docs/superpowers/specs/2026-10-30-ethergrove-audio-design.md`) and shipped as AAC `.m4a`.
+
+- **Render:** start the e2e dev server on port 5199 (it must serve this checkout), then
+  `VSCO_DIR=<path to VSCO-2-CE> pnpm --filter web studio [--only <id>]`. It needs macOS `afconvert` and writes
+  `public/assets/{music,sfx}/*.m4a` plus the generated `src/audio/manifest.ts`. Commit both; never commit samples.
+- **Rules tests enforce:** the Rootsong in the title, seasons, night, rain and season fanfares; Grandpa's theme at
+  home; the retired Hearth motif nowhere (`studio/motifs.ts`); lo-fi rules for home, night and rain
+  (`studio/lofi.ts`: 60–85 bpm, soft kit at mp or quieter, never snare taps on both beats 2 and 4); budgets
+  (track ≤ 1 MB, jingle ≤ 120 KB, SFX ≤ 40 KB, total ≤ 9 MB); seamless loops.
+- **Loop seams:** rendered loops are exact; AAC noise lowers the decoded seam correlation to 0.98–0.99, while a
+  broken wrap measures about 0.6. The e2e bar is 0.95, so don't "fix" a 0.98 seam.
+- Nobody can hear tests: the owner listens to every changed `.m4a` before merging.
+
 ### Saves
 
 `packages/core/src/save/` holds a zod schema and step-by-step `migrate()`. Keyed `MIGRATIONS` upgrade from

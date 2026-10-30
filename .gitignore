@@ -8,6 +8,8 @@ playwright-report/
 test-results/
 .superpowers/
 assets-src/
+# Studio renders (pnpm --filter web studio): WAVs and the manifest cache
+apps/web/studio-out/
 *.tsbuildinfo
 
 # Graphify output (regenerate with: graphify update .)

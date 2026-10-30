@@ -14,7 +14,8 @@
     "size": "size-limit",
     "e2e": "playwright test",
     "perf": "playwright test -c playwright.perf.config.ts",
-    "check:build": "node scripts/check-no-debug-hook.mjs dist"
+    "check:build": "node scripts/check-no-debug-hook.mjs dist",
+    "studio": "node scripts/studio.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
@@ -23,7 +24,6 @@
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
     "@testing-library/user-event": "14.6.8",
-    "@types/howler": "2.2.13",
     "@types/node": "26.6.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
@@ -41,7 +41,6 @@
     "@react-three/drei": "10.7.9",
     "@react-three/fiber": "9.8.2",
     "@react-three/postprocessing": "3.2.2",
-    "howler": "2.2.4",
     "idb": "8.0.4",
     "motion": "14.6.0",
     "n8ao": "2.0.1",

@@ -12,7 +12,7 @@ flowchart LR
   store --> scene["R3F scene"]
   store --> hud["React HUD & menus"]
   bus --> fx["Particles · float text · shake"]
-  bus --> audio["Howler / synth audio"]
+  bus --> audio["Audio: AAC loop player"]
   bus --> ui["UI bridge: overlays, toasts, tips"]
   bus --> save["Autosave → IndexedDB"]
 ```
@@ -41,6 +41,12 @@ flowchart LR
   with arrow-key and gamepad focus navigation.
 - **Saves** (`save/`): IndexedDB with three slots and a backup of the previous good save per slot; autosave on
   each new morning and when the page is hidden; export and import as `.ethergrove.json` (old `.hearthvale.json` files still import).
+- **Audio** (`audio/`): `install.ts` follows the store and event bus; `music.ts` picks one track per situation
+  (title, season, rain, night, home, shop) and a jingle per event batch; `sound.ts` keeps the rules (silent until a
+  gesture, deduped one-shots). `orchestraBackend.ts` drives `player.ts`, which streams the shipped `.m4a` files:
+  1.2 s crossfades, at most 2 decoded tracks, jingles duck the music. The files are rendered offline by the
+  dev-only **studio** (`src/studio/`, `studio.html`, `scripts/studio.mjs`) from scores and CC0 VSCO 2 samples;
+  the game never imports the studio (a test checks it).
 - **Resilience**: a WebGL fallback screen, GPU context-loss recovery, error boundaries, and a banner when
   storage is unavailable.
 

@@ -1,5 +1,3 @@
-import type { SoundId } from '../audio/soundMap';
-
 const KAYKIT = 'KayKit Adventurers Character Pack 1.0 (Kay Lousberg)';
 const QUATERNIUS = 'Stylized Nature MegaKit (Quaternius)';
 const KENNEY_NATURE = 'Kenney Nature Kit';
@@ -46,22 +44,3 @@ export const ASSETS = {
 } as const;
 
 export type AssetKey = keyof typeof ASSETS;
-
-/** Sounds that ship as files; anything else uses the built-in synth. */
-export const SOUND_FILES: readonly SoundId[] = [
-  'hoe',
-  'sickle',
-  'chop',
-  'break',
-  'swing',
-  'harvest',
-  'plant',
-  'coin',
-  'door',
-  'chime',
-  'deny',
-  'step-grass',
-  'step-dirt',
-  'step-wood',
-  'step-snow',
-];
