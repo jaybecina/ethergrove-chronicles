@@ -14,6 +14,7 @@
     "size": "size-limit",
     "e2e": "playwright test",
     "perf": "playwright test -c playwright.perf.config.ts",
+    "perf:frames": "playwright test -c playwright.frames.config.ts",
     "check:build": "node scripts/check-no-debug-hook.mjs dist",
     "studio": "node scripts/studio.mjs"
   },

@@ -8,6 +8,8 @@ export default tseslint.config(
   {
     ignores: [
       '**/dist/**',
+      '**/dist-perf/**',
+      '**/perf-results/**',
       '**/coverage/**',
       '**/node_modules/**',
       '**/playwright-report/**',

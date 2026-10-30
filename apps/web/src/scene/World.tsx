@@ -23,6 +23,7 @@ import { Trees } from './Trees';
 import { Decor } from './Decor';
 import { Puddles } from './Puddles';
 import { Weather } from './Weather';
+import { profileOff } from '../render/profileSwitches';
 
 const outerGround = patchMaterial(new MeshStandardMaterial({ roughness: 1 }), { snow: true });
 
@@ -32,6 +33,7 @@ export function World() {
   const season = useGame((s) => s.game?.calendar.season ?? 'spring');
   if (!grid || !location) return null;
   const outdoor = location === 'farm';
+  const off = profileOff();
   return (
     <>
       <SunLight />
@@ -48,10 +50,10 @@ export function World() {
       ) : null}
       <SeasonDriver />
       <Tiles grid={grid} season={season} />
-      {outdoor && <Grass grid={grid} season={season} />}
+      {outdoor && !off.grass && <Grass grid={grid} season={season} />}
       {outdoor && <Trees grid={grid} season={season} />}
       {outdoor && <Decor grid={grid} season={season} />}
-      {outdoor && <SeasonParticles season={season} />}
+      {outdoor && !off.particles && <SeasonParticles season={season} />}
       {outdoor && <Puddles grid={grid} />}
       <Weather />
       <Suspense fallback={<Crops grid={grid} />}>

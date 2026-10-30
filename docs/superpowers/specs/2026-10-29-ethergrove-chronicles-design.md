@@ -444,7 +444,8 @@ measures the current costs. Updated 2026-10-31 after a baked proof of the farm
 - **Where it runs:** desktop Chromium on a real GPU, and a phone stand-in (Pixel 7 viewport with 4× CPU
   throttling). Never SwiftShader, which measures software rendering. The phone stand-in is an estimate until
   the game is checked on a real mid-range phone.
-- **Output:** a report in `docs/perf/`. Not a CI gate.
+- **Output:** a report in `docs/perf/`. Not a CI gate. First run:
+  `docs/perf/2026-10-31-frame-rate-profile.md` (`pnpm --filter web perf:frames`).
 
 ### 7.4 Considered and not adopted
 

@@ -10,6 +10,9 @@ test-results/
 assets-src/
 # Studio renders (pnpm --filter web studio): WAVs and the manifest cache
 apps/web/studio-out/
+# Frame-rate profile build and raw results (pnpm --filter web perf:frames)
+apps/web/dist-perf/
+apps/web/perf-results/
 *.tsbuildinfo
 
 # Graphify output (regenerate with: graphify update .)
