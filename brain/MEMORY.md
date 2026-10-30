@@ -38,8 +38,10 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
   verified, [[decisions/0011-ethergrove-name-and-rpg-direction]]
 - Part 2A (town and villagers) is specced on branch `docs/part2a-spec`. Building it moves saves to v3 and
   retargets the `buySeeds` lesson to the town store (tutorial spec §9). — verified
-- Background music choice is still open: CC0 tracks, generated original music, or licensed music. Never
-  copies of existing game music. — verified (decision pending with the user)
+- Audio is built on `docs/ethergrove-audio`, awaiting the owner's listening and push: the Rootsong main theme,
+  orchestral / lo-fi / synth by area, never hip-hop; 9 tracks, 7 jingles, 22 SFX rendered by the studio from
+  CC0 VSCO 2 samples. The old uncommitted audio in the main checkout is superseded. Never copies of existing game
+  music. — verified, [[decisions/0012-ethergrove-audio-direction]]
 - Deferred review minors for the tutorial are listed in [[sessions/2026-10-25]].
 
 ## Lessons worth knowing before you touch…
