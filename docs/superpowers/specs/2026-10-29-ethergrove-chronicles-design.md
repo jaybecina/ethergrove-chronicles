@@ -390,19 +390,75 @@ One in-game day is about 12.6 real minutes if played to midnight; players averag
 
 ## 7. Visual direction: 2.5D places, 3D characters
 
-This is the target for the renderer part. It starts only after the frame-rate profile measures the
-current costs (render resolution, ambient-occlusion pass, shadow maps, grass, particles).
+This is the target for the renderer part (Part 3). It starts only after the frame-rate profile (§7.3)
+measures the current costs. Updated 2026-10-31 after a baked proof of the farm
+([[decisions/0013-baked-backdrops-in-the-browser]]).
 
-- **Fixed camera** per area. The Q/E camera rotation and its tests are removed in that part.
-- **Baked places:** static scenery (cliffs, buildings, distant trees, dungeon walls) is rendered offline into
-  backdrop images by a build script, from the CC0 3D packs already credited. Each backdrop has a **colour
-  image and a depth image**, so 3D characters pass behind pillars and trees correctly.
+### 7.1 Two renderers: one for play, one for baking
+
+- **Gameplay renderer:** three.js `WebGLRenderer` through React Three Fiber, as today. Players never run a path
+  tracer.
+- **Bake tool (dev only):** `three-gpu-pathtracer`'s `WebGPUPathTracer` renders the backdrops offline. It works
+  like the audio studio: a dev-only page that Playwright drives, writing image files that are committed. The
+  package is a dev dependency only and must not appear in the production bundle.
+- **Bake tool rules (verified 2026-10-31 on an Apple M4):**
+  - Use `WebGPUPathTracer`, never the deprecated `WebGLPathTracer`. Its shader fails validation on ANGLE Metal
+    and every WebGL context on the page is lost.
+  - Drive it with Playwright's full Chromium (`chromium.launch({ channel: 'chromium' })`), not the default
+    headless shell, where GPU readbacks hang.
+  - Submit one `renderSample()` per timer tick. Queuing many in a loop floods the GPU and freezes the page.
+  - Cost: 256 samples at 960 × 540 take about 40 s per frame on the M4.
+
+### 7.2 The look
+
+- **Camera:** a fixed angle, the current 50° pitch (`CAMERA_PITCH_DEG`) with one fixed yaw. It follows the player
+  by panning only. The Q/E rotation, the three zoom steps and their tests are removed in that part.
+- **Projection: orthographic (draft).** The camera pans to follow the player, and a baked image stays correct
+  under a panning camera only when the projection is orthographic: panning then moves the image by a plain 2D
+  shift. With perspective, a backdrop is only right from the spot it was baked at. The renderer spec confirms
+  this with an orthographic proof bake, because the 2026-10-31 proof frames were rendered in perspective and
+  the look changes slightly.
+- **Baked places:** static scenery (cliffs, buildings, distant trees, dungeon walls) is baked into backdrop
+  images from the CC0 3D packs already credited. Each area has, per season, a **colour image and a depth
+  image**, so 3D characters pass behind pillars and trees correctly. Orthographic depth is linear; the
+  renderer spec sets its precision and the image tiling.
 - **Always 3D:** player, villagers, monsters, bosses, Kindlings, crops, farm tiles, ore nodes, chests,
-  anything that moves or changes.
-- **Light:** baked into the backdrops, with a colour tint for time of day and a variant per season; blob
-  shadows under characters. No screen-space ambient occlusion.
+  anything that moves or changes. Repeated live objects (crops, soil tiles, fence posts, ore nodes) stay
+  instanced, as today (`InstancedSet`, `ModelInstances`).
+- **Light:** baked into the backdrops, with a colour tint for time of day; blob shadows under characters. No
+  screen-space ambient occlusion. If the renderer keeps a real-time shadow map as a fallback, only live
+  objects cast into it, and it re-renders only when they change (`shadowMap.autoUpdate = false`, then
+  `shadowMap.needsUpdate = true`), never every frame.
+- **Resolution:** the device pixel ratio stays capped per quality tier (today High 2, Low 1.5). The profile
+  sets the 2.5D values.
 - **Targets (draft):** 60 fps on desktop; at least 45 fps (aiming for 60) on the mid-range phone profile;
   at most 100 draw calls in a farm view.
+
+### 7.3 Frame-rate profile (before the renderer part)
+
+- **What it measures:** today's renderer on the farm, from the same camera, at the High tier, and then with one
+  cost removed at a time: device pixel ratio capped at 1, the N8AO pass off, the shadow map off, grass off,
+  particles off.
+- **Numbers per run:** CPU frame time (median and 95th percentile), GPU frame time where the browser exposes
+  `EXT_disjoint_timer_query_webgl2`, and draw calls and triangles from `renderer.info`.
+- **Where it runs:** desktop Chromium on a real GPU, and a phone stand-in (Pixel 7 viewport with 4× CPU
+  throttling). Never SwiftShader, which measures software rendering. The phone stand-in is an estimate until
+  the game is checked on a real mid-range phone.
+- **Output:** a report in `docs/perf/`. Not a CI gate.
+
+### 7.4 Considered and not adopted
+
+- **The path tracer as the gameplay renderer:** it converges over seconds, so it can't run per frame.
+- **A photo mode using the path tracer:** possible later; not part of the renderer part.
+- **Benchmarking against "a standard `WebGLRenderer` mode":** the game already uses `WebGLRenderer`. The
+  profile (§7.3) measures what each cost adds instead.
+- **Level of detail and billboards for distant scenery:** distant scenery is baked, so nothing far away is
+  drawn live.
+- **Switching to Godot:** its web export is about 5–9 MB before content (the game's JavaScript is about 580 KB
+  gzipped), it is limited to WebGL 2 in the browser, and the game, saves and tests would be rewritten.
+- **Blender, or AI-generated backdrops:** the in-browser bake uses the game's own models and camera, so
+  Blender adds a tool without adding quality. AI images have no matching depth image and break the CC0-only
+  rule ([[decisions/0004-original-ip-cc0-only]]).
 
 ## 8. Out of scope
 
