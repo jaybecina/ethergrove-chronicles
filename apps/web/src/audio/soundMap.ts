@@ -1,6 +1,7 @@
-import type { GameEvent, Season } from '@ethergrove/core';
+import type { GameEvent } from '@ethergrove/core';
 
 export type Surface = 'grass' | 'dirt' | 'wood' | 'snow';
+export type MenuSound = 'menuMove' | 'menuConfirm' | 'menuBack';
 export type SoundId =
   | 'hoe'
   | 'water'
@@ -17,9 +18,8 @@ export type SoundId =
   | 'chime'
   | 'deny'
   | 'thunder'
-  | `step-${Surface}`;
-export type LoopId =
-  'birds' | 'cicadas' | 'wind' | 'night' | 'rainAmbient' | 'thunderAmbient' | `music-${Season}`;
+  | `step-${Surface}`
+  | MenuSound;
 
 const TOOL_SOUND = {
   hoe: 'hoe',
@@ -29,8 +29,8 @@ const TOOL_SOUND = {
   hammer: 'break',
 } as const;
 
-/** Which one-shot (or ambience) sounds a core event triggers. */
-export function soundsFor(event: GameEvent, _ctx: { surface: Surface }): (SoundId | LoopId)[] {
+/** Which one-shot sounds a core event triggers. */
+export function soundsFor(event: GameEvent, _ctx: { surface: Surface }): SoundId[] {
   switch (event.type) {
     case 'toolUsed':
       return [event.hit ? TOOL_SOUND[event.tool] : 'swing'];
@@ -52,19 +52,7 @@ export function soundsFor(event: GameEvent, _ctx: { surface: Surface }): (SoundI
       return ['chime'];
     case 'actionFailed':
       return ['deny'];
-    case 'weatherChanged':
-      return event.weather === 'storm'
-        ? ['rainAmbient', 'thunderAmbient']
-        : event.weather === 'rain'
-          ? ['rainAmbient']
-          : [];
     default:
       return [];
   }
 }
-
-/** Audio files (CC0, see CREDITS.md): Ogg first, AAC for browsers without Ogg. */
-export const soundUrls = (id: SoundId | LoopId): string[] => [
-  `/assets/audio/${id}.ogg`,
-  `/assets/audio/${id}.m4a`,
-];

@@ -2,8 +2,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { soundUrls } from '../audio/soundMap';
-import { ASSETS, SOUND_FILES } from './assets';
+import { ASSETS } from './assets';
 
 const pub = join(import.meta.dirname, '../../public');
 const credits = readFileSync(join(import.meta.dirname, '../../../../CREDITS.md'), 'utf8');
@@ -18,10 +17,9 @@ describe('asset manifest', () => {
     }
   });
 
-  it('every shipped sound exists in both formats and is credited', () => {
-    for (const id of SOUND_FILES) {
-      for (const url of soundUrls(id)) expect(existsSync(join(pub, url)), url).toBe(true);
-    }
-    expect(credits).toContain('Kenney Impact Sounds');
+  it('ships no third-party sound files: all music and sound is original (audio spec §2.4)', () => {
+    expect(existsSync(join(pub, 'assets/audio'))).toBe(false);
+    expect(credits).toContain('All music and sound effects are original to Ethergrove');
+    expect(credits).toContain('VSCO 2 Community Edition');
   });
 });

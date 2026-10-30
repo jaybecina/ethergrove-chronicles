@@ -1,7 +1,11 @@
 import { createNewGame } from '@ethergrove/core';
 import type { Command, Facing, GameEvent, GameState, LocationId, Weather } from '@ethergrove/core';
 import type { StoreApi } from 'zustand/vanilla';
-import type { GameStore } from './store';
+import type { BackendStats } from '../audio/orchestraBackend';
+import { audioDebug } from '../audio/install';
+import { probeAudio, type Probe, type ProbeKind } from '../audio/probe';
+import type { AudioState } from '../audio/sound';
+import type { GameStore, Overlay } from './store';
 
 export interface DebugHook {
   getState(): GameState | null;
@@ -11,6 +15,11 @@ export interface DebugHook {
   sleep(): void;
   setWeather(today: Weather): void;
   teleport(location: LocationId, x: number, z: number, facing: Facing): void;
+  setOverlay(overlay: Overlay | null): void;
+  /** What the audio is doing now. */
+  audio(): AudioState & BackendStats;
+  /** Fetches and decodes a shipped track, jingle or SFX: its loudness, length and loop seam. */
+  probeAudio(kind: ProbeKind, id: string): Promise<Probe>;
   /** Overlay/screen transitions since load, for diagnosing UI flow in e2e tests. */
   log: string[];
   /** Simulated play time; lets e2e tests measure speed independent of frame rate. */
@@ -62,5 +71,10 @@ export function installDebugHook(store: StoreApi<GameStore>): void {
     teleport(location, x, z, facing) {
       edit((g) => ({ ...g, player: { ...g.player, location, x, z, facing } }));
     },
+    setOverlay(overlay) {
+      store.getState().setOverlay(overlay);
+    },
+    audio: audioDebug,
+    probeAudio,
   };
 }

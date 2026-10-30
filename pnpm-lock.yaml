@@ -86,9 +86,6 @@ importers:
       '@react-three/postprocessing':
         specifier: 3.2.2
         version: 3.2.2(@react-three/fiber@9.8.2(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(three@0.186.1))(@types/three@0.186.0)(postprocessing@6.39.5(three@0.186.1))(react@19.3.1)(three@0.186.1)
-      howler:
-        specifier: 2.2.4
-        version: 2.2.4
       idb:
         specifier: 8.0.4
         version: 8.0.4
@@ -132,9 +129,6 @@ importers:
       '@testing-library/user-event':
         specifier: 14.6.8
         version: 14.6.8(@testing-library/dom@10.4.2)
-      '@types/howler':
-        specifier: 2.2.13
-        version: 2.2.13
       '@types/node':
         specifier: 26.6.5
         version: 26.6.5
@@ -823,9 +817,6 @@ packages:
 
   '@types/glob@8.1.0':
     resolution: {integrity: sha512-IO+MJPVhoqz+28h1qLAcBEH2+xHMK6MTyHJc7MTnnYb6wsoLR29POVGJ7LycmVXIqyy/4/2ShP5sUwTXuOwb/w==}
-
-  '@types/howler@2.2.13':
-    resolution: {integrity: sha512-40+EBjqIHHrC4VShlz/7i0lBUsE3QkgzZinQQji74Hd8sBkJZUBaT7LWFLK6rcabsDOOQpoMbEJvtaFQwxOu/g==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -1654,9 +1645,6 @@ packages:
 
   hls.js@1.7.3:
     resolution: {integrity: sha512-MsPlx6yVW4Qv4C7mEVou4/gk/5cN2dVxOTnrNjPSmyH2f0Ln+/UkG10Ax1PE6OvrmTVPKgQYozTtBaPOuCzq7A==}
-
-  howler@2.2.4:
-    resolution: {integrity: sha512-iARIBPgcQrwtEr+tALF+rapJ8qSc+Set2GJQl7xT1MQzWaVkFebdJhR3alVlSiUf5U7nAANKuj3aWpwerocD5w==}
 
   html-encoding-sniffer@7.0.0:
     resolution: {integrity: sha512-UikN5yr7xsCDAq87Or5or0PAlD3HJJOKVzM05az588WnpDJ4Ux7a2A53Qi6gofGg2/EtvF/H4hCi/TXfCW4Y6w==}
@@ -3549,8 +3537,6 @@ snapshots:
       '@types/minimatch': 5.1.2
       '@types/node': 26.6.5
 
-  '@types/howler@2.2.13': {}
-
   '@types/json-schema@7.0.15': {}
 
   '@types/lodash@4.17.27': {}
@@ -4461,8 +4447,6 @@ snapshots:
       hermes-estree: 0.25.1
 
   hls.js@1.7.3: {}
-
-  howler@2.2.4: {}
 
   html-encoding-sniffer@7.0.0:
     dependencies:

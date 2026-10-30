@@ -1,141 +1,147 @@
-import type { Season, Weather } from '@ethergrove/core';
-import type { LoopId, SoundId, Surface } from './soundMap';
+import type { CueId, JingleFile } from './music';
+import type { SoundId, Surface } from './soundMap';
 
-export interface SoundHandle {
-  play(): void;
-  stop(): void;
-  volume(v: number): void;
-  fade(from: number, to: number, ms: number): void;
+/** What actually makes sound. The chip backend in the game; a fake in tests. */
+export interface AudioBackend {
+  sfx(id: SoundId, pitchMul: number): void;
+  cue(cue: CueId): void;
+  jingle(id: JingleFile): void;
+  setVolumes(music: number, sfx: number): void;
+  setPaused(paused: boolean): void;
+  suspend(): void;
+  resume(): void;
 }
-export type SoundFactory = (id: SoundId | LoopId, opts: { loop: boolean }) => SoundHandle;
 
-export interface AmbientState {
-  weather: Weather;
-  minute: number;
-  outdoors: boolean;
-  season: Season;
+export interface AudioState {
+  unlocked: boolean;
+  cue: CueId | null;
+  /** The last jingle played. */
+  jingle: JingleFile | null;
+  lastSfx: SoundId | null;
 }
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
-const CROSSFADE_MS = 2000;
-
-function wantedAmbience(a: AmbientState): LoopId[] {
-  if (!a.outdoors) return [];
-  if (a.weather === 'storm') return ['rainAmbient', 'thunderAmbient'];
-  if (a.weather === 'rain') return ['rainAmbient'];
-  if (a.minute >= 1200 || a.minute < 330) return a.season === 'winter' ? ['wind'] : ['night'];
-  if (a.season === 'summer') return ['cicadas'];
-  if (a.season === 'winter') return ['wind'];
-  return ['birds'];
-}
 
 /** The same one-shot within this window plays once (e.g. a milestone and a lesson chiming together). */
 const REPEAT_MS = 150;
+/** Footsteps alternate a little up and down in pitch. */
+const STEP_PITCH = [0.97, 1.03] as const;
 
+/** The game's audio rules: silent until a gesture unlocks it, deduped one-shots, clamped volumes. */
 export function createSoundSystem(
-  factory: SoundFactory,
+  backend: AudioBackend,
   now: () => number = () => performance.now(),
 ) {
-  const handles = new Map<string, SoundHandle>();
-  const lastPlayed = new Map<string, number>();
-  const get = (id: SoundId | LoopId, loop: boolean) => {
-    let h = handles.get(id);
-    if (!h) {
-      h = factory(id, { loop });
-      handles.set(id, h);
-    }
-    return h;
-  };
+  const lastPlayed = new Map<SoundId, number>();
   const safe = (fn: () => void) => {
     try {
       fn();
     } catch {
-      // A sound that fails to load or play must never break the game.
+      // A sound that fails to play must never break the game.
     }
   };
   let unlocked = false;
   let music = 0.6;
   let sfx = 0.8;
-  let track: LoopId | null = null;
-  let ambience = new Set<LoopId>();
-  let lastAmbient: AmbientState | null = null;
+  let cue: CueId | null = null;
+  let sentCue: CueId | null = null;
+  let paused = false;
+  let jingle: JingleFile | null = null;
+  let lastSfx: SoundId | null = null;
+  let step = 0;
 
-  const sys = {
+  const sendCue = () => {
+    if (!unlocked || cue === null || cue === sentCue) return;
+    sentCue = cue;
+    const c = cue;
+    safe(() => {
+      backend.cue(c);
+    });
+  };
+  const playAt = (id: SoundId, pitchMul: number) => {
+    if (!unlocked) return;
+    const t = now();
+    const last = lastPlayed.get(id);
+    if (last !== undefined && t - last < REPEAT_MS) return;
+    lastPlayed.set(id, t);
+    lastSfx = id;
+    safe(() => {
+      backend.sfx(id, pitchMul);
+    });
+  };
+
+  return {
+    /** Call inside a user gesture: browsers only allow audio to start there. */
     unlock() {
+      if (unlocked) return;
       unlocked = true;
+      safe(() => {
+        backend.resume();
+      });
+      safe(() => {
+        backend.setVolumes(music, sfx);
+      });
+      if (paused)
+        safe(() => {
+          backend.setPaused(true);
+        });
+      sendCue();
     },
     play(id: SoundId) {
-      if (!unlocked) return;
-      const t = now();
-      const last = lastPlayed.get(id);
-      if (last !== undefined && t - last < REPEAT_MS) return;
-      lastPlayed.set(id, t);
-      const h = get(id, false);
-      safe(() => {
-        h.volume(sfx);
-        h.play();
-      });
+      playAt(id, 1);
     },
-    playMusic(season: Season) {
-      const next: LoopId = `music-${season}`;
-      if (!unlocked || track === next) return;
-      if (track) {
-        const old = get(track, true);
-        safe(() => {
-          old.fade(music, 0, CROSSFADE_MS);
-        });
-      }
-      const h = get(next, true);
-      safe(() => {
-        h.play();
-        h.fade(0, music, CROSSFADE_MS);
-      });
-      track = next;
+    footstep(surface: Surface) {
+      playAt(`step-${surface}`, STEP_PITCH[step++ % 2] ?? 1);
     },
-    setAmbient(a: AmbientState) {
-      lastAmbient = a;
+    setCue(next: CueId) {
+      cue = next;
+      sendCue();
+    },
+    playJingle(id: JingleFile) {
       if (!unlocked) return;
-      const want = new Set(wantedAmbience(a));
-      for (const id of ambience)
-        if (!want.has(id))
-          safe(() => {
-            get(id, true).stop();
-          });
-      for (const id of want)
-        if (!ambience.has(id))
-          safe(() => {
-            const h = get(id, true);
-            h.volume(sfx * 0.6);
-            h.play();
-          });
-      ambience = want;
+      jingle = id;
+      safe(() => {
+        backend.jingle(id);
+      });
     },
     setVolumes(m: number, s: number) {
-      music = clamp01(m);
-      sfx = clamp01(s);
-      if (track) {
-        const h = get(track, true);
+      const nm = clamp01(m);
+      const ns = clamp01(s);
+      if (nm === music && ns === sfx) return;
+      music = nm;
+      sfx = ns;
+      if (unlocked)
         safe(() => {
-          h.volume(music);
-        });
-      }
-      for (const id of ambience)
-        safe(() => {
-          get(id, true).volume(sfx * 0.6);
+          backend.setVolumes(music, sfx);
         });
     },
     volumes() {
       return { music, sfx };
     },
-    footstep(surface: Surface) {
-      sys.play(`step-${surface}`);
+    setPaused(p: boolean) {
+      if (p === paused) return;
+      paused = p;
+      if (unlocked)
+        safe(() => {
+          backend.setPaused(p);
+        });
     },
-    /** Re-apply ambience after unlock (sounds requested before the first gesture). */
+    suspend() {
+      if (unlocked)
+        safe(() => {
+          backend.suspend();
+        });
+    },
     resume() {
-      if (lastAmbient) sys.setAmbient(lastAmbient);
+      if (unlocked)
+        safe(() => {
+          backend.resume();
+        });
+    },
+    state(): AudioState {
+      return { unlocked, cue, jingle, lastSfx };
     },
   };
-  return sys;
 }
 
 export type SoundSystem = ReturnType<typeof createSoundSystem>;
