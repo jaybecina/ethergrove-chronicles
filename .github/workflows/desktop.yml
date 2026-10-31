@@ -1,6 +1,9 @@
-# Desktop installers (desktop spec §3.6): a macOS .dmg (Apple Silicon and Intel) and a Windows .exe installer.
-# Run it by hand from the Actions tab, or push a `v*` tag. Not a required check: ci.yml gates every game change.
-# Signing turns on when the repository has the secrets electron-builder.config.mjs names.
+# Desktop installers (desktop spec §3.6): a macOS .dmg and .zip (Apple Silicon and Intel) and a Windows .exe.
+# A manual run only builds artifacts. Pushing a `v<version>` tag that matches apps/desktop/package.json and sits on
+# `main` also publishes a GitHub Release, which installed apps update from (auto-update spec §3): a guard job makes
+# the draft, both OS jobs upload into it, and the publish job releases it only when both passed.
+# Not a required check: ci.yml gates every game change. Signing turns on when the repository has the secrets
+# electron-builder.config.mjs names.
 name: Desktop
 
 on:
@@ -16,15 +19,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  release-guard:
+    name: Check the release tag
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - run: node scripts/releaseTag.mjs
+      - name: The tagged commit is on main
+        run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - name: Create the draft release
+        run: gh release create "$GITHUB_REF_NAME" --draft --verify-tag --generate-notes --title "Ethergrove Chronicles ${GITHUB_REF_NAME#v}"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
   package:
     name: Package (${{ matrix.os }})
+    needs: release-guard
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { os: mac, runner: macos-latest, artifacts: 'apps/desktop/release/*.dmg' }
+          - { os: mac, runner: macos-latest, artifacts: 'apps/desktop/release/*.{dmg,zip}' }
           - { os: win, runner: windows-latest, artifacts: 'apps/desktop/release/*.exe' }
     steps:
       - uses: actions/checkout@v7
@@ -39,7 +65,21 @@ jobs:
       - run: pnpm --filter desktop build
       # Boots the unpackaged app with Playwright's Electron driver (the packaged one has the inspect fuse off).
       - run: pnpm --filter desktop e2e
-      - run: pnpm --filter desktop dist:${{ matrix.os }}
+      - name: Build and publish to the draft release (tags)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: pnpm --filter desktop publish:${{ matrix.os }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+      - name: Build only (manual runs)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: pnpm --filter desktop dist:${{ matrix.os }}
         env:
           CSC_LINK: ${{ secrets.CSC_LINK }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -60,3 +100,16 @@ jobs:
           name: desktop-e2e-traces-${{ matrix.os }}
           path: apps/desktop/test-results
           retention-days: 7
+
+  publish:
+    name: Publish the release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - run: gh release edit "$GITHUB_REF_NAME" --draft=false --latest --repo "$GITHUB_REPOSITORY"
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -37,7 +37,8 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
   [[decisions/0013-baked-backdrops-in-the-browser]]
 - Desktop apps: Electron 44 wraps the unchanged web build in `apps/desktop` (`.dmg` arm64/x64, NSIS `.exe` x64);
   the web build and Vercel stay. Graphics tiers Low / Medium / High ([[decisions/0015-low-medium-high-presets]]). Unsigned until the owner buys
-  certificates; not yet run on a real low-end Windows laptop or M1 Air. — verified,
+  certificates; auto-update by `v*` tag, silent on Windows and a download prompt on unsigned Mac
+  ([[decisions/0016-desktop-auto-update]]); not yet run on a real low-end Windows laptop or M1 Air. — verified,
   [[decisions/0014-desktop-electron]]
 - First frame-rate profile (M4, desktop): post-processing is ~80% of the frame and N8AO alone ~50%; pixel ratio
   2 → 1 saves 65%; shadows ~20%; grass and particles nothing measurable. No real-phone run yet. — verified,

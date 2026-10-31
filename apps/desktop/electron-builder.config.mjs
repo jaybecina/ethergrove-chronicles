@@ -20,6 +20,17 @@ export function builderConfig(env) {
     directories: { output: 'release', buildResources: 'build' },
     files: ['package.json', 'dist/**/*.js', 'web/**/*'],
     asar: true,
+    // Releases are drafts until the Desktop workflow's publish job releases them (auto-update spec §3).
+    publish: [
+      {
+        provider: 'github',
+        owner: 'jaybecina',
+        repo: 'ethergrove-chronicles',
+        releaseType: 'draft',
+      },
+    ],
+    // The app reads this at runtime: only a Developer ID signed Mac can install updates itself.
+    extraMetadata: { ethergroveMacSigned: developerId },
     electronFuses: {
       runAsNode: false,
       enableCookieEncryption: true,
@@ -33,7 +44,11 @@ export function builderConfig(env) {
       category: 'public.app-category.games',
       icon: 'build/icon.png',
       minimumSystemVersion: '12.0',
-      target: [{ target: 'dmg', arch: ['arm64', 'x64'] }],
+      // The zip is what latest-mac.yml points at for updates; the dmg stays the download for people.
+      target: [
+        { target: 'dmg', arch: ['arm64', 'x64'] },
+        { target: 'zip', arch: ['arm64', 'x64'] },
+      ],
       // '-' is an ad-hoc signature: it seals the bundle so Apple Silicon runs it, but names no developer.
       ...(developerId ? {} : { identity: '-' }),
       hardenedRuntime: developerId,

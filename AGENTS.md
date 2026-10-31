@@ -220,6 +220,15 @@ Spec `docs/superpowers/specs/2026-10-31-ethergrove-desktop-design.md`, [[decisio
   desktop e2e fails on console errors, which is how a CSP block shows up.
 - The packaged app has the inspect fuse off, so Playwright's Electron driver can't drive it. Check a packaged
   build by starting its binary with `--remote-debugging-port=9333` and `chromium.connectOverCDP`.
+- **Updates** (spec `docs/superpowers/specs/2026-10-31-desktop-auto-update-design.md`,
+  [[decisions/0016-desktop-auto-update]]): `updateMode` in `policy.ts` picks `install` (Windows, signed Mac), `notify`
+  (unsigned Mac: a dialog that opens the release page) or `off` (unpackaged, other OSes, `ETHERGROVE_NO_UPDATE=1`);
+  `updater.ts` runs it with injected dependencies. Never call `quitAndInstall`: an update installs on quit so no save is
+  lost (a test enforces it). The packaged `package.json` carries `ethergroveMacSigned`, written by
+  `electron-builder.config.mjs` from `CSC_LINK`.
+- **Releasing** is a `v<version>` tag that matches `apps/desktop/package.json` and sits on `main`: `desktop.yml`'s
+  `release-guard` makes a draft release, both `package` jobs upload into it (`publish:<os>` scripts), and `publish`
+  releases it only if both passed. A manual run only builds (`dist:<os>`). `scripts/releaseTag.mjs` checks the tag.
 - Without a Developer ID the macOS app is ad-hoc signed with no hardened runtime
   (`electron-builder.config.mjs`); flipping fuses breaks Electron's own signature, and Apple Silicon refuses a
   broken seal.

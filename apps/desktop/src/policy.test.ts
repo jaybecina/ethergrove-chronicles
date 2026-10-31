@@ -7,8 +7,11 @@ import {
   isAppUrl,
   menuTemplate,
   mimeFor,
+  readMacSigned,
+  releasePageUrl,
   resolveAppPath,
   responseHeaders,
+  updateMode,
 } from './policy.js';
 
 const root = path.resolve('/game/web');
@@ -121,5 +124,33 @@ describe('menuTemplate', () => {
       expect(r).toContain('reload');
       expect(r).toContain('toggleDevTools');
     }
+  });
+});
+
+describe('updates (auto-update spec §5.1)', () => {
+  it.each([
+    ['win32', false, false, false, 'off'],
+    ['win32', true, false, true, 'off'],
+    ['win32', true, false, false, 'install'],
+    ['darwin', true, true, false, 'install'],
+    ['darwin', true, false, false, 'notify'],
+    ['linux', true, false, false, 'off'],
+  ] as const)(
+    '%s packaged=%s signed=%s disabled=%s → %s',
+    (platform, packaged, macSigned, disabled, expected) => {
+      expect(updateMode({ platform, packaged, macSigned, disabled })).toBe(expected);
+    },
+  );
+
+  it('links to the release page of a version', () => {
+    expect(releasePageUrl('0.2.0')).toBe(
+      'https://github.com/jaybecina/ethergrove-chronicles/releases/tag/v0.2.0',
+    );
+  });
+
+  it('only a boolean true in the packaged package.json means Developer ID signed', () => {
+    expect(readMacSigned({ ethergroveMacSigned: true })).toBe(true);
+    for (const bad of [{}, { ethergroveMacSigned: 'true' }, null, 'x'])
+      expect(readMacSigned(bad), JSON.stringify(bad)).toBe(false);
   });
 });

@@ -6,7 +6,10 @@ describe('packaging config (desktop spec §3.4)', () => {
     const c = builderConfig({});
     expect(c.appId).toBe('io.github.jaybecina.ethergrove');
     expect(c.productName).toBe('Ethergrove Chronicles');
-    expect(c.mac?.target).toEqual([{ target: 'dmg', arch: ['arm64', 'x64'] }]);
+    expect(c.mac?.target).toEqual([
+      { target: 'dmg', arch: ['arm64', 'x64'] },
+      { target: 'zip', arch: ['arm64', 'x64'] },
+    ]);
     expect(c.win?.target).toEqual([{ target: 'nsis', arch: ['x64'] }]);
     expect(c.nsis).toMatchObject({
       oneClick: false,
@@ -43,5 +46,23 @@ describe('packaging config (desktop spec §3.4)', () => {
     expect(
       builderConfig({ CSC_LINK: 'cert.p12', APPLE_ID: 'a@b.c', APPLE_TEAM_ID: 'TEAM' }).mac,
     ).toMatchObject({ hardenedRuntime: true, notarize: true });
+  });
+});
+
+describe('auto-update packaging (auto-update spec §4)', () => {
+  it('publishes drafts to the GitHub repository', () => {
+    expect(builderConfig({}).publish).toEqual([
+      {
+        provider: 'github',
+        owner: 'jaybecina',
+        repo: 'ethergrove-chronicles',
+        releaseType: 'draft',
+      },
+    ]);
+  });
+
+  it('tells the app whether the Mac build is Developer ID signed', () => {
+    expect(builderConfig({}).extraMetadata).toEqual({ ethergroveMacSigned: false });
+    expect(builderConfig({ CSC_LINK: 'x' }).extraMetadata).toEqual({ ethergroveMacSigned: true });
   });
 });
