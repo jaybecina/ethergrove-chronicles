@@ -125,3 +125,36 @@ export function menuTemplate(
     },
   ];
 }
+
+export type UpdateMode = 'install' | 'notify' | 'off';
+
+export const RELEASES_URL = 'https://github.com/jaybecina/ethergrove-chronicles/releases';
+
+export function releasePageUrl(version: string): string {
+  return `${RELEASES_URL}/tag/v${version}`;
+}
+
+/**
+ * How this build handles updates (auto-update spec §5.1): Windows and a Developer ID signed Mac install in the
+ * background; an unsigned Mac can only point at the release page, because macOS refuses to swap an unsigned app.
+ */
+export function updateMode(env: {
+  platform: NodeJS.Platform;
+  packaged: boolean;
+  macSigned: boolean;
+  disabled: boolean;
+}): UpdateMode {
+  if (!env.packaged || env.disabled) return 'off';
+  if (env.platform === 'win32') return 'install';
+  if (env.platform === 'darwin') return env.macSigned ? 'install' : 'notify';
+  return 'off';
+}
+
+/** True only when the packaged package.json says `ethergroveMacSigned: true` (a string or a gap means unsigned). */
+export function readMacSigned(pkg: unknown): boolean {
+  return (
+    typeof pkg === 'object' &&
+    pkg !== null &&
+    (pkg as { ethergroveMacSigned?: unknown }).ethergroveMacSigned === true
+  );
+}

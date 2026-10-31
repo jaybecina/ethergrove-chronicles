@@ -156,8 +156,29 @@ pnpm desktop:win   # → apps/desktop/release/Ethergrove-Chronicles-<version>-wi
 pnpm --filter desktop e2e   # boots the real app (run `pnpm --filter desktop build` first)
 ```
 
-The **Desktop** GitHub workflow builds both installers on macOS and Windows runners when run by hand or on a
-`v*` tag, and attaches them to the run.
+The **Desktop** GitHub workflow builds both installers on macOS and Windows runners. A manual run attaches them to
+the run. A `v*` tag also publishes a GitHub Release (see Releasing).
+
+### Updates
+
+On launch, about 10 seconds after the game opens, the app asks GitHub Releases for a newer version. That request is
+the only thing it sends, and it carries no player data. Offline, it does nothing.
+
+- **Windows:** a newer version downloads in the background, a notification says it installs when you close the game,
+  and the next launch is the new version. Saves and settings stay.
+- **Mac, until the app is signed with a Developer ID:** a dialog says a new version is available. **Download** opens
+  the release page, and you drag the new app into Applications. Once the signing secrets below are set, the Mac
+  updates itself like Windows, with no code change.
+- Copies installed before the first release with an updater (0.2.0) can't update themselves. Install that one by hand.
+
+### Releasing
+
+1. In a PR, bump `version` in `apps/desktop/package.json` (for example `0.1.0` → `0.2.0`) and merge it.
+2. `git tag v0.2.0 && git push origin v0.2.0`.
+3. The Desktop workflow checks that the tag matches the version and is on `main`, builds both installers into a
+   draft release, and publishes it when both builds pass (about 20 minutes).
+
+Versions must go up, as plain `MAJOR.MINOR.PATCH`. To roll back a bad release, publish a higher version with the fix.
 
 - **Unsigned builds** work, but warn on first open. macOS: System Settings → Privacy & Security → Open Anyway.
   Windows SmartScreen: More info → Run anyway.

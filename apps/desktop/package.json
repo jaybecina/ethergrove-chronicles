@@ -14,9 +14,14 @@
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json && tsc -p e2e/tsconfig.json",
     "e2e": "playwright test",
-    "dist:mac": "electron-builder --mac --config electron-builder.config.mjs",
-    "dist:win": "electron-builder --win --config electron-builder.config.mjs",
-    "icon": "node scripts/render-icon.mjs"
+    "dist:mac": "electron-builder --mac --config electron-builder.config.mjs --publish never",
+    "dist:win": "electron-builder --win --config electron-builder.config.mjs --publish never",
+    "icon": "node scripts/render-icon.mjs",
+    "publish:mac": "electron-builder --mac --config electron-builder.config.mjs --publish always",
+    "publish:win": "electron-builder --win --config electron-builder.config.mjs --publish always"
+  },
+  "dependencies": {
+    "electron-updater": "6.8.10"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",

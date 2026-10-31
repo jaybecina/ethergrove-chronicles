@@ -1,16 +1,20 @@
 // Electron main process (desktop spec §3.3). The rules live in policy.ts; this file only wires them up.
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { BrowserWindow, Menu, app, protocol, session } from 'electron';
+import { BrowserWindow, Menu, Notification, app, dialog, protocol, session, shell } from 'electron';
+import electronUpdater from 'electron-updater';
 import {
   APP_SCHEME,
   START_URL,
   allowPermission,
   isAppUrl,
   menuTemplate,
+  readMacSigned,
   resolveAppPath,
   responseHeaders,
+  updateMode,
 } from './policy.js';
+import { startUpdates } from './updater.js';
 
 // A standard, secure scheme gives the game a stable origin, so IndexedDB saves and settings persist.
 protocol.registerSchemesAsPrivileged([
@@ -30,7 +34,52 @@ protocol.registerSchemesAsPrivileged([
 const testUserData = process.env.ETHERGROVE_USER_DATA;
 if (!app.isPackaged && testUserData) app.setPath('userData', testUserData);
 
+// Windows needs the app's id to show the "Update ready" notification under the right name.
+if (process.platform === 'win32') app.setAppUserModelId('io.github.jaybecina.ethergrove');
+
 let mainWindow: BrowserWindow | null = null;
+let updatesStarted = false;
+
+/** The packaged package.json, where electron-builder records whether this Mac build is Developer ID signed. */
+async function macSigned(): Promise<boolean> {
+  try {
+    const raw = await readFile(path.join(app.getAppPath(), 'package.json'), 'utf8');
+    return readMacSigned(JSON.parse(raw));
+  } catch {
+    return false;
+  }
+}
+
+/** Checks GitHub Releases once per launch (auto-update spec §5.3). Never restarts the game to install. */
+async function beginUpdates(): Promise<void> {
+  if (updatesStarted) return;
+  updatesStarted = true;
+  const { autoUpdater } = electronUpdater;
+  autoUpdater.logger = null;
+  startUpdates({
+    mode: updateMode({
+      platform: process.platform,
+      packaged: app.isPackaged,
+      macSigned: await macSigned(),
+      disabled: process.env.ETHERGROVE_NO_UPDATE === '1',
+    }),
+    currentVersion: app.getVersion(),
+    updater: autoUpdater,
+    notify: (title, body) => {
+      if (Notification.isSupported()) new Notification({ title, body }).show();
+    },
+    ask: async (options) => {
+      const box = mainWindow
+        ? await dialog.showMessageBox(mainWindow, options)
+        : await dialog.showMessageBox(options);
+      return box.response;
+    },
+    openExternal: (url) => shell.openExternal(url),
+    log: (message) => {
+      console.warn(message);
+    },
+  });
+}
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -53,6 +102,10 @@ function createWindow(): void {
   });
   win.once('ready-to-show', () => {
     win.show();
+    // Let the game's first load finish before the network request.
+    setTimeout(() => {
+      void beginUpdates();
+    }, 10_000);
   });
   win.on('closed', () => {
     mainWindow = null;
