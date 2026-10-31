@@ -36,7 +36,7 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
   Chromium), keeps three.js for play, and likely needs an orthographic follow camera. — verified,
   [[decisions/0013-baked-backdrops-in-the-browser]]
 - Desktop apps: Electron 44 wraps the unchanged web build in `apps/desktop` (`.dmg` arm64/x64, NSIS `.exe` x64);
-  the web build and Vercel stay. Lowest graphics tier `lite` for weak GPUs. Unsigned until the owner buys
+  the web build and Vercel stay. Graphics tiers Low / Medium / High ([[decisions/0015-low-medium-high-presets]]). Unsigned until the owner buys
   certificates; not yet run on a real low-end Windows laptop or M1 Air. — verified,
   [[decisions/0014-desktop-electron]]
 - First frame-rate profile (M4, desktop): post-processing is ~80% of the frame and N8AO alone ~50%; pixel ratio

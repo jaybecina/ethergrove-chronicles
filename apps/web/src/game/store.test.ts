@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createNewGame } from '@ethergrove/core';
 import { createEventBus } from './eventBus';
-import { DEFAULT_SETTINGS, createGameStore } from './store';
+import { DEFAULT_SETTINGS, createGameStore, migrateSettings } from './store';
 
 const game = () => createNewGame({ seed: 1, farmName: 'a', playerName: 'b' });
 
@@ -110,6 +110,56 @@ describe('settings carry-over from Hearthvale', () => {
     expect(createGameStore().getState().settings.musicVolume).toBe(0.2);
     // Not written to the new key, so the old one stays for the next launch (spec §3.4: write, then remove).
     expect(localStorage.getItem('hearthvale:settings')).not.toBeNull();
+    spy.mockRestore();
+  });
+});
+
+describe('settings migration (presets spec §3.3)', () => {
+  it.each([
+    ['low', 'medium'],
+    ['lite', 'low'],
+    ['high', 'high'],
+    ['auto', 'auto'],
+  ])('unversioned %s loads as %s', (from, to) => {
+    const s = migrateSettings({ quality: from });
+    expect(s.quality).toBe(to);
+    expect(s.settingsVersion).toBe(2);
+  });
+
+  it('unknown or non-string quality becomes auto', () => {
+    for (const q of ['ultra', null, 3])
+      expect(migrateSettings({ quality: q }).quality).toBe('auto');
+  });
+
+  it('a versioned value is not mapped again', () => {
+    expect(migrateSettings({ settingsVersion: 2, quality: 'low' }).quality).toBe('low');
+    expect(migrateSettings({ settingsVersion: 2, quality: 'lite' }).quality).toBe('auto');
+  });
+
+  it('an old stored value is written back once with the version', () => {
+    localStorage.setItem('ethergrove:settings', '{"quality":"lite"}');
+    expect(createGameStore().getState().settings.quality).toBe('low');
+    expect(JSON.parse(localStorage.getItem('ethergrove:settings') ?? '{}')).toMatchObject({
+      settingsVersion: 2,
+      quality: 'low',
+    });
+    const spy = vi.spyOn(Storage.prototype, 'setItem');
+    createGameStore();
+    expect(spy.mock.calls.filter(([k]) => k === 'ethergrove:settings')).toHaveLength(0);
+    spy.mockRestore();
+  });
+
+  it('legacy Hearthvale settings are migrated', () => {
+    localStorage.setItem('hearthvale:settings', '{"quality":"lite"}');
+    expect(createGameStore().getState().settings.quality).toBe('low');
+  });
+
+  it('migrates with blocked storage', () => {
+    localStorage.setItem('ethergrove:settings', '{"quality":"low"}');
+    const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked');
+    });
+    expect(createGameStore().getState().settings.quality).toBe('medium');
     spy.mockRestore();
   });
 });

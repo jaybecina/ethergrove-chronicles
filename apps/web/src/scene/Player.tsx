@@ -4,6 +4,7 @@ import type { Group } from 'three';
 import { gameStore } from '../game/store';
 import { COLORS } from './palette';
 import { FACING_YAW, followMotion, playerMotion, type Motion } from './motion';
+import { PlayerBlobShadow } from './PlayerBlobShadow';
 import { PlayerModel } from './PlayerModel';
 
 /** Placeholder farmer; follows the simulated position smoothly between 50 ms steps. */
@@ -25,6 +26,7 @@ export function Player() {
   });
   return (
     <group ref={ref}>
+      <PlayerBlobShadow />
       <Suspense fallback={<PlaceholderFarmer />}>
         <PlayerModel />
       </Suspense>

@@ -23,19 +23,19 @@ describe('weatherVisuals', () => {
 
   it('rain and snow counts match the spec per tier', () => {
     expect(weatherVisuals('rain', 'high').rain).toBe(6000);
-    expect(weatherVisuals('rain', 'low').rain).toBe(2500);
-    expect(weatherVisuals('storm', 'low').rain).toBe(3500);
+    expect(weatherVisuals('rain', 'medium').rain).toBe(2500);
+    expect(weatherVisuals('storm', 'medium').rain).toBe(3500);
     expect(weatherVisuals('snow', 'high').snow).toBe(3000);
-    expect(weatherVisuals('snow', 'low').snow).toBe(1200);
-    expect(weatherVisuals('rain', 'lite').rain).toBe(1200);
-    expect(weatherVisuals('storm', 'lite').rain).toBe(1800);
-    expect(weatherVisuals('snow', 'lite').snow).toBe(600);
+    expect(weatherVisuals('snow', 'medium').snow).toBe(1200);
+    expect(weatherVisuals('rain', 'low').rain).toBe(1200);
+    expect(weatherVisuals('storm', 'low').rain).toBe(1800);
+    expect(weatherVisuals('snow', 'low').snow).toBe(600);
   });
 
-  it('low tier never draws more particles than high', () => {
+  it('medium tier never draws more particles than high', () => {
     for (const w of ['sunny', 'cloudy', 'rain', 'storm', 'snow'] as const) {
       const hi = weatherVisuals(w, 'high');
-      const lo = weatherVisuals(w, 'low');
+      const lo = weatherVisuals(w, 'medium');
       expect(lo.rain).toBeLessThanOrEqual(hi.rain);
       expect(lo.snow).toBeLessThanOrEqual(hi.snow);
     }

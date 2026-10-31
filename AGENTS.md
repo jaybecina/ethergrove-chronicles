@@ -287,7 +287,7 @@ each version. `CURRENT_SAVE_VERSION` is 2 (v2 added `tutorial`).
 server Playwright starts on port 5199. `check:build` fails the production build if the hook leaks into it.
 
 - e2e helpers are in `apps/web/e2e/helpers.ts`.
-- `boot()` clears storage on a blank page, then loads the game at the Low quality tier.
+- `boot()` clears storage on a blank page, then loads the game at the Medium quality tier.
 - `newGame(page, seed, { lessons })` has lessons off by default.
 - `boot()` and `newGame()` boot **lean** by default: render costs off (`?perf-off=all`). Under SwiftShader the full
   farm draws about 1.5 frames a second and every click waits for frames, so tests ran out of CI's 90 s budget.
@@ -315,9 +315,12 @@ server Playwright starts on port 5199. `check:build` fails the production build 
 - **Kenney models render as metal.** Their glTFs omit `metallicFactor`, which three.js reads as 1.0.
   With no environment map that hides the base colour: tinted grey rocks came out dark brown, like the
   stumps. Pass `matte` to `ModelInstances` when a model's tint must read true (rocks do).
-- **Quality tiers.** `high`, `low` (Battery saver) and `lite` (Lowest) live in `render/quality.ts`. Automatic
-  starts weak GPUs (by the WebGL renderer string, read locally only) on `lite`, and `PerformanceMonitor` steps
-  the auto tier down one at a time. A new per-tier cost goes in `TierSettings`, not in an `if (tier === …)`.
+- **Quality tiers.** `low`, `medium` and `high` live in `render/quality.ts`. Automatic starts weak GPUs (by the
+  WebGL renderer string, read locally only) on `low` and every other device on `medium`; it never picks `high`.
+  `PerformanceMonitor` steps the auto tier down one at a time. A new per-tier cost goes in `TierSettings`, not in
+  an `if (tier === …)`. Saved settings carry `settingsVersion`; `migrateSettings` in `game/store.ts` maps the
+  pre-2 ids once (`low`→`medium`, `lite`→`low`). Seed e2e settings as `{ settingsVersion: 2, quality: … }`, or
+  the game rewrites the stored string on load.
 - **Stacking.** `.hud` is `position: fixed`, so it is its own stacking context. Anything that must sit
   above the touch joystick zone (`z-index: 1`) has to be mounted outside `.hud`; see `ui/lessons/LessonColumn.tsx`.
 

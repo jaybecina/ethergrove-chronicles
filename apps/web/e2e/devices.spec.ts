@@ -13,7 +13,7 @@ test.describe('phones', () => {
         await page.evaluate((s) => {
           localStorage.setItem(
             'ethergrove:settings',
-            JSON.stringify({ quality: 'low', textScale: s }),
+            JSON.stringify({ settingsVersion: 2, quality: 'medium', textScale: s }),
           );
         }, textScale);
         await page.reload();

@@ -81,7 +81,10 @@ test('settings and saves survive a restart', async () => {
   const page = await first.firstWindow();
   await expect(page.getByRole('button', { name: 'New game' })).toBeVisible();
   await page.evaluate(async () => {
-    localStorage.setItem('ethergrove:settings', JSON.stringify({ quality: 'lite' }));
+    localStorage.setItem(
+      'ethergrove:settings',
+      JSON.stringify({ settingsVersion: 2, quality: 'low' }),
+    );
     await new Promise<void>((resolve, reject) => {
       const req = indexedDB.open('desktop-smoke', 1);
       req.onupgradeneeded = () => req.result.createObjectStore('kv');
@@ -123,6 +126,9 @@ test('settings and saves survive a restart', async () => {
     });
     return { settings, farm };
   });
-  expect(kept).toEqual({ settings: JSON.stringify({ quality: 'lite' }), farm: 'kept' });
+  expect(kept).toEqual({
+    settings: JSON.stringify({ settingsVersion: 2, quality: 'low' }),
+    farm: 'kept',
+  });
   await second.close();
 });
