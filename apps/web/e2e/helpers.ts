@@ -6,15 +6,21 @@ const BLANK = '/__e2e-blank';
 
 export interface BootOptions {
   /**
-   * Turn every render cost off (`?perf-off=all`, spec §7.3) for specs that only check the UI. On SwiftShader the
-   * farm draws about 1.5 frames a second, and every click waits for frames, so a long UI test outran CI's 90 s
-   * timeout. The canvas still draws, at about 7 frames a second.
+   * Turn every render cost off (`?perf-off=all`, spec §7.3). On by default: specs check the UI and game state, not
+   * the 3D scene. On SwiftShader the full farm draws about 1.5 frames a second and every click waits for frames, so
+   * long tests outran CI's 90 s timeout; lean, the canvas still draws, at about 7 frames a second. Off for README
+   * media (`SAVE_MEDIA`), and pass `false` for any spec that judges how the scene looks.
    */
   lean?: boolean;
 }
 
+const LEAN_BY_DEFAULT = !process.env.SAVE_MEDIA;
+
 /** Fresh browser storage, then the title screen with the test hook ready. */
-export async function boot(page: Page, { lean = false }: BootOptions = {}): Promise<void> {
+export async function boot(
+  page: Page,
+  { lean = LEAN_BY_DEFAULT }: BootOptions = {},
+): Promise<void> {
   // Clear storage on an empty same-origin page. Loading the game here would start model
   // downloads that the next navigation aborts ("GLTFLoader: Couldn't load texture").
   await page.route(BLANK, (route) =>
@@ -49,7 +55,7 @@ export async function boot(page: Page, { lean = false }: BootOptions = {}): Prom
 export async function newGame(
   page: Page,
   seed: number,
-  { lessons = false, lean = false }: { lessons?: boolean } & BootOptions = {},
+  { lessons = false, lean = LEAN_BY_DEFAULT }: { lessons?: boolean } & BootOptions = {},
 ): Promise<void> {
   await boot(page, { lean });
   await page.evaluate(
