@@ -35,6 +35,39 @@ east road sells seeds from 9 AM to 5 PM, spring to fall.
 New farms start with Grandpa's lessons. Reread them, skip them or start them again from the Journal
 tab in the menu.
 
+## Install the game (players)
+
+Download the installer for your computer from the project's **Releases** page (or from the **Desktop** workflow
+run's artifacts), then follow the steps below. The game runs offline once installed.
+
+### macOS (MacBook, iMac, Mac mini)
+
+1. Pick the right file. Apple Silicon (M1, M2, M3, M4; any Mac from late 2020 on) uses
+   `Ethergrove-Chronicles-<version>-mac-arm64.dmg`. Older Intel Macs use `…-mac-x64.dmg`. Not sure? Apple menu →
+   **About This Mac**: "Chip: Apple M…" means arm64.
+2. Open the `.dmg` and drag **Ethergrove Chronicles** into **Applications**.
+3. Open it from Applications. While the game is unsigned, macOS says it "can't be verified". Click **Done**, then
+   open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to Ethergrove
+   Chronicles, and confirm. You only do this once.
+4. Needs macOS 12 or newer.
+
+### Windows (10 and 11, 64-bit)
+
+1. Download `Ethergrove-Chronicles-<version>-win-x64.exe` and run it.
+2. If Windows SmartScreen shows "Windows protected your PC" (while the game is unsigned), click **More info**,
+   then **Run anyway**.
+3. Choose an install folder, or keep the default, and finish. Shortcuts are added to the desktop and Start menu.
+4. To remove it, use **Settings → Apps**. Your saves are kept in your user folder, so reinstalling finds them.
+
+### Slow or older computer?
+
+In the game, open **Settings → Graphics** and pick **Lowest (older or built-in graphics)**. It draws at lower
+resolution with no shadows or bloom. **Automatic** chooses it for you on weak graphics.
+If the game says your graphics can't show 3D, update your graphics drivers and restart the computer.
+
+Saves made in the browser version don't move over by themselves: use **Export save** in the pause menu there and
+**Import a save file** on the Load game screen in the app.
+
 ## Develop
 
 Requires Node 24 and pnpm 10.
