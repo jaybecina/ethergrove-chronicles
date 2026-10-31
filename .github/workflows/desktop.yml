@@ -1,0 +1,62 @@
+# Desktop installers (desktop spec §3.6): a macOS .dmg (Apple Silicon and Intel) and a Windows .exe installer.
+# Run it by hand from the Actions tab, or push a `v*` tag. Not a required check: ci.yml gates every game change.
+# Signing turns on when the repository has the secrets electron-builder.config.mjs names.
+name: Desktop
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: Package (${{ matrix.os }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: mac, runner: macos-latest, artifacts: 'apps/desktop/release/*.dmg' }
+          - { os: win, runner: windows-latest, artifacts: 'apps/desktop/release/*.exe' }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter desktop test
+      - run: pnpm build
+      - run: pnpm --filter desktop build
+      # Boots the unpackaged app with Playwright's Electron driver (the packaged one has the inspect fuse off).
+      - run: pnpm --filter desktop e2e
+      - run: pnpm --filter desktop dist:${{ matrix.os }}
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ethergrove-${{ matrix.os }}
+          path: ${{ matrix.artifacts }}
+          retention-days: 14
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: desktop-e2e-traces-${{ matrix.os }}
+          path: apps/desktop/test-results
+          retention-days: 7

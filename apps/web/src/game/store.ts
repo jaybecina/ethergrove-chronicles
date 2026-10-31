@@ -12,7 +12,7 @@ export type CameraYaw = 0 | 1 | 2 | 3;
 export type ZoomStep = 0 | 1 | 2;
 
 export interface Settings {
-  quality: 'auto' | 'high' | 'low';
+  quality: 'auto' | QualityTier;
   musicVolume: number;
   sfxVolume: number;
   reducedMotion: boolean;

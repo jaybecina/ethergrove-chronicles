@@ -35,6 +35,10 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
 - The 2.5D renderer bakes backdrops in the browser with `three-gpu-pathtracer` (WebGPU only, Playwright's full
   Chromium), keeps three.js for play, and likely needs an orthographic follow camera. — verified,
   [[decisions/0013-baked-backdrops-in-the-browser]]
+- Desktop apps: Electron 44 wraps the unchanged web build in `apps/desktop` (`.dmg` arm64/x64, NSIS `.exe` x64);
+  the web build and Vercel stay. Lowest graphics tier `lite` for weak GPUs. Unsigned until the owner buys
+  certificates; not yet run on a real low-end Windows laptop or M1 Air. — verified,
+  [[decisions/0014-desktop-electron]]
 - First frame-rate profile (M4, desktop): post-processing is ~80% of the frame and N8AO alone ~50%; pixel ratio
   2 → 1 saves 65%; shadows ~20%; grass and particles nothing measurable. No real-phone run yet. — verified,
   `docs/perf/2026-10-31-frame-rate-profile.md`

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Ethergrove Chronicles app icon: an ether-lit sprout over the valley. Original art (CC0 rule). -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f4a35"/>
+      <stop offset="1" stop-color="#14201a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.46" r="0.42">
+      <stop offset="0" stop-color="#f6e7a8" stop-opacity="0.9"/>
+      <stop offset="0.45" stop-color="#9fd8b0" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#9fd8b0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9ec8f"/>
+      <stop offset="1" stop-color="#4f9a52"/>
+    </linearGradient>
+    <linearGradient id="soil" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7a5236"/>
+      <stop offset="1" stop-color="#4a3022"/>
+    </linearGradient>
+  </defs>
+  <rect x="64" y="64" width="896" height="896" rx="200" fill="url(#sky)"/>
+  <circle cx="512" cy="440" r="380" fill="url(#glow)"/>
+  <path d="M168 760 Q512 640 856 760 L856 760 Q856 896 724 896 L300 896 Q168 896 168 760 Z" fill="url(#soil)"/>
+  <path d="M512 742 C508 640 512 560 520 470" stroke="#5f9e4f" stroke-width="34" stroke-linecap="round" fill="none"/>
+  <path d="M518 560 C430 560 330 500 300 380 C420 372 506 440 518 560 Z" fill="url(#leaf)"/>
+  <path d="M520 486 C560 380 660 312 780 324 C760 450 650 512 520 486 Z" fill="url(#leaf)"/>
+  <path d="M322 396 C400 420 470 480 512 552" stroke="#2f6b3a" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <path d="M760 340 C680 360 590 420 528 482" stroke="#2f6b3a" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <g fill="#fff6cf">
+    <circle cx="640" cy="240" r="16"/>
+    <circle cx="380" cy="280" r="10"/>
+    <circle cx="720" cy="560" r="9"/>
+    <circle cx="300" cy="560" r="7"/>
+  </g>
+  <path d="M640 200 L648 232 L680 240 L648 248 L640 280 L632 248 L600 240 L632 232 Z" fill="#fff6cf"/>
+</svg>

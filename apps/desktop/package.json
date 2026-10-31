@@ -1,0 +1,27 @@
+{
+  "name": "desktop",
+  "productName": "Ethergrove Chronicles",
+  "version": "0.1.0",
+  "description": "Ethergrove Chronicles, a farm-life RPG, as a desktop app.",
+  "author": "Jay Becina",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "node scripts/copy-web.mjs && tsc -p tsconfig.build.json",
+    "start": "electron .",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json && tsc -p e2e/tsconfig.json",
+    "e2e": "playwright test",
+    "dist:mac": "electron-builder --mac --config electron-builder.config.mjs",
+    "dist:win": "electron-builder --win --config electron-builder.config.mjs",
+    "icon": "node scripts/render-icon.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "26.6.5",
+    "electron": "44.10.1",
+    "electron-builder": "26.17.0"
+  }
+}

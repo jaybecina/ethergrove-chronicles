@@ -14,9 +14,9 @@ export interface WeatherVisuals {
 }
 
 const COUNTS = {
-  rain: { high: 6000, low: 2500 },
-  storm: { high: 9000, low: 3500 },
-  snow: { high: 3000, low: 1200 },
+  rain: { high: 6000, low: 2500, lite: 1200 },
+  storm: { high: 9000, low: 3500, lite: 1800 },
+  snow: { high: 3000, low: 1200, lite: 600 },
 } as const;
 
 export function weatherVisuals(weather: Weather, tier: QualityTier): WeatherVisuals {

@@ -5,7 +5,7 @@ import { gameStore } from '../game/store';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 import { StorageBanner } from '../ui/screens/StorageBanner';
 import { WebGLFallback } from '../ui/screens/WebGLFallback';
-import { hasWebGL2, installContextLoss, withRetry } from './webgl';
+import { hasWebGL2, installContextLoss, isDesktopApp, withRetry } from './webgl';
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -28,6 +28,33 @@ describe('WebGL support', () => {
     render(<WebGLFallback />);
     expect(screen.getByRole('heading', { name: /can't show 3D/i })).toBeInTheDocument();
     expect(screen.getByText(/hardware acceleration/i)).toBeInTheDocument();
+  });
+
+  it('spots the desktop app by its user agent', () => {
+    expect(
+      isDesktopApp(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) ethergrove-desktop/0.1.0 Chrome/142.0.0.0 Electron/44.10.1 Safari/537.36',
+      ),
+    ).toBe(true);
+    expect(
+      isDesktopApp(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
+      ),
+    ).toBe(false);
+  });
+
+  it('the desktop fallback talks about drivers, not browser settings', () => {
+    render(<WebGLFallback desktop />);
+    expect(
+      screen.getByRole('heading', { name: "Your graphics can't show 3D right now" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Ethergrove Chronicles needs WebGL 2. Try these, then reopen the game:'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Update your graphics drivers.')).toBeInTheDocument();
+    expect(screen.getByText('On a laptop with two GPUs, plug in the charger.')).toBeInTheDocument();
+    expect(screen.getByText('Restart your computer.')).toBeInTheDocument();
+    expect(screen.queryByText(/hardware acceleration/i)).not.toBeInTheDocument();
   });
 });
 

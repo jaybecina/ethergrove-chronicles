@@ -47,6 +47,16 @@ export function PostFX({ tier, ao = QUALITY[tier].ao }: { tier: QualityTier; ao?
         <SMAA />
       </EffectComposer>
     );
+  // Lowest: no bloom; tone mapping, grade and vignette merge into one pass, so colours stay true.
+  if (!QUALITY[tier].bloom)
+    return (
+      <EffectComposer multisampling={0} enableNormalPass={false}>
+        <ToneMapping mode={ToneMappingMode.AGX} />
+        <Grade saturation={grade.saturation} warmth={grade.warmth} />
+        <Vignette offset={0.3} darkness={0.25} />
+        <SMAA />
+      </EffectComposer>
+    );
   return (
     <EffectComposer multisampling={0} enableNormalPass={false}>
       <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.2} intensity={0.6} mipmapBlur />
