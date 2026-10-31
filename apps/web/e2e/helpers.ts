@@ -4,8 +4,17 @@ import type {} from '../src/game/debugHook';
 
 const BLANK = '/__e2e-blank';
 
+export interface BootOptions {
+  /**
+   * Turn every render cost off (`?perf-off=all`, spec §7.3) for specs that only check the UI. On SwiftShader the
+   * farm draws about 1.5 frames a second, and every click waits for frames, so a long UI test outran CI's 90 s
+   * timeout. The canvas still draws, at about 7 frames a second.
+   */
+  lean?: boolean;
+}
+
 /** Fresh browser storage, then the title screen with the test hook ready. */
-export async function boot(page: Page): Promise<void> {
+export async function boot(page: Page, { lean = false }: BootOptions = {}): Promise<void> {
   // Clear storage on an empty same-origin page. Loading the game here would start model
   // downloads that the next navigation aborts ("GLTFLoader: Couldn't load texture").
   await page.route(BLANK, (route) =>
@@ -32,7 +41,7 @@ export async function boot(page: Page): Promise<void> {
       });
     }
   }, quality);
-  await page.goto('/');
+  await page.goto(lean ? '/?perf-off=all' : '/');
   await page.waitForFunction(() => window.__ethergrove !== undefined);
 }
 
@@ -40,9 +49,9 @@ export async function boot(page: Page): Promise<void> {
 export async function newGame(
   page: Page,
   seed: number,
-  { lessons = false }: { lessons?: boolean } = {},
+  { lessons = false, lean = false }: { lessons?: boolean } & BootOptions = {},
 ): Promise<void> {
-  await boot(page);
+  await boot(page, { lean });
   await page.evaluate(
     ([s, l]) => {
       window.__ethergrove?.setSeed(s, { lessons: l });

@@ -17,8 +17,11 @@ test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
 });
 
+// axe skips the canvas, so these specs boot `lean`: render costs off, keeping CI inside its timeout.
+const lean = true;
+
 test('title, slots and new game screens', async ({ page }) => {
-  await boot(page);
+  await boot(page, { lean });
   await expect(page.getByRole('heading', { name: 'Ethergrove Chronicles' })).toBeVisible();
   await expectNoSeriousViolations(page);
   await page.getByRole('button', { name: 'New game' }).click();
@@ -30,7 +33,7 @@ test('title, slots and new game screens', async ({ page }) => {
 });
 
 test('pause, cart and bin', async ({ page }) => {
-  await newGame(page, 5);
+  await newGame(page, 5, { lean });
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toBeVisible();
   await expectNoSeriousViolations(page);
@@ -52,7 +55,7 @@ test('pause, cart and bin', async ({ page }) => {
 });
 
 test('lesson goal card and Journal tab', async ({ page }) => {
-  await newGame(page, 5, { lessons: true });
+  await newGame(page, 5, { lessons: true, lean });
   await expect(page.locator('.goal-card .goal-body')).toBeVisible();
   await expectNoSeriousViolations(page);
   await page.keyboard.press('Escape');
