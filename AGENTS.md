@@ -266,10 +266,10 @@ server Playwright starts on port 5199. `check:build` fails the production build 
 - e2e helpers are in `apps/web/e2e/helpers.ts`.
 - `boot()` clears storage on a blank page, then loads the game at the Low quality tier.
 - `newGame(page, seed, { lessons })` has lessons off by default.
-- `boot(page, { lean: true })` and `newGame(page, seed, { lean: true })` turn render costs off (`?perf-off=all`).
-  Under SwiftShader the farm draws about 1.5 frames a second and every click waits for frames, so UI-only specs
-  (like `a11y.spec.ts`) should boot lean to stay inside CI's 90 s timeout. Never use it for specs that judge the
-  3D scene ([[lessons/e2e-swiftshader-frame-rate]]).
+- `boot()` and `newGame()` boot **lean** by default: render costs off (`?perf-off=all`). Under SwiftShader the full
+  farm draws about 1.5 frames a second and every click waits for frames, so tests ran out of CI's 90 s budget.
+  README media (`SAVE_MEDIA`) boots with full rendering; pass `{ lean: false }` for any new spec that judges how the
+  3D scene looks ([[lessons/e2e-swiftshader-frame-rate]]).
 
 ## Gotchas learned the hard way
 
