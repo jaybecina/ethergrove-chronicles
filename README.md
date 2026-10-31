@@ -35,38 +35,75 @@ east road sells seeds from 9 AM to 5 PM, spring to fall.
 New farms start with Grandpa's lessons. Reread them, skip them or start them again from the Journal
 tab in the menu.
 
-## Install the game (players)
+## Install and run the desktop app
 
-Download the installer for your computer from the project's **Releases** page (or from the **Desktop** workflow
-run's artifacts), then follow the steps below. The game runs offline once installed.
+The installers are already built on the developer's Mac, in the folder `apps/desktop/release/`:
 
-### macOS (MacBook, iMac, Mac mini)
+| File                                        | Use it on                                         |
+| ------------------------------------------- | ------------------------------------------------- |
+| `Ethergrove-Chronicles-0.1.0-mac-arm64.dmg` | MacBook / Mac with Apple Silicon (M1, M2, M3, M4) |
+| `Ethergrove-Chronicles-0.1.0-mac-x64.dmg`   | Older Intel Macs                                  |
+| `Ethergrove-Chronicles-0.1.0-win-x64.exe`   | Windows 10 or 11 (64-bit)                         |
 
-1. Pick the right file. Apple Silicon (M1, M2, M3, M4; any Mac from late 2020 on) uses
-   `Ethergrove-Chronicles-<version>-mac-arm64.dmg`. Older Intel Macs use `…-mac-x64.dmg`. Not sure? Apple menu →
-   **About This Mac**: "Chip: Apple M…" means arm64.
-2. Open the `.dmg` and drag **Ethergrove Chronicles** into **Applications**.
-3. Open it from Applications. While the game is unsigned, macOS says it "can't be verified". Click **Done**, then
-   open **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to Ethergrove
-   Chronicles, and confirm. You only do this once.
-4. Needs macOS 12 or newer.
+Not sure which Mac you have? Click the Apple menu → **About This Mac**. If it says "Chip: Apple M…", use the
+`arm64` file.
 
-### Windows (10 and 11, 64-bit)
+### Mac, step by step
 
-1. Download `Ethergrove-Chronicles-<version>-win-x64.exe` and run it.
-2. If Windows SmartScreen shows "Windows protected your PC" (while the game is unsigned), click **More info**,
-   then **Run anyway**.
-3. Choose an install folder, or keep the default, and finish. Shortcuts are added to the desktop and Start menu.
-4. To remove it, use **Settings → Apps**. Your saves are kept in your user folder, so reinstalling finds them.
+1. In Finder, open the project folder, then `apps/desktop/release/`.
+2. Double-click `Ethergrove-Chronicles-0.1.0-mac-arm64.dmg`. A window opens with the game's icon and an
+   **Applications** folder.
+3. Drag the **Ethergrove Chronicles** icon onto the **Applications** folder. Wait for the copy to finish, then
+   close the window and eject the disk image (right-click it on the desktop → Eject).
+4. Open **Launchpad** or the **Applications** folder and double-click **Ethergrove Chronicles**.
+5. First launch only: macOS says the app "cannot be verified" (the game isn't signed with a paid Apple
+   certificate yet). Click **Done**, not "Move to Trash". Then:
+   1. Open **System Settings → Privacy & Security**.
+   2. Scroll down to the message about "Ethergrove Chronicles" and click **Open Anyway**.
+   3. Enter your Mac password or Touch ID, then click **Open**.
+6. The title screen appears. Click **New game**. From now on it opens normally, with no warning.
 
-### Slow or older computer?
+### Windows, step by step
 
-In the game, open **Settings → Graphics** and pick **Lowest (older or built-in graphics)**. It draws at lower
-resolution with no shadows or bloom. **Automatic** chooses it for you on weak graphics.
-If the game says your graphics can't show 3D, update your graphics drivers and restart the computer.
+The Windows installer was built on a Mac, so it has to be copied to the Windows PC first.
 
-Saves made in the browser version don't move over by themselves: use **Export save** in the pause menu there and
-**Import a save file** on the Load game screen in the app.
+1. Copy `apps/desktop/release/Ethergrove-Chronicles-0.1.0-win-x64.exe` to the Windows PC (USB stick, Google
+   Drive, OneDrive, AirDrop-to-cloud and so on). It's about 130 MB.
+2. On the PC, double-click the `.exe`.
+3. If a blue **Windows protected your PC** screen appears (the game isn't signed with a paid certificate yet),
+   click **More info**, then **Run anyway**.
+4. In the installer, click **Next**, keep or change the install folder, and click **Install**, then **Finish**.
+5. Start the game from the **desktop shortcut** or the **Start menu** ("Ethergrove Chronicles"), and click
+   **New game**.
+6. To remove it later: **Settings → Apps → Installed apps → Ethergrove Chronicles → Uninstall**. Your saves stay
+   in your user folder.
+
+### Run it without installing (developers, on a Mac)
+
+```bash
+pnpm install
+pnpm desktop:dev
+```
+
+This builds the game and opens it in a desktop window straight from the code.
+
+### Rebuild the installers
+
+```bash
+pnpm desktop:mac   # makes both .dmg files
+pnpm desktop:win   # makes the Windows .exe (works on a Mac, nothing extra to install)
+```
+
+The new files appear in `apps/desktop/release/`. Rebuild after any change to the game.
+
+### If the game is slow, or says it can't show 3D
+
+- **Slow:** in the game, open **Settings → Graphics** and choose **Lowest (older or built-in graphics)**.
+  **Automatic** also picks it for weak graphics.
+- **"Your graphics can't show 3D right now":** update your graphics drivers, plug in the charger on a laptop
+  with two GPUs, then restart the computer.
+- **Saves from the browser version** don't move over by themselves: use **Export save** in the browser's pause
+  menu, then **Import a save file** on the app's Load game screen.
 
 ## Develop
 
