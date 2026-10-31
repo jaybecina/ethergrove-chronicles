@@ -16,7 +16,10 @@ async function seedHearthvaleSave(page: Page, save: unknown): Promise<void> {
   await page.unroute(BLANK);
   await page.evaluate(async (file) => {
     localStorage.clear();
-    localStorage.setItem('ethergrove:settings', JSON.stringify({ quality: 'low' }));
+    localStorage.setItem(
+      'ethergrove:settings',
+      JSON.stringify({ settingsVersion: 2, quality: 'medium' }),
+    );
     const run = (req: IDBRequest | IDBOpenDBRequest) =>
       new Promise<void>((resolve) => {
         req.onsuccess = req.onerror = () => {

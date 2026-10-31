@@ -1,6 +1,8 @@
 import { CROPS, cropStage, type CropState, type Grid } from '@ethergrove/core';
 import { useEffect, useMemo, useRef } from 'react';
 import { eventBus } from '../game/eventBus';
+import { useGame } from '../game/store';
+import { QUALITY } from '../render/quality';
 import { ASSETS, type AssetKey } from './assets';
 import { MODEL_MATURE } from './Crops';
 import type { InstanceItem } from './InstancedSet';
@@ -49,6 +51,7 @@ export function cropModel(crop: CropState): CropKey | null {
 const POP_MS = 250;
 
 export function CropModels({ grid }: { grid: Grid }) {
+  const sway = QUALITY[useGame((s) => s.tier())].cropSway;
   const pops = useRef(new Map<number, number>());
   const groups = useMemo(() => {
     const out = new Map<CropKey, InstanceItem[]>();
@@ -101,7 +104,7 @@ export function CropModels({ grid }: { grid: Grid }) {
           items={items}
           capacity={grid.tiles.length}
           fit={FIT[key]}
-          patch={{ wind: 0.05 }}
+          patch={{ wind: sway }}
           tint={CROP_TINT}
           scaleOf={scaleOf}
           animating={() => pops.current.size > 0}

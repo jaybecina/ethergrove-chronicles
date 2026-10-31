@@ -29,16 +29,31 @@ describe('gamepad in menus (review finding 4)', () => {
 
   it('A picks a focused radio option', () => {
     render(<Settings />);
-    screen.getByRole('radio', { name: 'Battery saver' }).focus();
+    screen.getByRole('radio', { name: 'Medium' }).focus();
+    run({ confirm: true });
+    expect(gameStore.getState().settings.quality).toBe('medium');
+  });
+
+  it('A picks the low graphics tier', () => {
+    render(<Settings />);
+    screen.getByRole('radio', { name: 'Low (older or built-in graphics)' }).focus();
     run({ confirm: true });
     expect(gameStore.getState().settings.quality).toBe('low');
   });
 
-  it('A picks the lowest graphics tier', () => {
+  it('Graphics lists the four choices in order', () => {
     render(<Settings />);
-    screen.getByRole('radio', { name: 'Lowest (older or built-in graphics)' }).focus();
-    run({ confirm: true });
-    expect(gameStore.getState().settings.quality).toBe('lite');
+    expect(
+      screen
+        .getAllByRole('radio')
+        .slice(0, 4)
+        .map((r) => r.parentElement?.textContent),
+    ).toEqual([
+      'Automatic (recommended)',
+      'High (stronger GPUs)',
+      'Medium',
+      'Low (older or built-in graphics)',
+    ]);
   });
 
   it('d-pad left and right move a focused slider', () => {

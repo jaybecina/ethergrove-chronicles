@@ -3,12 +3,20 @@ import { Suspense, useMemo } from 'react';
 import { ASSETS, type AssetKey } from './assets';
 import type { InstanceItem } from './InstancedSet';
 import { ModelInstances } from './ModelInstances';
+import { useGame } from '../game/store';
+import { QUALITY } from '../render/quality';
 import { hash01 } from './palette';
 
 type DecorKey = Extract<AssetKey, 'bush' | 'bush-flowers' | 'flowers-1' | 'flowers-2'>;
 
-/** Bushes and flower clumps just outside the fence and beside the house. */
-function decorSpots(grid: Grid): Record<DecorKey, InstanceItem[]> {
+/** Scatter candidates at density 1; Low tries half as many, High twice as many (presets spec §4.2). */
+export const DECOR_CANDIDATES = 160;
+
+/**
+ * Bushes and flower clumps just outside the fence and beside the house. A higher density only adds spots:
+ * every candidate keeps its hash, so switching presets never moves a bush.
+ */
+export function decorSpots(grid: Grid, density: number): Record<DecorKey, InstanceItem[]> {
   const out: Record<DecorKey, InstanceItem[]> = {
     bush: [],
     'bush-flowers': [],
@@ -16,7 +24,7 @@ function decorSpots(grid: Grid): Record<DecorKey, InstanceItem[]> {
     'flowers-2': [],
   };
   const keys: DecorKey[] = ['bush', 'bush-flowers', 'flowers-1', 'flowers-2'];
-  for (let i = 0; i < 160; i++) {
+  for (let i = 0; i < Math.round(DECOR_CANDIDATES * density); i++) {
     const x = -5 + hash01(i * 1.7 + 3) * (grid.width + 10);
     const z = -5 + hash01(i * 2.9 + 5) * (grid.height + 10);
     const inside = x > -0.4 && z > -0.4 && x < grid.width + 0.4 && z < grid.height + 0.4;
@@ -45,7 +53,8 @@ const FIT: Record<DecorKey, number> = {
 };
 
 export function Decor({ grid, season }: { grid: Grid; season: Season }) {
-  const spots = useMemo(() => decorSpots(grid), [grid.width, grid.height]); // eslint-disable-line react-hooks/exhaustive-deps
+  const density = QUALITY[useGame((s) => s.tier())].decorDensity;
+  const spots = useMemo(() => decorSpots(grid, density), [grid.width, grid.height, density]); // eslint-disable-line react-hooks/exhaustive-deps
   const keys = (Object.keys(spots) as DecorKey[]).filter(
     (k) => season !== 'winter' || k === 'bush',
   );

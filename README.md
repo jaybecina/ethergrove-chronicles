@@ -98,7 +98,7 @@ The new files appear in `apps/desktop/release/`. Rebuild after any change to the
 
 ### If the game is slow, or says it can't show 3D
 
-- **Slow:** in the game, open **Settings → Graphics** and choose **Lowest (older or built-in graphics)**.
+- **Slow:** in the game, open **Settings → Graphics** and choose **Low (older or built-in graphics)**.
   **Automatic** also picks it for weak graphics.
 - **"Your graphics can't show 3D right now":** update your graphics drivers, plug in the charger on a laptop
   with two GPUs, then restart the computer.
@@ -164,7 +164,7 @@ The **Desktop** GitHub workflow builds both installers on macOS and Windows runn
 - **Signing** removes the warnings. Set `CSC_LINK` and `CSC_KEY_PASSWORD` (an Apple Developer ID Application
   certificate), plus `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD` and `APPLE_TEAM_ID` to notarise. For Windows, set
   `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD`. Add them as repository secrets for the workflow.
-- **Weak GPUs:** Settings → Graphics → **Lowest (older or built-in graphics)** turns off shadows and bloom and
+- **Weak GPUs:** Settings → Graphics → **Low (older or built-in graphics)** turns off shadows and bloom and
   draws at 1× pixels. Automatic picks it for software renderers and older Intel graphics, and steps down to
   it when the frame rate stays low.
 

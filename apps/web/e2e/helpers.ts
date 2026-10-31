@@ -28,12 +28,12 @@ export async function boot(
   );
   await page.goto(BLANK);
   await page.unroute(BLANK);
-  // Headless browsers render on a software GPU; the Low tier keeps frames fast enough for input-driven tests.
+  // Headless browsers render on a software GPU; the Medium tier keeps frames fast enough for input-driven tests.
   // README screenshots (SAVE_MEDIA) use High.
-  const quality = process.env.SAVE_MEDIA ? 'high' : 'low';
+  const quality = process.env.SAVE_MEDIA ? 'high' : 'medium';
   await page.evaluate(async (q) => {
     localStorage.clear();
-    localStorage.setItem('ethergrove:settings', JSON.stringify({ quality: q }));
+    localStorage.setItem('ethergrove:settings', JSON.stringify({ settingsVersion: 2, quality: q }));
     // Delete the legacy Hearthvale database too, so no test inherits saves through the import.
     for (const name of ['ethergrove', 'hearthvale']) {
       await new Promise<void>((resolve) => {

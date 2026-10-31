@@ -11,7 +11,11 @@ export type Overlay = 'pause' | 'bin' | 'cart' | 'sleep' | 'morning' | 'restorin
 export type CameraYaw = 0 | 1 | 2 | 3;
 export type ZoomStep = 0 | 1 | 2;
 
+export const CURRENT_SETTINGS_VERSION = 2;
+
 export interface Settings {
+  /** 2 since the Low / Medium / High presets; older saves used `low` for Medium and `lite` for Low. */
+  settingsVersion: 2;
   quality: 'auto' | QualityTier;
   musicVolume: number;
   sfxVolume: number;
@@ -21,6 +25,7 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
+  settingsVersion: CURRENT_SETTINGS_VERSION,
   quality: 'auto',
   musicVolume: 0.6,
   sfxVolume: 0.8,
@@ -33,14 +38,25 @@ const SETTINGS_KEY = 'ethergrove:settings';
 /** Where settings lived before the rename to Ethergrove (spec §3.4): read once, then removed. */
 const LEGACY_SETTINGS_KEY = 'hearthvale:settings';
 
-/** Throws on invalid JSON. */
-function parseSettings(raw: string): Settings {
-  const parsed = JSON.parse(raw) as Partial<Settings>;
+const QUALITY_CHOICES: readonly unknown[] = ['auto', 'low', 'medium', 'high'];
+const PRE_V2_QUALITY: Readonly<Record<string, string>> = { low: 'medium', lite: 'low' };
+
+/** Copies known keys, maps pre-version-2 quality ids, and drops quality values nobody offers. */
+export function migrateSettings(parsed: Record<string, unknown>): Settings {
   // Copy known keys only, so retired settings (like the old seenTips) are dropped.
   const known = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
-  return Object.fromEntries(
-    known.map((k) => [k, parsed[k] ?? DEFAULT_SETTINGS[k]]),
-  ) as unknown as Settings;
+  const out = Object.fromEntries(known.map((k) => [k, parsed[k] ?? DEFAULT_SETTINGS[k]]));
+  let quality: unknown = out.quality;
+  if (parsed.settingsVersion !== CURRENT_SETTINGS_VERSION && typeof quality === 'string')
+    quality = PRE_V2_QUALITY[quality] ?? quality;
+  out.quality = QUALITY_CHOICES.includes(quality) ? (quality as string) : 'auto';
+  out.settingsVersion = CURRENT_SETTINGS_VERSION;
+  return out as unknown as Settings;
+}
+
+/** Throws on invalid JSON. */
+function parseSettings(raw: string): Settings {
+  return migrateSettings(JSON.parse(raw) as Record<string, unknown>);
 }
 
 function loadSettings(): Settings {
@@ -49,7 +65,10 @@ function loadSettings(): Settings {
     const legacy = localStorage.getItem(LEGACY_SETTINGS_KEY);
     if (raw) {
       if (legacy !== null) localStorage.removeItem(LEGACY_SETTINGS_KEY);
-      return parseSettings(raw);
+      const settings = parseSettings(raw);
+      const stored = JSON.parse(raw) as { settingsVersion?: unknown };
+      if (stored.settingsVersion !== CURRENT_SETTINGS_VERSION) saveSettings(settings);
+      return settings;
     }
     if (legacy === null) return DEFAULT_SETTINGS;
     let settings: Settings;
@@ -123,7 +142,7 @@ export function createGameStore({
     settings: loadSettings(),
     cameraYaw: 0,
     zoomStep: 1,
-    autoTier: 'high',
+    autoTier: 'medium',
     device: 'keyboard',
     setDevice(device) {
       if (get().device !== device) set({ device });
