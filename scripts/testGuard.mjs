@@ -24,6 +24,12 @@ const AREAS = [
       'apps/web/src/**/*.test.ts(x) beside the file, or apps/web/e2e/*.spec.ts for player flows',
   },
   {
+    name: 'desktop',
+    code: /^apps\/desktop\/(src\/.+\.ts|electron-builder\.config\.mjs)$/,
+    test: /^apps\/desktop\/(src\/.+\.test\.ts|e2e\/.+\.spec\.ts)$/,
+    where: 'apps/desktop/src/**/*.test.ts, or apps/desktop/e2e/*.spec.ts for the app itself',
+  },
+  {
     name: 'scripts',
     code: /^scripts\/.+\.mjs$/,
     test: /^scripts\/.+\.test\.mjs$/,

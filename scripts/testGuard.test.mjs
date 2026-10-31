@@ -20,6 +20,32 @@ test('fails a web source change with no web test', () => {
   assert.match(r.message, /NO_TEST_REASON/);
 });
 
+test('desktop main-process and packaging changes need a desktop test (desktop spec §5)', () => {
+  const r = checkTests(
+    modified('apps/desktop/src/main.ts', 'apps/desktop/electron-builder.config.mjs'),
+  );
+  assert.equal(r.ok, false);
+  assert.deepEqual(r.missing, [
+    {
+      area: 'desktop',
+      files: ['apps/desktop/src/main.ts', 'apps/desktop/electron-builder.config.mjs'],
+    },
+  ]);
+  assert.equal(
+    checkTests(modified('apps/desktop/src/policy.ts', 'apps/desktop/src/policy.test.ts')).ok,
+    true,
+  );
+  assert.equal(
+    checkTests(modified('apps/desktop/src/main.ts', 'apps/desktop/e2e/app.spec.ts')).ok,
+    true,
+  );
+  // A web test does not cover a desktop change.
+  assert.equal(
+    checkTests(modified('apps/desktop/src/main.ts', 'apps/web/src/a.test.ts')).ok,
+    false,
+  );
+});
+
 test('a unit test or an e2e spec in the same area satisfies a web change', () => {
   assert.equal(
     checkTests(modified('apps/web/src/scene/palette.ts', 'apps/web/src/scene/models.test.ts')).ok,

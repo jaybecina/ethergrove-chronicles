@@ -1,5 +1,12 @@
 import { gameStore, useGame, type Settings as S } from '../../game/store';
 
+const QUALITY_LABEL = {
+  auto: 'Automatic',
+  high: 'High',
+  low: 'Battery saver',
+  lite: 'Lowest (older or built-in graphics)',
+} as const;
+
 export function Settings() {
   const settings = useGame((s) => s.settings);
   const update = (patch: Partial<S>) => {
@@ -9,7 +16,7 @@ export function Settings() {
     <div className="settings">
       <fieldset>
         <legend>Graphics</legend>
-        {(['auto', 'high', 'low'] as const).map((q) => (
+        {(['auto', 'high', 'low', 'lite'] as const).map((q) => (
           <label key={q} className="choice">
             <input
               type="radio"
@@ -19,7 +26,7 @@ export function Settings() {
                 update({ quality: q });
               }}
             />
-            {q === 'auto' ? 'Automatic' : q === 'high' ? 'High' : 'Battery saver'}
+            {QUALITY_LABEL[q]}
           </label>
         ))}
       </fieldset>

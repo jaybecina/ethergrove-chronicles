@@ -11,6 +11,11 @@ export function hasWebGL2(
   }
 }
 
+/** True inside the Electron desktop app (its user agent carries `Electron/<version>`). */
+export function isDesktopApp(userAgent: string): boolean {
+  return userAgent.includes('Electron/');
+}
+
 /** On GPU context loss: pause behind a "Restoring graphics" overlay; on restore, remount the canvas. */
 export function installContextLoss(
   canvas: HTMLCanvasElement,

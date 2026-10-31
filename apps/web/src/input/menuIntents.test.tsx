@@ -34,6 +34,13 @@ describe('gamepad in menus (review finding 4)', () => {
     expect(gameStore.getState().settings.quality).toBe('low');
   });
 
+  it('A picks the lowest graphics tier', () => {
+    render(<Settings />);
+    screen.getByRole('radio', { name: 'Lowest (older or built-in graphics)' }).focus();
+    run({ confirm: true });
+    expect(gameStore.getState().settings.quality).toBe('lite');
+  });
+
   it('d-pad left and right move a focused slider', () => {
     render(<Settings />);
     screen.getByRole('slider', { name: 'Music volume' }).focus();

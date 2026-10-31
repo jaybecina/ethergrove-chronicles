@@ -3,8 +3,8 @@
 Guidance for AI coding agents (Claude Code, Codex, Cursor, Copilot, Gemini and others) working in this
 repository.
 
-Ethergrove Chronicles is an original cozy farm-life RPG for the browser (desktop and phones), inspired by the
-farm-sim genre. It must stay original: no names, characters, art, music or text copied from Harvest Moon
+Ethergrove Chronicles is an original cozy farm-life RPG for the browser (desktop and phones) and as an installable
+macOS and Windows app, inspired by the farm-sim genre. It must stay original: no names, characters, art, music or text copied from Harvest Moon
 or other games. Third-party assets are CC0 only (see `CREDITS.md`); verify a pack's license before adding it.
 
 ## Working standard
@@ -129,6 +129,10 @@ pnpm checks           # every check with live progress (what GitHub CI runs, ~3 
 pnpm --filter web size   # bundle budget (size-limit)
 pnpm --filter web perf   # load time on a throttled phone profile (not gating)
 pnpm --filter web perf:frames   # frame-rate profile on the real GPU (not gating; report in docs/perf/)
+pnpm desktop:dev      # build the game and open it in the Electron desktop app
+pnpm desktop:mac      # .dmg for arm64 and x64 → apps/desktop/release/
+pnpm desktop:win      # .exe NSIS installer for x64 (builds on macOS too, no Wine)
+pnpm --filter desktop e2e   # Playwright boots the unpackaged desktop app (after `pnpm --filter desktop build`)
 ```
 
 Single tests:
@@ -180,8 +184,9 @@ The checks are split by cost ([[decisions/0009-pre-commit-and-pr-ci]]):
 
 - The test guard reads the staged files. Each area with a staged source change needs a staged test:
   core (`packages/core/src/**` → `packages/core/{src,test}/**/*.test.ts`), web (`apps/web/src/**` →
-  `apps/web/src/**/*.test.ts(x)` or `apps/web/e2e/*.spec.ts`), scripts (`scripts/**/*.mjs` →
-  `scripts/**/*.test.mjs`). Deletions and `.d.ts` files are exempt. `.husky/commit-msg` records a
+  `apps/web/src/**/*.test.ts(x)` or `apps/web/e2e/*.spec.ts`), desktop (`apps/desktop/src/**/*.ts` and
+  `electron-builder.config.mjs` → `apps/desktop/src/**/*.test.ts` or `apps/desktop/e2e/*.spec.ts`), scripts
+  (`scripts/**/*.mjs` → `scripts/**/*.test.mjs`). Deletions and `.d.ts` files are exempt. `.husky/commit-msg` records a
   `NO_TEST_REASON` as a `No-Test:` trailer ([[decisions/0007-every-change-ships-a-test]]).
 - The commit checks run on the working tree, so unstaged files count too.
 - `pnpm checks` run locally needs port 5199 free.
@@ -199,7 +204,25 @@ Use `=all`: small UI changes fall inside the 2% tolerance and would otherwise le
 packages/core   Pure TypeScript rules. applyCommand(state, cmd) → { state, events }. No DOM/React/three
                 (ESLint enforces it). All randomness comes from a seeded RNG stored in state.rng.
 apps/web        Vite + React 19 + React Three Fiber + Zustand. Draws the core state and turns input into commands.
+apps/desktop    Electron 44 shell around the apps/web build, packaged by electron-builder (.dmg, .exe).
 ```
+
+### Desktop app
+
+Spec `docs/superpowers/specs/2026-10-31-ethergrove-desktop-design.md`, [[decisions/0014-desktop-electron]].
+
+- `src/policy.ts` holds every rule (URL → file, MIME, CSP, navigation, permissions, menu) and is unit tested;
+  `src/main.ts` only wires it to Electron. No preload and no IPC: the game needs no Node access.
+- The game loads from `app://ethergrove/` (a privileged standard scheme), never `file://`, so IndexedDB and
+  localStorage persist in Electron's `userData`. `scripts/copy-web.mjs` copies `apps/web/dist` (no source maps)
+  into `apps/desktop/web/`, which the asar bundles.
+- Any new network origin, worker or WASM use in the web game must be allowed in the CSP in `policy.ts`; the
+  desktop e2e fails on console errors, which is how a CSP block shows up.
+- The packaged app has the inspect fuse off, so Playwright's Electron driver can't drive it. Check a packaged
+  build by starting its binary with `--remote-debugging-port=9333` and `chromium.connectOverCDP`.
+- Without a Developer ID the macOS app is ad-hoc signed with no hardened runtime
+  (`electron-builder.config.mjs`); flipping fuses breaks Electron's own signature, and Apple Silicon refuses a
+  broken seal.
 
 ### The loop
 
@@ -292,6 +315,9 @@ server Playwright starts on port 5199. `check:build` fails the production build 
 - **Kenney models render as metal.** Their glTFs omit `metallicFactor`, which three.js reads as 1.0.
   With no environment map that hides the base colour: tinted grey rocks came out dark brown, like the
   stumps. Pass `matte` to `ModelInstances` when a model's tint must read true (rocks do).
+- **Quality tiers.** `high`, `low` (Battery saver) and `lite` (Lowest) live in `render/quality.ts`. Automatic
+  starts weak GPUs (by the WebGL renderer string, read locally only) on `lite`, and `PerformanceMonitor` steps
+  the auto tier down one at a time. A new per-tier cost goes in `TierSettings`, not in an `if (tier === …)`.
 - **Stacking.** `.hud` is `position: fixed`, so it is its own stacking context. Anything that must sit
   above the touch joystick zone (`z-index: 1`) has to be mounted outside `.hud`; see `ui/lessons/LessonColumn.tsx`.
 

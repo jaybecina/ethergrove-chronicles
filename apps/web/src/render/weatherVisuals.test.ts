@@ -27,6 +27,9 @@ describe('weatherVisuals', () => {
     expect(weatherVisuals('storm', 'low').rain).toBe(3500);
     expect(weatherVisuals('snow', 'high').snow).toBe(3000);
     expect(weatherVisuals('snow', 'low').snow).toBe(1200);
+    expect(weatherVisuals('rain', 'lite').rain).toBe(1200);
+    expect(weatherVisuals('storm', 'lite').rain).toBe(1800);
+    expect(weatherVisuals('snow', 'lite').snow).toBe(600);
   });
 
   it('low tier never draws more particles than high', () => {

@@ -17,6 +17,9 @@ export default tseslint.config(
       '.superpowers/**',
       'assets-src/**',
       'graphify-out/**',
+      // The desktop app's copy of the web build and its packaged installers (desktop spec §3.2).
+      'apps/desktop/web/**',
+      'apps/desktop/release/**',
     ],
   },
   js.configs.recommended,
@@ -36,6 +39,11 @@ export default tseslint.config(
   {
     files: ['**/*.js', '**/*.mjs'],
     extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: { globals: globals.node },
+  },
+  {
+    // The Electron main process and its tests run on Node.
+    files: ['apps/desktop/**/*.ts'],
     languageOptions: { globals: globals.node },
   },
   {

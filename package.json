@@ -16,6 +16,9 @@
     "prepare": "husky",
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
+    "desktop:dev": "pnpm build && pnpm --filter desktop build && pnpm --filter desktop start",
+    "desktop:mac": "pnpm build && pnpm --filter desktop build && pnpm --filter desktop dist:mac",
+    "desktop:win": "pnpm build && pnpm --filter desktop build && pnpm --filter desktop dist:win",
     "e2e": "pnpm --filter web e2e",
     "checks": "node scripts/checks.mjs all",
     "checks:commit": "node scripts/checks.mjs commit"

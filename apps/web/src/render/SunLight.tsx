@@ -15,7 +15,7 @@ export function SunLight() {
   const hemi = useRef<HemisphereLight>(null);
   const amb = useRef<AmbientLight>(null);
   const tier = useGame((s) => s.tier());
-  const shadowSize = QUALITY[tier].shadowMapSize;
+  const { shadowMapSize: shadowSize, shadows } = QUALITY[tier];
 
   useFrame(() => {
     const g = gameStore.getState().game;
@@ -46,7 +46,7 @@ export function SunLight() {
       <directionalLight
         key={shadowSize}
         ref={sun}
-        castShadow
+        castShadow={shadows}
         shadow-mapSize={[shadowSize, shadowSize]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.03}

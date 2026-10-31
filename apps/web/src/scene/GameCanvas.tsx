@@ -4,7 +4,7 @@ import { NoToneMapping } from 'three';
 import { gameStore, useGame } from '../game/store';
 import { PostFX } from '../render/PostFX';
 import { profileOff, profiledTier } from '../render/profileSwitches';
-import { QUALITY, detectTier } from '../render/quality';
+import { QUALITY, detectTier, stepDown } from '../render/quality';
 import { installContextLoss } from '../render/webgl';
 import { GameLoop } from './GameLoop';
 import { World } from './World';
@@ -32,7 +32,8 @@ export function GameCanvas() {
         bounds={(refresh) => (refresh > 90 ? [50, 90] : [45, 60])}
         flipflops={2}
         onDecline={() => {
-          gameStore.getState().setAutoTier('low');
+          const s = gameStore.getState();
+          s.setAutoTier(stepDown(s.autoTier));
         }}
       />
       <GameLoop />
