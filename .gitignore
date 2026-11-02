@@ -26,3 +26,6 @@ graphify-out/
 # Desktop app: the copied web build and packaged installers (pnpm desktop:mac / desktop:win)
 apps/desktop/web/
 apps/desktop/release/
+
+# Confidential notes, never commit
+private/
