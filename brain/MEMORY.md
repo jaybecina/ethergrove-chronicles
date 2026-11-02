@@ -47,6 +47,11 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
   Outward-style real-time combat and a 2.5D look. The rename is built on `feat/ethergrove-chronicles`,
   awaiting the owner's push; the owner renames the GitHub repo, Vercel project and local folder. —
   verified, [[decisions/0011-ethergrove-name-and-rpg-direction]]
+- The game is now **action RPG first** (farm as home base): Rootwardens vs Lantern Guild chosen at the Siege of
+  Lowmere, Guildmaster Maren Ashcombe, Elias the Rootblade, a six-zone valley and camping. Spec approved and story
+  locked on `docs/rootwake-arpg`. — verified, [[decisions/0017-arpg-first-rootwake]]
+- **Steam is a release target** (the Electron app is the Steam build; it must never self-update under Steam). —
+  verified, [[decisions/0018-steam-release-target]]
 - Part 2A (town and villagers) is specced on branch `docs/part2a-spec`. Building it moves saves to v3 and
   retargets the `buySeeds` lesson to the town store (tutorial spec §9). — verified
 - Audio is built on `docs/ethergrove-audio`, awaiting the owner's listening and push: the Rootsong main theme,
