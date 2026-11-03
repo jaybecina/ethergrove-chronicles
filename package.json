@@ -20,6 +20,10 @@
     "desktop:mac": "pnpm build && pnpm --filter desktop build && pnpm --filter desktop dist:mac",
     "desktop:win": "pnpm build && pnpm --filter desktop build && pnpm --filter desktop dist:win",
     "e2e": "pnpm --filter web e2e",
+    "game:import": "node scripts/game.mjs import",
+    "game:test": "node scripts/game.mjs test",
+    "game:smoke": "node scripts/game.mjs smoke",
+    "game:fixtures": "UPDATE_PARITY=1 pnpm --filter @ethergrove/core exec vitest run test/parityFixtures.test.ts",
     "checks": "node scripts/checks.mjs all",
     "checks:commit": "node scripts/checks.mjs commit"
   },

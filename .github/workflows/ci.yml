@@ -1,5 +1,5 @@
 # Every check on each pull request and on main (decision 0009). Mirrors `pnpm checks` (scripts/checks.mjs,
-# plan `all`); scripts/checks.test.mjs fails if the two drift apart. Make all four jobs required checks
+# plan `all`); scripts/checks.test.mjs fails if the two drift apart. Make all five jobs required checks
 # for `main` in the repository's branch protection.
 name: CI
 
@@ -66,3 +66,33 @@ jobs:
           name: e2e-traces-${{ matrix.project }}-${{ strategy.job-index }}
           path: apps/web/test-results
           retention-days: 7
+
+  game:
+    name: Godot (GUT tests + smoke boot)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      # Downloads Godot 4.7.2 (about 60 MB, cached): approved at push time by the owner.
+      - uses: actions/cache@v4
+        id: godot-cache
+        with:
+          path: ~/godot
+          key: godot-4.7.2-linux
+      - name: Download Godot 4.7.2
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$HOME/godot"
+          curl -fsSL -o "$RUNNER_TEMP/godot.zip" https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$HOME/godot"
+          chmod +x "$HOME/godot/Godot_v4.7.2-stable_linux.x86_64"
+      - name: Point GODOT_BIN at the cached binary
+        run: echo "GODOT_BIN=$HOME/godot/Godot_v4.7.2-stable_linux.x86_64" >> "$GITHUB_ENV"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm game:test
+      - run: pnpm game:smoke

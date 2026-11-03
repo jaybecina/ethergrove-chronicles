@@ -1,0 +1,24 @@
+; Engine configuration file.
+config_version=5
+
+[application]
+
+config/name="Ethergrove Chronicles"
+run/main_scene="res://boot/boot.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+
+[debug]
+
+gdscript/warnings/untyped_declaration=2
+gdscript/warnings/unsafe_property_access=2
+gdscript/warnings/unsafe_method_access=2
+gdscript/warnings/unsafe_call_argument=2
+gdscript/warnings/unused_variable=2
+gdscript/warnings/unused_local_constant=2
+gdscript/warnings/shadowed_variable=2
+gdscript/warnings/unsafe_cast=1
+gdscript/warnings/exclude_addons=true
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")

@@ -114,3 +114,19 @@ test('parseNameStatus reads `git diff --name-status -z`, keeping the new path of
   ]);
   assert.deepEqual(parseNameStatus(''), []);
 });
+
+test('Godot game code needs a GUT test under apps/game/test', () => {
+  const r = checkTests(modified('apps/game/core/rng.gd'));
+  assert.equal(r.ok, false);
+  assert.deepEqual(r.missing, [{ area: 'game', files: ['apps/game/core/rng.gd'] }]);
+  assert.ok(r.message.includes('apps/game/test/{core,game}/test_*.gd'), r.message);
+  assert.equal(
+    checkTests(modified('apps/game/core/rng.gd', 'apps/game/test/core/test_rng.gd')).ok,
+    true,
+  );
+});
+
+test('the vendored GUT addon and a lone GUT test need no further test', () => {
+  assert.equal(checkTests(modified('apps/game/addons/gut/gut.gd')).ok, true);
+  assert.equal(checkTests(modified('apps/game/test/core/test_rng.gd')).ok, true);
+});

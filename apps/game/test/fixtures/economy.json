@@ -1,0 +1,4264 @@
+{
+ "name": "economy",
+ "format": 1,
+ "start": {
+  "seed": 1,
+  "farmName": "Elm",
+  "playerName": "Ari",
+  "lessons": false
+ },
+ "steps": [
+  {
+   "patch": {
+    "bag": [
+     {
+      "id": "turnip",
+      "qty": 12
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   }
+  },
+  {
+   "cmd": {
+    "type": "shipItem",
+    "bagIndex": 0,
+    "qty": 10
+   }
+  },
+  {
+   "cmd": {
+    "type": "unshipItem",
+    "binIndex": 0,
+    "qty": 4
+   }
+  },
+  {
+   "patch": {
+    "player": {
+     "location": "house"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "sleep"
+   }
+  },
+  {
+   "patch": {
+    "player": {
+     "location": "farm"
+    }
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "bag": [
+     {
+      "id": "wood",
+      "qty": 5
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   }
+  },
+  {
+   "cmd": {
+    "type": "shipItem",
+    "bagIndex": 0,
+    "qty": 2
+   }
+  },
+  {
+   "cmd": {
+    "type": "shipItem",
+    "bagIndex": 0,
+    "qty": 3
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "shipItem",
+    "bagIndex": 0,
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "bag": [
+     {
+      "id": "turnip",
+      "qty": 1
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   }
+  },
+  {
+   "cmd": {
+    "type": "shipItem",
+    "bagIndex": 0,
+    "qty": 2
+   }
+  },
+  {
+   "cmd": {
+    "type": "shipItem",
+    "bagIndex": 4,
+    "qty": 1
+   }
+  },
+  {
+   "cmd": {
+    "type": "unshipItem",
+    "binIndex": 0,
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "bag": [
+     {
+      "id": "turnip",
+      "qty": 3
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   }
+  },
+  {
+   "cmd": {
+    "type": "shipItem",
+    "bagIndex": 0,
+    "qty": 3
+   }
+  },
+  {
+   "patch": {
+    "bag": [
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     }
+    ]
+   }
+  },
+  {
+   "cmd": {
+    "type": "unshipItem",
+    "binIndex": 0,
+    "qty": 3
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 539,
+     "season": "spring"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:turnip",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 540,
+     "season": "spring"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:turnip",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 1019,
+     "season": "spring"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:turnip",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 1020,
+     "season": "spring"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:turnip",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 600,
+     "season": "winter"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:turnip",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 600,
+     "season": "summer"
+    }
+   }
+  },
+  {
+   "patch": {
+    "weather": {
+     "today": "storm"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:tomato",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "weather": {
+     "today": "rain"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:tomato",
+    "qty": 1
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:corn",
+    "qty": 1
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:melon",
+    "qty": 1
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:turnip",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 600,
+     "season": "fall"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:pumpkin",
+    "qty": 1
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:eggplant",
+    "qty": 1
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:tomato",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 600,
+     "season": "spring"
+    }
+   }
+  },
+  {
+   "patch": {
+    "gold": 250
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:potato",
+    "qty": 5
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 600,
+     "season": "spring"
+    }
+   }
+  },
+  {
+   "patch": {
+    "gold": 249
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:potato",
+    "qty": 5
+   }
+  },
+  {
+   "patch": {
+    "version": 2,
+    "seed": 1,
+    "rng": -1293976539,
+    "farmName": "Elm",
+    "playerName": "Ari",
+    "calendar": {
+     "year": 1,
+     "season": "spring",
+     "day": 1,
+     "minute": 360
+    },
+    "weather": {
+     "today": "sunny",
+     "tomorrow": "sunny"
+    },
+    "player": {
+     "location": "farm",
+     "x": 15.5,
+     "z": 22.5,
+     "facing": "n",
+     "stamina": 100
+    },
+    "canCharges": 20,
+    "activeSlot": 0,
+    "selectedQuick": 0,
+    "quickSlots": [
+     0,
+     null,
+     null
+    ],
+    "bag": [
+     {
+      "id": "seed:turnip",
+      "qty": 6
+     },
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    "bin": [],
+    "gold": 500,
+    "pendingGold": 0,
+    "wakeHalfStamina": false,
+    "milestones": [],
+    "tutorial": {
+     "lesson": "off",
+     "count": 0,
+     "notesSeen": [],
+     "gifted": false
+    }
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 400,
+     "season": "spring"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:turnip",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "calendar": {
+     "minute": 600,
+     "season": "spring"
+    }
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:corn",
+    "qty": 1
+   }
+  },
+  {
+   "patch": {
+    "bag": [
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     },
+     {
+      "id": "stone",
+      "qty": 99
+     }
+    ]
+   }
+  },
+  {
+   "cmd": {
+    "type": "buyItem",
+    "itemId": "seed:turnip",
+    "qty": 1
+   }
+  }
+ ],
+ "expected": {
+  "events": [
+   [],
+   [],
+   [],
+   [],
+   [
+    {
+     "type": "shippingReport",
+     "items": [
+      {
+       "id": "turnip",
+       "qty": 6
+      }
+     ],
+     "total": 210
+    },
+    {
+     "type": "weatherChanged",
+     "weather": "sunny"
+    },
+    {
+     "type": "goldChanged",
+     "gold": 710,
+     "delta": 210
+    },
+    {
+     "type": "dayStarted",
+     "calendar": {
+      "year": 1,
+      "season": "spring",
+      "day": 2,
+      "minute": 360
+     }
+    },
+    {
+     "type": "milestoneReached",
+     "id": "firstShipment"
+    }
+   ],
+   [],
+   [],
+   [],
+   [],
+   [],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "notSellable"
+    }
+   ],
+   [],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "noItem"
+    }
+   ],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "noItem"
+    }
+   ],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "noItem"
+    }
+   ],
+   [],
+   [],
+   [],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "bagFull"
+    }
+   ],
+   [],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "cartClosed"
+    }
+   ],
+   [],
+   [],
+   [
+    {
+     "type": "goldChanged",
+     "gold": 480,
+     "delta": -20
+    },
+    {
+     "type": "itemGained",
+     "item": "seed:turnip",
+     "qty": 1
+    }
+   ],
+   [],
+   [],
+   [
+    {
+     "type": "goldChanged",
+     "gold": 480,
+     "delta": -20
+    },
+    {
+     "type": "itemGained",
+     "item": "seed:turnip",
+     "qty": 1
+    }
+   ],
+   [],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "cartClosed"
+    }
+   ],
+   [],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "cartClosed"
+    }
+   ],
+   [],
+   [],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "cartClosed"
+    }
+   ],
+   [],
+   [
+    {
+     "type": "goldChanged",
+     "gold": 450,
+     "delta": -50
+    },
+    {
+     "type": "itemGained",
+     "item": "seed:tomato",
+     "qty": 1
+    }
+   ],
+   [
+    {
+     "type": "goldChanged",
+     "gold": 300,
+     "delta": -150
+    },
+    {
+     "type": "itemGained",
+     "item": "seed:corn",
+     "qty": 1
+    }
+   ],
+   [
+    {
+     "type": "goldChanged",
+     "gold": 220,
+     "delta": -80
+    },
+    {
+     "type": "itemGained",
+     "item": "seed:melon",
+     "qty": 1
+    }
+   ],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "wrongSeason"
+    }
+   ],
+   [],
+   [],
+   [
+    {
+     "type": "goldChanged",
+     "gold": 400,
+     "delta": -100
+    },
+    {
+     "type": "itemGained",
+     "item": "seed:pumpkin",
+     "qty": 1
+    }
+   ],
+   [
+    {
+     "type": "goldChanged",
+     "gold": 380,
+     "delta": -20
+    },
+    {
+     "type": "itemGained",
+     "item": "seed:eggplant",
+     "qty": 1
+    }
+   ],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "wrongSeason"
+    }
+   ],
+   [],
+   [],
+   [],
+   [
+    {
+     "type": "goldChanged",
+     "gold": 0,
+     "delta": -250
+    },
+    {
+     "type": "itemGained",
+     "item": "seed:potato",
+     "qty": 5
+    }
+   ],
+   [],
+   [],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "notEnoughGold"
+    }
+   ],
+   [],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "cartClosed"
+    }
+   ],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "wrongSeason"
+    }
+   ],
+   [],
+   [
+    {
+     "type": "actionFailed",
+     "reason": "bagFull"
+    }
+   ]
+  ],
+  "snapshots": {},
+  "final": {
+   "version": 2,
+   "seed": 1,
+   "rng": -1293976539,
+   "farmName": "Elm",
+   "playerName": "Ari",
+   "calendar": {
+    "year": 1,
+    "season": "spring",
+    "day": 1,
+    "minute": 600
+   },
+   "weather": {
+    "today": "sunny",
+    "tomorrow": "sunny"
+   },
+   "player": {
+    "location": "farm",
+    "x": 15.5,
+    "z": 22.5,
+    "facing": "n",
+    "stamina": 100
+   },
+   "canCharges": 20,
+   "activeSlot": 0,
+   "selectedQuick": 0,
+   "quickSlots": [
+    0,
+    null,
+    null
+   ],
+   "bag": [
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    },
+    {
+     "id": "stone",
+     "qty": 99
+    }
+   ],
+   "bin": [],
+   "gold": 500,
+   "pendingGold": 0,
+   "wakeHalfStamina": false,
+   "maps": {
+    "farm": {
+     "width": 32,
+     "height": 24,
+     "tiles": [
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "feature",
+       "feature": "houseDoor"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "building"
+      },
+      {
+       "kind": "feature",
+       "feature": "bin"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "rock",
+       "hits": 0
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "stump",
+       "hits": 0
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "grass"
+      },
+      {
+       "kind": "weed"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "feature",
+       "feature": "cart"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "water"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "path"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      },
+      {
+       "kind": "fence"
+      }
+     ]
+    },
+    "house": {
+     "width": 8,
+     "height": 6,
+     "tiles": [
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "feature",
+       "feature": "bed"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "floor"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "feature",
+       "feature": "exitDoor"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      },
+      {
+       "kind": "wall"
+      }
+     ]
+    }
+   },
+   "milestones": [],
+   "harvested": {},
+   "tutorial": {
+    "lesson": "off",
+    "count": 0,
+    "notesSeen": [],
+    "gifted": false
+   }
+  }
+ }
+}

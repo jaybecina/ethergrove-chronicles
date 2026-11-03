@@ -9,3 +9,9 @@ docs/superpowers
 # Generated graph and the vendored Graphify skill (upgrades overwrite it)
 graphify-out/
 .claude/skills/graphify/
+
+# Vendored GUT test framework
+apps/game/addons/
+
+# Parity fixtures, written by `pnpm game:fixtures` (the freshness test compares parsed JSON)
+apps/game/test/fixtures/

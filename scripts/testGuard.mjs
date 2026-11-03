@@ -35,6 +35,12 @@ const AREAS = [
     test: /^scripts\/.+\.test\.mjs$/,
     where: 'scripts/**/*.test.mjs (node:test)',
   },
+  {
+    name: 'game',
+    code: /^apps\/game\/(core|game)\/.+\.gd$/,
+    test: /^apps\/game\/test\/.+\/test_.+\.gd$/,
+    where: 'apps/game/test/{core,game}/test_*.gd (GUT)',
+  },
 ];
 const NOT_CODE = /(\.test\.|\.spec\.|\.d\.ts$)/;
 const MIN_REASON = 10;
