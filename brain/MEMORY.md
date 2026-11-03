@@ -55,8 +55,14 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
 - **Godot is the main engine; phones and tablets are not supported** (a friendly message instead; three.js and
   Electron retire at Godot parity; `packages/core` must be ported). — verified,
   [[decisions/0019-godot-main-no-phones]]
+- The core is ported to GDScript in `apps/game/core/`; TypeScript stays the reference until the web game retires,
+  parity is proved by Vitest-recorded fixtures replayed in GUT, and a Part 1 rule change lands in both. Godot saves
+  are version 3. — verified, [[decisions/0020-godot-core-port-parity]]; spec
+  `docs/superpowers/specs/2026-11-03-m1-vertical-slice-design.md`, plan
+  `docs/superpowers/plans/2026-11-03-m1-plan1-godot-core-port.md`
 - Part 2A (town and villagers) is specced on branch `docs/part2a-spec`. Building it moves saves to v3 and
-  retargets the `buySeeds` lesson to the town store (tutorial spec §9). — verified
+  retargets the `buySeeds` lesson to the town store (tutorial spec §9). The unbuilt Part 2A spec's "saves v3" now clashes
+  with the Godot v3: Part 2A must take a different version number or be built in Godot on top of v3. — verified
 - Audio is built on `docs/ethergrove-audio`, awaiting the owner's listening and push: the Rootsong main theme,
   orchestral / lo-fi / synth by area, never hip-hop; 9 tracks, 7 jingles, 22 SFX rendered by the studio from
   CC0 VSCO 2 samples. The old uncommitted audio in the main checkout is superseded. Never copies of existing game

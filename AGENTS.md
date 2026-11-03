@@ -131,6 +131,9 @@ pnpm typecheck        # tsc in every package
 pnpm test             # Vitest, core + web
 pnpm test:scripts     # node:test for repo scripts (second-brain hooks)
 pnpm test:coverage    # packages/core must stay ≥ 90%
+pnpm game:import      # Godot headless import of apps/game (first run, or after adding assets)
+pnpm game:test        # GUT tests for apps/game (skips with a notice when Godot is not installed)
+pnpm game:smoke       # boots apps/game headless to prove the project loads
 pnpm build            # production build → apps/web/dist
 pnpm checks:commit    # the fast gate with live progress (what pre-commit runs, ~10 s)
 pnpm checks           # every check with live progress (what GitHub CI runs, ~3 min)
@@ -182,11 +185,12 @@ The checks are split by cost ([[decisions/0009-pre-commit-and-pr-ci]]):
 
 - **`.husky/pre-commit` (~10 s)** runs the **test guard** (`scripts/testGuard.mjs`, about 1 s), then
   lint-staged (ESLint and Prettier on staged files), then `node scripts/checks.mjs commit`: typecheck, the
-  `scripts/` tests and every unit test (core + web).
+  `scripts/` tests, every unit test (core + web) and the Godot tests (skipped with a notice if Godot is not installed).
 - **GitHub CI** (`.github/workflows/ci.yml`) runs on every pull request and on `main`: a job for lint,
   typecheck, the `scripts/` tests, coverage, build, the no-debug-hook check and the bundle size check, and
   e2e jobs on Linux: Chromium in two shards and WebKit, one worker each
-  ([[lessons/ci-e2e-one-worker]]). These four jobs are the required checks for `main`.
+  ([[lessons/ci-e2e-one-worker]]), and a `game` job that downloads Godot 4.7.2 (cached) and runs the GUT
+  tests and the smoke boot. These five jobs are the required checks for `main`.
   `pnpm checks` runs the same steps locally; `scripts/checks.test.mjs` fails if the two drift apart, so
   change both together. There is no pre-push hook.
 
@@ -194,8 +198,11 @@ The checks are split by cost ([[decisions/0009-pre-commit-and-pr-ci]]):
   core (`packages/core/src/**` → `packages/core/{src,test}/**/*.test.ts`), web (`apps/web/src/**` →
   `apps/web/src/**/*.test.ts(x)` or `apps/web/e2e/*.spec.ts`), desktop (`apps/desktop/src/**/*.ts` and
   `electron-builder.config.mjs` → `apps/desktop/src/**/*.test.ts` or `apps/desktop/e2e/*.spec.ts`), scripts
-  (`scripts/**/*.mjs` → `scripts/**/*.test.mjs`). Deletions and `.d.ts` files are exempt. `.husky/commit-msg` records a
-  `NO_TEST_REASON` as a `No-Test:` trailer ([[decisions/0007-every-change-ships-a-test]]).
+  (`scripts/**/*.mjs` → `scripts/**/*.test.mjs`), game (`apps/game/{core,game}/**/*.gd` →
+  `apps/game/test/**/test_*.gd`, GUT; the vendored `addons/` need none). Deletions and `.d.ts` files are exempt.
+  `.husky/commit-msg` records a `NO_TEST_REASON` as a `No-Test:` trailer ([[decisions/0007-every-change-ships-a-test]]).
+- The Godot step (`pnpm game:test`) skips with a notice when Godot is not installed locally, but fails in CI
+  (`CI=true`).
 - The commit checks run on the working tree, so unstaged files count too.
 - `pnpm checks` run locally needs port 5199 free.
 - `git commit --no-verify` skips the hook. Don't use it unless the user asks. CI still runs on the PR.
@@ -213,6 +220,8 @@ packages/core   Pure TypeScript rules. applyCommand(state, cmd) → { state, eve
                 (ESLint enforces it). All randomness comes from a seeded RNG stored in state.rng.
 apps/web        Vite + React 19 + React Three Fiber + Zustand. Draws the core state and turns input into commands.
 apps/desktop    Electron 44 shell around the apps/web build, packaged by electron-builder (.dmg, .exe).
+apps/game       Godot 4.7 game (M1 on). core/ = GDScript port of packages/core (the same keys as TypeScript v2, plus the v3 changes: energy replaces stamina, new M1 keys); game/ = nodes
+                ([[decisions/0020-godot-core-port-parity]]).
 ```
 
 ### Desktop app
@@ -289,6 +298,12 @@ All music and SFX are original scores rendered offline by the dev-only studio (a
 `packages/core/src/save/` holds a zod schema and step-by-step `migrate()`. Keyed `MIGRATIONS` upgrade from
 each version. `CURRENT_SAVE_VERSION` is 2 (v2 added `tutorial`).
 
+- Godot saves are version 3; the web game stays on 2 ([[decisions/0020-godot-core-port-parity]]).
+- Version 3 lives only in Godot (`apps/game/core/save/`, M1 spec §5): `player.stamina` is `player.energy`, plus the
+  M1 keys. Event names and fields keep the old words (`staminaLow`, `itemEaten.stamina`). The TypeScript parity
+  fixtures stay at version 2: `test_parity.gd` migrates each expected state with `SaveMigrate.state_2_to_3` and
+  translates `patch` steps, and `test_new_game.gd` checks a new game equals the migrated TypeScript one.
+
 - Any `GameState` shape change needs a version bump, a migration, and a test against a real older fixture
   (`packages/core/test/fixtures/`).
 - The web side stores saves in IndexedDB (`apps/web/src/save/`): three slots plus a backup per slot, in the
@@ -338,6 +353,11 @@ server Playwright starts on port 5199. `check:build` fails the production build 
   an `if (tier === …)`. Saved settings carry `settingsVersion`; `migrateSettings` in `game/store.ts` maps the
   pre-2 ids once (`low`→`medium`, `lite`→`low`). Seed e2e settings as `{ settingsVersion: 2, quality: … }`, or
   the game rewrites the stored string on load.
+- **Godot `==` on nested containers treats `1` and `1.0` as different;** compare game states with
+  `JsonNorm.first_diff`.
+- **GUT silently skips a test script that fails to parse;** `scripts/game.mjs` fails the run on script errors and on
+  fewer scripts run than `test_*.gd` files. Never name a support file `test_*.gd`.
+- **Godot JSON parses every number as float;** `SaveMigrate.migrate` normalises whole floats to ints.
 - **Stacking.** `.hud` is `position: fixed`, so it is its own stacking context. Anything that must sit
   above the touch joystick zone (`z-index: 1`) has to be mounted outside `.hud`; see `ui/lessons/LessonColumn.tsx`.
 

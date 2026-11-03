@@ -33,3 +33,18 @@ test('GitHub CI runs every step of the all plan', () => {
     /- run: pnpm --filter web e2e --project=\$\{\{ matrix\.project \}\} --shard=\$\{\{ matrix\.shard \}\}\n/,
   );
 });
+
+test('Godot tests run in pre-commit and the all plan; the smoke boot only in the all plan', () => {
+  assert.ok(cmds('commit').includes('pnpm game:test'));
+  assert.ok(cmds('all').includes('pnpm game:test'));
+  assert.ok(cmds('all').includes('pnpm game:smoke'));
+  assert.ok(!cmds('commit').includes('pnpm game:smoke'));
+});
+
+test('GitHub CI has a game job that installs the pinned, cached Godot and runs both game steps', () => {
+  const job = ci.slice(ci.indexOf('\n  game:'));
+  assert.match(job, /runs-on: ubuntu-latest/);
+  assert.match(job, /key: godot-4\.7\.2-linux/);
+  assert.match(job, /releases\/download\/4\.7\.2-stable\/Godot_v4\.7\.2-stable_linux\.x86_64\.zip/);
+  assert.match(job, /GODOT_BIN=\$HOME\/godot\/Godot_v4\.7\.2-stable_linux\.x86_64/);
+});

@@ -19,6 +19,7 @@ export const PLANS = {
       { name: 'Typecheck', cmd: 'pnpm typecheck' },
       { name: 'Script tests', cmd: 'pnpm test:scripts' },
       { name: 'Unit tests', cmd: 'pnpm test' },
+      { name: 'Godot tests', cmd: 'pnpm game:test' },
     ],
   },
   all: {
@@ -28,6 +29,8 @@ export const PLANS = {
       { name: 'Typecheck', cmd: 'pnpm typecheck' },
       { name: 'Script tests', cmd: 'pnpm test:scripts' },
       { name: 'Unit tests + coverage', cmd: 'pnpm test:coverage' },
+      { name: 'Godot tests', cmd: 'pnpm game:test' },
+      { name: 'Godot smoke', cmd: 'pnpm game:smoke' },
       { name: 'Production build', cmd: 'pnpm build' },
       { name: 'No debug hook in build', cmd: 'pnpm --filter web check:build' },
       { name: 'Bundle size budget', cmd: 'pnpm --filter web size' },
