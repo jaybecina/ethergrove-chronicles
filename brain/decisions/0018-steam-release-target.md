@@ -1,6 +1,7 @@
 # 0018 — Steam is a release target
 
-- **Status:** accepted · **Date:** 2026-11-03 · **Evidence:**
+- **Status:** accepted; the Electron build is superseded by [[decisions/0019-godot-main-no-phones]] (Steam build is
+  now the Godot export) · **Date:** 2026-11-03 · **Evidence:**
   `docs/superpowers/specs/2026-11-03-rootwake-arpg-story-design.md` §13.2
 
 ## Context

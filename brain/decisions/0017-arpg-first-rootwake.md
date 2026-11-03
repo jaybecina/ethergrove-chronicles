@@ -39,3 +39,8 @@ Kenji's Journey). They had ChatGPT analyse the Rootwake; this session filtered t
 - Revision 3 adds the Rootstone rule: with all five Rootstones on the farm's shrine the binding holds from the farm
   (why Elias was trapped, and why the Bind ending keeps the game open); returned stones are sealed in the shrine's
   ward; on the Guild path the Rootwardens raise rootwalls, never patrols.
+- Revision 3.1 (errata, owner-approved 2026-11-03): the shrine knows Elias's heir on both paths and not Maren (her
+  oath ended when she founded the Guild); the Heart Rootstone is taken from the heart shrine after the Hollow
+  Warden and goes to Isel (Wake) or up to the farm shrine (Bind); the player is Elias's heir, sworn only on the
+  Rootwarden path; touch uses a context-action prompt. The engine (three.js or Godot) must be chosen before the
+  M1 spec.

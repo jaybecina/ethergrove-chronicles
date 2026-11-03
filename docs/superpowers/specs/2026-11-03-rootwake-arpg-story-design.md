@@ -1,6 +1,6 @@
 # The Rootwake, ARPG cut: Story Bible and Action-RPG Design Spec
 
-**Status:** approved, story locked (§14) · revision 3 (after the third ChatGPT review, §11.5) · **Date:** 2026-11-03 · **Author:** Jay Becina (with Claude) · **Builds on:**
+**Status:** approved, story locked (§14) · revision 3.2 (errata after the fourth ChatGPT review, §11.6; Godot and no phones, §11.7) · **Date:** 2026-11-03 · **Author:** Jay Becina (with Claude) · **Builds on:**
 `2026-10-29-ethergrove-chronicles-design.md` (the October spec) · **Replaces:** its §1.2 "life-sim loop is the
 heart" rule, §4 (story bible) and §5 (gameplay loop); amends §5.2, §5.3, §6.2, §6.5 and §9 as listed in §12
 
@@ -48,7 +48,8 @@ not (§11).
 | Cold open | About 3 playable minutes as Elias on the night he went down, before the unchanged letter and tutorial (§7). He is old, and still unstoppable: the retired legend at full strength. |
 | World | A **compact open valley** of six hand-made zones, not kingdoms (§8). |
 | Expeditions | **Multi-day**, with a bedroll and camp spots (§9). |
-| Platforms | Web (desktop and phones), the Mac and Windows apps, **and Steam** (owner, 2026-11-03; §13.2). |
+| Platforms | Web on a desktop or laptop, the Mac and Windows apps, **and Steam** (owner, 2026-11-03; §13.2). **Not phones or tablets:** they get a friendly message (§13.4); a mobile app is a later, separate project (owner, 2026-11-03). |
+| Engine | **Godot** is the main engine (owner, 2026-11-03; §13.3). |
 | Unchanged | Real-time Outward-style combat, never turn-based; XP levels 1–50; 2.5D; no town building; no monster taming; no children; the farm loop and tutorial from Part 1. |
 
 ## 2. Pillars
@@ -176,6 +177,24 @@ and holds the nightmare quiet. Without them, only a warden standing in the Heart
 in the Deeps, guarded by their bosses, so Elias had to stand there himself. Returning all five is what frees
 him, and what lets any later warden tend the valley from the farm.
 
+**Who the shrine knows.** The shrine recognises Elias's heir, which is the player, on **both** factions' paths:
+joining the Lantern Guild never revokes it, so a Guild-aligned player can still return and lift Rootstones. Maren
+was a warden too, but her oath was formally severed when she founded the Lantern Guild, so the shrine no longer
+knows her and its ward will not open to her.
+
+**The Rootstone sequence** (one order, both paths):
+
+1. Verdant, Ember, Tide and Rime are each returned to the farm's Root Shrine after their Deep's boss, where the
+   ward seals them (§4.6 table). The Heart Rootstone cannot be returned yet: it rests on the heart shrine at the
+   bottom of the Heartdeep (floor 12), in the nightmare's reach.
+2. The player descends the root cellar and beats the Hollow Warden (§4.5), then takes the Heart Rootstone from
+   the heart shrine. Elias stays in the Heartdeep through the whole fight; he is freed only after it, in step 3
+   or 4.
+3. **Wake:** the player gives the Heart Rootstone to Isel and she wakes. The nightmare ends, so Elias no longer
+   has to hold it, and he walks out. The farm shrine keeps four stones, which the Wake endings do not need.
+4. **Bind:** the player carries the Heart Rootstone up to the farm's Root Shrine. All five now stand on it, the
+   shrine holds the nightmare quiet, and Elias is freed. The seasonal rite (§6.1) is renewed at the heart shrine.
+
 **How the player learns who he was:**
 
 | When | Clue |
@@ -189,15 +208,20 @@ him, and what lets any later warden tend the valley from the farm.
 
 **Rootblade forms.** Reading **both** journal pages of a Deep teaches that Deep's form. Forms are **not**
 skills: they use no skill points and **no skill slots**. A learned form is always on and is triggered by a
-context input built from the basic moves, so all five work together and on the touch layout's four buttons.
-Both factions use all five. Values are **(draft)**; the combat spec fixes them and the exact timings.
+context input built from the basic moves, so all five work together. Both factions use all five. Values are
+**(draft)**; the combat spec fixes them and the exact timings.
+
+**Accessibility.** No form needs two buttons pressed in the same instant. Rimeguard is "dodge while holding
+block". Wherever the **Assisted forms** option is on (keyboard and gamepad), a **context-action prompt** appears
+for 0.6 s whenever a learned form's condition is met, and one press performs the form. The combat spec sets the
+window.
 
 | # | Form | Deep | Input | Effect (draft) | Stamina (draft) |
 |---|---|---|---|---|---|
 | I | **Thornreply** | Mossdeep | Attack within 0.4 s after a successful parry | A counter at 250% weapon damage | 10 |
 | II | **Emberline** | Cinder Galleries | Heavy attack while locked on to an enemy 4–8 m away | A lunge to the target, ending in a cut at 150% | 30 |
 | III | **Tidebreak** | Drowned Archive | Heavy attack on an enemy that is blocking | Breaks its block and staggers it for 1.5 s | 35 |
-| IV | **Rimeguard** | Frostvault | Block and dodge pressed together | For 3 s, blocking costs no stamina and returns 50% of blocked damage | 25 |
+| IV | **Rimeguard** | Frostvault | Dodge while holding block | For 3 s, blocking costs no stamina and returns 50% of blocked damage | 25 |
 | V | **Heartcut** | Heartdeep | Heavy attack on a staggered enemy (a prompt shows) | A finisher at 400% weapon damage | 40 |
 
 The Heartdeep's two pages lie on floors 4 and 9, so Heartcut is learnable before the boss on floor 12.
@@ -230,7 +254,7 @@ Phase 3 then starts with the Warden at 60% of its phase-3 health (draft).
 
 | Rootstone | Where it is when Maren confronts the player |
 |---|---|
-| Verdant, Ember, Tide | On the Root Shrine, **sealed in its ward**: a returned stone can be lifted only by a warden the shrine knows, so Maren cannot take them |
+| Verdant, Ember, Tide | On the Root Shrine, **sealed in its ward**: a returned stone can be lifted only by a warden the shrine knows (§4.5), and her oath was severed when she founded the Guild, so Maren cannot take them |
 | Rime | In the player's pack, unsealed, at Elias's last camp |
 | Heart | In the Heartdeep, inside the nightmare's reach; it cannot anchor a binding against the very nightmare that holds it |
 
@@ -290,8 +314,9 @@ Both are right about something. Neither is evil.
 | Cost of the path | Slower, defensive, needs Kindlings and Ether | Gloam burden (§9.3); Fern's trust |
 | Zone quests after the Siege | Restore and heal (§8.1) | Hold and harvest (§8.1) |
 
-**Who the Rootwardens are now:** Granny Fern (keeper of the lore, not a fighter), the player as the first sworn
-warden in a generation, and friends who help through faction quests (Rowan scouts, Mira brews, Sol reads the Veyl
+**Who the Rootwardens are now:** Granny Fern (keeper of the lore, not a fighter), the player as Elias's heir (on
+the Rootwarden path, the first sworn warden in a generation; on the Guild path the heir joins the Guild instead,
+and the shrine still knows them, §4.5), and friends who help through faction quests (Rowan scouts, Mira brews, Sol reads the Veyl
 songs). No army and no new NPCs. The **Lantern Guild** is the opposite: an existing order with a camp, paid
 delvers, lieutenants and equipment.
 
@@ -423,7 +448,7 @@ so no save migration is needed.
 5. The existing letter and tutorial begin.
 
 **Elias's kit in the cold open:** the October spec's moves plus forms I, II and V; 300 stamina; he cannot drop
-below 1 HP. Nothing carries over to the player's save. Every move works on keyboard, gamepad and touch.
+below 1 HP. Nothing carries over to the player's save. Every move works on keyboard and gamepad.
 
 ## 8. The open valley
 
@@ -629,7 +654,7 @@ its scope cuts once it heard that Claude builds the game, so the full scope stay
 | Five forms but at most four skill slots | True | Forms are context inputs with no slots (§4.5) |
 | The Hollow Warden must be beatable without forms | True | MUST rule (§4.5) |
 | The cold open teaches too much | True | One prompt (§7) |
-| Drop touch because the game is for Steam | **False** | The game runs in browsers on desktop and phones and as Mac/Windows apps; `AGENTS.md` requires touch for every flow. Kept. |
+| Drop touch because the game is for Steam | **False** at the time (revision 2) | Kept then. **Reversed by the owner on 2026-11-03** for a different reason: phones and tablets are not supported (§11.7, §13.4). |
 | 49 points max every tree | True | 30 points and respec (§9.4) |
 | Burden disables the Kindling | True, and worse than stated: Kindlings reveal hidden doors (October §4.7) | Halved, never blocking (§9.3) |
 | Ether refill is undefined | True: the October spec gives max Ether only | §9.5 |
@@ -685,6 +710,31 @@ the same way.
 | Freeze the story once approved | Sound process | Story lock (§14) |
 | Settle Steam, given "your Steam-focused direction" | The owner's call: the game today is web plus Mac/Windows apps | The owner chose Steam (§13.2) |
 
+### 11.6 Fourth review (of revision 3): errata
+
+The reviewer approved the story and asked for errata, not a rewrite.
+
+| Claim | Verdict | Change |
+|---|---|---|
+| The order of the Rootstones, the Heartdeep and the Wake/Bind choice is not stated | True | The Rootstone sequence (§4.5) |
+| Maren was a warden: why can't she lift shrine stones? | True | Her oath was severed when she founded the Guild; the shrine knows Elias's heir on both paths (§4.5, §4.6) |
+| "First sworn Rootwarden" contradicts the Guild path | True | The player is Elias's heir; only the Rootwarden path swears (§5.1) |
+| Forms need simultaneous touch inputs | Partly: only Rimeguard did | Rimeguard is "dodge while holding block"; a context-action prompt and the Assisted forms option (§4.5) |
+| Engine is unresolved and Steam assumes Electron | True | §13.2 states its assumption; the engine MUST be chosen before the M1 spec (§15) |
+| Final advice: the Rootstone sequence is still undefined, and Elias's timing | Mostly already fixed by this revision; Elias freed before or after the fight was the one gap | "Elias stays through the fight; freed after" added to the sequence (§4.5). The Heartdeep sequence blocks M5 only, not M1. |
+| Final advice: continue with three.js; do not keep two implementations | The owner's call, not a spec rule | Left open here; the owner chose Godot later the same day (§11.7) |
+| Final advice: stop story changes, M1 plan first, data-driven systems, acceptance criteria per milestone | Already the process | §13, §14 and `AGENTS.md`; no change |
+| Write combat first, then Mossdeep and the rest | Not applied | §13 already orders the work, with the vertical slice (M1) first |
+| Story content is not written | Already stated | §14 |
+
+### 11.7 Owner decisions after revision 3.1 (2026-11-03)
+
+| Decision | Choice | Where |
+|---|---|---|
+| Engine | **Godot is the main engine.** Three.js and the Electron app are retired once Godot reaches parity | §13.3 |
+| Phones and tablets | Not supported. They see a friendly message with a "Play anyway" link; a mobile app comes later as its own project | §13.4 |
+| Touch | Removed from every rule in this spec; the Assisted forms option stays for keyboard and gamepad | §4.5, §13.1 |
+
 ## 12. Changes to the October spec
 
 | October spec | Change |
@@ -710,8 +760,8 @@ the same way.
 
 Build in this order. Each milestone gets its own spec and plan, and ends at a **quality gate**: the automated
 checks in `AGENTS.md` pass, and the owner plays it and signs off on how it feels. Claude builds fast; the gate is
-there because code that works is not yet a game that is fun. The engine question (web three.js or the Godot
-proof's F1) is separate and does not change this order.
+there because code that works is not yet a game that is fun. The engine is Godot (§13.3); it does not change this
+order, but M1 builds on it.
 
 | Milestone | Content | October parts |
 |---|---|---|
@@ -720,16 +770,18 @@ proof's F1) is separate and does not change this order.
 | **M3 The valley** | Lakeshore, Quarry Hills, the Gloamscar, the North Pass overworld; environment kits; waystones; camping; elites; Gloam stages 1–2; Theo's kit | 6 |
 | **M4 The branch** | Cinder Galleries; the two Chapter 2 scenes; the Siege and the choice; both faction trees; burden effects; 12 faction quests per faction; faction armour; Victor's kit; stages 3–4 | 7 |
 | **M5 Endgame** | Drowned Archive; Frostvault and Maren; the Heartdeep, Elias's moment and the Hollow Warden; the four endings; postgame world states | 8 |
-| **M6 Life and release** | All seven romances and weddings; festivals; animals, fishing, house and tool upgrades; the other companion kits; optional caves; audio integration (already composed on `docs/ethergrove-audio`); phone app; the Steam build and store (§13.2); release | 9, 10, 11 |
+| **M6 Life and release** | All seven romances and weddings; festivals; animals, fishing, house and tool upgrades; the other companion kits; optional caves; audio integration (already composed on `docs/ethergrove-audio`); the Steam build and store (§13.2); release | 9, 10, 11 |
 
 ### 13.1 Vertical slice checklist (M1)
 
 The slice proves the core loop: leave the farm prepared, fight through a dangerous place, beat a boss, bring
 something meaningful home.
 
-- [ ] The 2.5D renderer with the farm, Lowmere (shops and a few villagers to talk to) and Lowmere Woods
-- [ ] Real-time combat per October spec §6.3 on keyboard, gamepad and touch: light, heavy, dodge, block, parry,
+- [ ] The 2.5D renderer in Godot (§13.3) with the farm, Lowmere (shops and a few villagers to talk to) and
+      Lowmere Woods
+- [ ] Real-time combat per October spec §6.3 on keyboard and gamepad: light, heavy, dodge, block, parry,
       lock-on
+- [ ] The phone and tablet message (§13.4) shows on a phone and does not block a laptop
 - [ ] Three regular Gloamed enemy types (named in the combat spec), Mossmaw as the elite, the Bramble Matron as
       the boss
 - [ ] Mossdeep complete, with checkpoint stones
@@ -738,30 +790,68 @@ something meaningful home.
 - [ ] Basic cooking: at least 3 farm recipes with expedition buffs
 - [ ] Falling in a Deep and waking at the clinic (§9.1)
 - [ ] Save and load anywhere in the slice, with a migration from the current save version
-- [ ] Owner playtest: combat feels good at the Low tier on a mid-range laptop and on a phone
+- [ ] Owner playtest: combat feels good at the Low tier on a mid-range laptop
 
 ### 13.2 Steam
 
 Steam is a release target beside the web game and the Mac and Windows apps. It adds packaging and store work, not
 design: every rule in this spec holds on Steam. The M6 Steam spec settles the details below.
 
-- **The build:** the existing Electron app in `apps/desktop` is the Steam build: Windows x64, and macOS arm64 and
-  x64. Steam Deck runs the Windows build through Proton; a native Linux build is not planned.
-- **Updates MUST come from Steam.** Today `updateMode` in `apps/desktop/src/policy.ts` installs updates itself on
-  Windows and signed Macs ([[decisions/0016-desktop-auto-update]]). A Steam build MUST return `'off'`, through a
-  build flag set by the Steam packaging, so the game never patches itself under Steam.
+- **The build:** the Godot desktop export (§13.3): Windows x64 and macOS. The Electron app in `apps/desktop` is
+  not the Steam build; it stays only for the current web game until Godot reaches parity. Whether Steam Deck runs
+  the Windows build through Proton or gets a native Linux export is the Steam spec's call.
+- **Updates MUST come from Steam.** The Godot build MUST contain no self-update code, so the game never patches
+  itself under Steam. (The Electron `updateMode` rules in [[decisions/0016-desktop-auto-update]] apply only to the
+  retiring Electron app.)
 - **Steam Deck:** aim for Valve's Deck Verified rating: every flow works on a gamepad alone (already a rule), the
   UI and text are legible at 1280 × 800, and the on-screen keyboard opens where text is typed (hero names).
-- **Saves and Steam Cloud:** saves live in IndexedDB inside Electron's `userData`, which Steam Cloud cannot sync
-  well as files. The Steam spec decides between writing save slots as plain files for Steam Cloud, or shipping
-  without Steam Cloud at first.
-- **Steamworks:** achievements and Steam Cloud need a Steamworks binding for Electron, chosen in the Steam spec
-  (no network origin or native module is added before then; any addition goes through the desktop CSP rules).
-- **macOS:** the Steam spec checks Valve's current signing and notarisation requirements; the Mac app is unsigned
-  today.
+- **Saves and Steam Cloud:** Godot can write save slots as plain files under `user://`, which Steam Cloud can
+  sync. The web build's saves live in browser storage and do not sync. The Steam spec settles the slot format.
+- **Steamworks:** achievements and Steam Cloud need a Steamworks binding for Godot, chosen in the Steam spec.
+- **macOS:** the Steam spec checks Valve's current signing and notarisation requirements; the current Mac app is
+  unsigned.
 - **Store:** a Steam Direct app fee (US$100 per app), a store page with capsule art, screenshots and a trailer,
   and a "Coming soon" page live at least two weeks before release. Store art follows the board's art direction,
   never another game's.
+
+### 13.3 Engine: Godot
+
+**Decision (owner, 2026-11-03):** Godot is the main engine. The M1 spec is written for Godot. The consequences
+below are the starting points the M1 spec MUST settle, not yet decided:
+
+- **Three.js and react-three-fiber** (35 files in `apps/web/src`) and the **Electron** app are retired once Godot
+  reaches parity. Until then the current web game stays playable and gets no new ARPG features.
+- **`packages/core`** is pure TypeScript with no three.js, but Godot cannot run it. The M1 spec decides how it
+  moves (a port to GDScript, with the TypeScript tests and save fixtures kept as the reference to check the
+  port against) before any rule is rebuilt.
+- **The web build** is Godot's web export, hosted as static files on Vercel. It needs cross-origin isolation
+  headers in `vercel.json` (or the single-threaded export), cannot use the Forward+ renderer of the F0 look kit
+  (the Compatibility renderer is the web option), and is built in CI or locally, not by Vercel. The web build may
+  look simpler than the desktop and Steam builds; the M1 spec sets what it keeps. The browser is for desktop and
+  laptop only (§13.4).
+- **Audio:** the shipped `.m4a` scores need a format Godot imports (checked in the M1 spec).
+- **Language:** GDScript is the default, because C# projects may not export to the web (checked in the M1 spec).
+
+### 13.4 Phones and tablets
+
+**Decision (owner, 2026-11-03):** phones and tablets are not supported, and no phone layout, touch control or
+phone test is built. A mobile app is a later, separate project.
+
+- **Detection** MUST use the input type, not the screen size alone: a coarse pointer with no hover, plus a small
+  screen, or an iPad reporting itself as a Mac (touch points and no fine pointer). Touch laptops, Chromebooks and
+  Steam Deck MUST NOT be blocked.
+- **The message** shows before the game loads, with no data collected (no email field). The wording SHOULD be:
+
+  > **Ethergrove is best played on a computer**
+  >
+  > Ethergrove Chronicles is an action RPG made for a keyboard and mouse or a gamepad, so it isn't ready for
+  > phones and tablets yet. A mobile app is on the way.
+  >
+  > For now, open this page on a PC or laptop to play, or get the desktop version.
+
+  with the buttons **Copy link for my computer** and **Play anyway**.
+- **Play anyway** loads the game unsupported, so a wrong detection never locks anyone out. It adds no touch
+  support.
 
 ## 14. Out of scope
 
@@ -779,7 +869,8 @@ design: every rule in this spec holds on Steam. The M6 Steam spec settles the de
 2. **New names and lines** (Anna Hale, the Long Surge, "The Old Oath", "A Captain's Offer", and the exact lines of
    Maren, Fern and June): approved as written on 2026-11-03.
 3. **Platforms:** resolved on 2026-11-03: Steam is a release target (§1.2, §13.2).
-4. **Engine:** three.js or the Godot proof (F1) is decided separately; this spec holds for either.
+4. **Engine:** resolved on 2026-11-03: Godot is the main engine (§13.3). Its open points (the core port, the web
+   renderer, audio format, GDScript or C#) go to the M1 spec.
 5. Names of the three regular Mossdeep enemies and the Guild's lieutenants are left to the M1 and M4 specs.
 
 ## 16. Change log
@@ -797,4 +888,10 @@ design: every rule in this spec holds on Steam. The M6 Steam spec settles the de
   Rootwarden patrols; Siege recovery gathered; the narrative content package and story lock in §14. The owner
   added Steam as a release target (§1.2, §13.2), including the rule that a Steam build never self-updates.
 - **Approved (2026-11-03):** the owner approved revision 3, the player's parent and the new names and lines.
-  The story is locked (§14); questions 4 and 5 in §15 stay with later specs.
+- **Revision 3.1 (2026-11-03):** errata after the fourth ChatGPT review (§11.6): the Rootstone sequence, who the
+  shrine knows, the player as heir, touch and Assisted forms, and the engine decision before M1. No other story
+  decision changed.
+  The story is locked (§14); question 5 in §15 stays with later specs.
+- **Revision 3.2 (2026-11-03):** owner decisions (§11.7): Godot is the main engine (§13.3); phones and tablets are
+  not supported and get a friendly message (§13.4); touch is removed from §1.2, §4.5, §13.1 and the Steam
+  section (§13.2). No story decision changed.

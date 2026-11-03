@@ -7,6 +7,14 @@ Ethergrove Chronicles is an original cozy farm-life RPG for the browser (desktop
 macOS and Windows app, inspired by the farm-sim genre. It must stay original: no names, characters, art, music or text copied from Harvest Moon
 or other games. Third-party assets are CC0 only (see `CREDITS.md`); verify a pack's license before adding it.
 
+## Direction: Godot, no phones
+
+The owner chose **Godot as the main engine** and dropped phones and tablets on 2026-11-03
+([[decisions/0019-godot-main-no-phones]]). New ARPG work targets Godot for a desktop or laptop browser, the Mac and
+Windows apps and Steam, with no phone layout, touch control or phone test. The touch, 44 px, phone-size and phone
+e2e rules below apply **only to the current web game** (React + three.js), which stays as it is until Godot reaches
+parity and is then retired.
+
 ## Working standard
 
 **Always follow best practices and standards.** This is a standing instruction from the owner: it applies
