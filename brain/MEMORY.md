@@ -50,8 +50,11 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
 - The game is now **action RPG first** (farm as home base): Rootwardens vs Lantern Guild chosen at the Siege of
   Lowmere, Guildmaster Maren Ashcombe, Elias the Rootblade, a six-zone valley and camping. Spec approved and story
   locked on `docs/rootwake-arpg`. — verified, [[decisions/0017-arpg-first-rootwake]]
-- **Steam is a release target** (the Electron app is the Steam build; it must never self-update under Steam). —
-  verified, [[decisions/0018-steam-release-target]]
+- **Steam is a release target** (the Steam build is the Godot export, never self-updating; the Electron plan was
+  superseded). — verified, [[decisions/0018-steam-release-target]]
+- **Godot is the main engine; phones and tablets are not supported** (a friendly message instead; three.js and
+  Electron retire at Godot parity; `packages/core` must be ported). — verified,
+  [[decisions/0019-godot-main-no-phones]]
 - Part 2A (town and villagers) is specced on branch `docs/part2a-spec`. Building it moves saves to v3 and
   retargets the `buySeeds` lesson to the town store (tutorial spec §9). — verified
 - Audio is built on `docs/ethergrove-audio`, awaiting the owner's listening and push: the Rootsong main theme,
