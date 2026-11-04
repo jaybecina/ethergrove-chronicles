@@ -20,6 +20,8 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
   after changes; git hooks refresh the map. — verified, [[decisions/0006-automated-second-brain]]
 - Every source change ships with a test in the same area; the pre-commit test guard rejects commits
   without one unless `NO_TEST_REASON` is given. — verified, [[decisions/0007-every-change-ships-a-test]]
+- Work is sized T0–T3 by the project's `lean-sdd` skill; Superpowers is retired. — verified,
+  [[decisions/0022-lean-sdd-replaces-superpowers]]
 - Standing owner instruction: always follow best practices and standards (`AGENTS.md`, Working standard).
   — verified
 
@@ -60,6 +62,10 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
   are version 3. — verified, [[decisions/0020-godot-core-port-parity]]; spec
   `docs/superpowers/specs/2026-11-03-m1-vertical-slice-design.md`, plan
   `docs/superpowers/plans/2026-11-03-m1-plan1-godot-core-port.md`
+- **M1 Plan 2 makes the Godot world playable** (farm, house, Lowmere and its four villagers, HUD, panels, lessons,
+  saves, tiers; Title → World flow in `boot/main.tscn`) on `feat/m1-plan2-world`: views built in code from
+  `GameSession`'s live state, synced on `state_changed`; `pnpm game:smoke` also runs a headless playthrough. —
+  verified, [[decisions/0021-godot-world-structure]]; plan `docs/superpowers/plans/2026-11-03-m1-plan2-world-playable.md`
 - Part 2A (town and villagers) is specced on branch `docs/part2a-spec`. Building it moves saves to v3 and
   retargets the `buySeeds` lesson to the town store (tutorial spec §9). The unbuilt Part 2A spec's "saves v3" now clashes
   with the Godot v3: Part 2A must take a different version number or be built in Godot on top of v3. — verified

@@ -131,9 +131,12 @@ pnpm typecheck        # tsc in every package
 pnpm test             # Vitest, core + web
 pnpm test:scripts     # node:test for repo scripts (second-brain hooks)
 pnpm test:coverage    # packages/core must stay ≥ 90%
+pnpm game:models      # rebuild apps/game/assets/models from the web models (decoded for Godot)
 pnpm game:import      # Godot headless import of apps/game (first run, or after adding assets)
 pnpm game:test        # GUT tests for apps/game (skips with a notice when Godot is not installed)
-pnpm game:smoke       # boots apps/game headless to prove the project loads
+pnpm game:smoke       # headless: the boot smoke (SMOKE OK) and the playthrough (PLAYTHROUGH OK); fails if either fails
+pnpm game:shot -- scene=farm tier=low season=winter out=/abs/x.png   # one 1280x720 screenshot in a real window
+apps/game/tools/shot.sh   # every by-eye shot (zones × tiers × spring/winter, night, rain, title) → apps/game/shots/
 pnpm build            # production build → apps/web/dist
 pnpm checks:commit    # the fast gate with live progress (what pre-commit runs, ~10 s)
 pnpm checks           # every check with live progress (what GitHub CI runs, ~3 min)
@@ -223,6 +226,18 @@ apps/desktop    Electron 44 shell around the apps/web build, packaged by electro
 apps/game       Godot 4.7 game (M1 on). core/ = GDScript port of packages/core (the same keys as TypeScript v2, plus the v3 changes: energy replaces stamina, new M1 keys); game/ = nodes
                 ([[decisions/0020-godot-core-port-parity]]).
 ```
+
+### Godot game structure (apps/game)
+
+Spec `docs/superpowers/specs/2026-11-03-m1-vertical-slice-design.md`, [[decisions/0021-godot-world-structure]].
+Three autoloads: `Settings` (tier, UI scale), `GameSession` (owns the live state, the screen, the fixed 50 ms step
+that reads input and dispatches commands) and `SaveService` (slots and autosave). `boot/main.tscn` (`GameMain`)
+runs Title → New game / Load / Continue → `WorldRoot` → Save and quit → Title. `WorldRoot` builds everything in
+code: `ZoneView` (tiles, crops, villagers), the walls, the player, `CameraRig`, `AtmosphereDriver`, `LessonMarker`,
+`Hud` and `PanelHost`. Views follow the state on `GameSession.state_changed` (never per frame) and never cache it;
+a location change rebuilds the zone. Graphics tiers are data (`game/render/tiers.gd`) applied by `RenderApplier`.
+By-eye checks use `pnpm game:shot` and are read as images; node classes take injected `session` / `settings` /
+`save_service` so tests and tools never touch the real autoloads or `user://` saves.
 
 ### Desktop app
 
@@ -328,6 +343,10 @@ server Playwright starts on port 5199. `check:build` fails the production build 
 
 ## Gotchas learned the hard way
 
+- **Autoload names are not identifiers in a `-s` SceneTree script** (the playthrough smoke, `tools/shot.gd`):
+  they are compiled before the autoloads exist. Node code looks them up with `get_node_or_null("/root/<Name>")`.
+- **Godot imports anything under `apps/game/`,** so a folder of generated files (like `shots/`) needs a `.gdignore`.
+- **Godot 4.7.2 silently fails to import glTF using EXT_meshopt_compression / KHR_mesh_quantization** (`valid=false`, no scene). apps/game models are produced by `pnpm game:models`, never copied raw.
 - **Zustand selectors must return stable values** ([story](brain/lessons/lesson-marker-render-loop.md)).
   A selector that builds a new object every call causes
   "getSnapshot should be cached" and a render loop. Inside R3F that crashes the canvas.
@@ -363,6 +382,10 @@ server Playwright starts on port 5199. `check:build` fails the production build 
 
 ## Docs and process
 
+- Work is sized by risk with Lean SDD (`.claude/skills/lean-sdd/SKILL.md`, readable by any agent): T0 tiny and
+  T1 small need no docs; T2 gets one spec with requirements, acceptance criteria and tasks together
+  (`references/spec-template.md`); T3 (saves, `GameState` shape, the loop, combat/AI/progression architecture) adds
+  architecture, risks and one independent review. The `docs/superpowers/` folder name is historical; keep it.
 - Design specs are in `docs/superpowers/specs/` and implementation plans in `docs/superpowers/plans/`.
   Specs carry exact names, numbers and player-facing text. Follow them, and record any deviation.
 - Part 2A (town and villagers) is specced on the local branch `docs/part2a-spec`. When it is built, it
