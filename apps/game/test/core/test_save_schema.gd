@@ -206,3 +206,8 @@ func test_integers_must_be_safe() -> void:
 func test_unknown_keys_are_ignored() -> void:
 	eq(_bad(func(s: Dictionary) -> void: s["future"] = [1, 2]), "")
 	eq(_bad(func(s: Dictionary) -> void: d(s["player"])["future"] = true), "")
+
+
+func test_schema_accepts_new_feature_ids() -> void:
+	for id: String in ["toFarm", "toWoods", "forgeDoor", "clinicDoor", "cottageDoor", "noticeBoard", "rootShrine", "farmGate", "stove"]:
+		eq(_bad(func(s: Dictionary) -> void: a(farm_of(s)["tiles"])[5] = {"kind": "feature", "feature": id}), "", id)

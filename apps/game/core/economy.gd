@@ -5,9 +5,9 @@ extends RefCounted
 
 ## The sell price of an item, or null when it cannot be sold.
 static func sell_price(id: String) -> Variant:
-	if not ItemData.ITEMS.has(id):
+	if not ItemData.has_item(id):
 		return null
-	var def: Dictionary = ItemData.ITEMS[id]
+	var def := ItemData.def_of(id)
 	return def["sell"]
 
 

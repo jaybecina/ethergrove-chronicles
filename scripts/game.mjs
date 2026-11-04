@@ -1,4 +1,5 @@
-// Runs the Godot project in apps/game headless: `node scripts/game.mjs <import|test|smoke>`.
+// Runs the Godot project in apps/game: `node scripts/game.mjs <import|test|smoke|playthrough|shot>`.
+// Every task is headless except `shot`, which opens a 1280x720 window to render a screenshot.
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
 import { delimiter, join } from 'node:path';
@@ -21,8 +22,49 @@ export function resolveGodotBin(env, platform, exists) {
   return null;
 }
 
+/** `pnpm game:smoke` runs these in order and fails when either fails. */
+export const SMOKE_TASKS = /** @type {const} */ (['smoke', 'playthrough']);
+
+/** Frames after which a `shot` run quits even when the script never saved its PNG. */
+const SHOT_QUIT_AFTER = 600;
+
 /**
- * @param {'import' | 'test' | 'smoke'} task
+ * The line a smoke task must print to pass, or null for tasks with none.
+ * @param {string} task
+ * @returns {string | null}
+ */
+export function okLine(task) {
+  if (task === 'smoke') return 'SMOKE OK';
+  if (task === 'playthrough') return 'PLAYTHROUGH OK';
+  return null;
+}
+
+/**
+ * Godot args for one screenshot (apps/game/tools/shot.gd) in a real 1280x720 window, not headless: the dummy
+ * renderer draws nothing. `extra` are the `key=value` options after `pnpm game:shot --`.
+ * @param {string[]} extra
+ * @returns {string[]}
+ */
+export function shotArgs(extra) {
+  const opts = extra.filter((a) => a !== '--');
+  for (const a of opts)
+    if (!/^[a-z]+=.+$/.test(a)) throw new Error(`shot option "${a}" is not key=value`);
+  return [
+    '--path',
+    'apps/game',
+    '--resolution',
+    '1280x720',
+    '--quit-after',
+    String(SHOT_QUIT_AFTER),
+    '-s',
+    'res://tools/shot.gd',
+    '--',
+    ...opts,
+  ];
+}
+
+/**
+ * @param {'import' | 'test' | 'smoke' | 'playthrough'} task
  * @returns {string[]}
  */
 export function godotArgs(task) {
@@ -40,6 +82,8 @@ export function godotArgs(task) {
       ];
     case 'smoke':
       return [...BASE, '-s', 'res://test/smoke/smoke_boot.gd'];
+    case 'playthrough':
+      return [...BASE, '-s', 'res://test/smoke/smoke_playthrough.gd'];
   }
 }
 
@@ -103,10 +147,11 @@ function run(bin, args) {
 }
 
 /**
- * Runs Godot with its output piped (and echoed), then fails the run on any script error, and for the
- * `test` task when GUT ran fewer scripts than there are `test_*.gd` files (a skipped script).
+ * Runs Godot with its output piped (and echoed), then fails the run on any script error, for the
+ * `test` task when GUT ran fewer scripts than there are `test_*.gd` files (a skipped script), and for a
+ * smoke task when its OK line is missing.
  * @param {string} bin
- * @param {'test' | 'smoke'} task
+ * @param {'test' | 'smoke' | 'playthrough'} task
  * @returns {number}
  */
 function runChecked(bin, task) {
@@ -128,6 +173,11 @@ function runChecked(bin, task) {
     console.error('A Godot script failed to compile or load (see the errors above).');
     return 1;
   }
+  const ok = okLine(task);
+  if (ok !== null && !text.split(/\r?\n/).some((line) => line.trim() === ok)) {
+    console.error(`Godot exited 0 but did not print "${ok}".`);
+    return 1;
+  }
   if (task === 'test') {
     const ran = gutScriptCount(text);
     const files = countTestScripts(fileURLToPath(new URL('../apps/game/test', import.meta.url)));
@@ -141,10 +191,12 @@ function runChecked(bin, task) {
   return 0;
 }
 
+const TASKS = ['import', 'test', 'smoke', 'playthrough', 'shot'];
+
 function main() {
   const task = process.argv[2];
-  if (task !== 'import' && task !== 'test' && task !== 'smoke') {
-    console.error('Usage: node scripts/game.mjs <import|test|smoke>');
+  if (!TASKS.includes(task)) {
+    console.error(`Usage: node scripts/game.mjs <${TASKS.join('|')}>`);
     return 2;
   }
   const bin = resolveGodotBin(process.env, process.platform, exists);
@@ -152,11 +204,18 @@ function main() {
     console.log('Godot not found: set GODOT_BIN to run the Godot checks. Skipped.');
     return process.env.CI === 'true' ? 1 : 0;
   }
-  if (task !== 'import') {
-    const code = run(bin, godotArgs('import'));
-    if (code !== 0) return code;
+  if (task === 'import') return run(bin, godotArgs('import'));
+  const imported = run(bin, godotArgs('import'));
+  if (imported !== 0) return imported;
+  if (task === 'shot') return run(bin, shotArgs(process.argv.slice(3)));
+  if (task === 'smoke') {
+    for (const t of SMOKE_TASKS) {
+      const code = runChecked(bin, t);
+      if (code !== 0) return code;
+    }
+    return 0;
   }
-  return task === 'import' ? run(bin, godotArgs(task)) : runChecked(bin, task);
+  return runChecked(bin, /** @type {'test' | 'playthrough'} */ (task));
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) process.exit(main());

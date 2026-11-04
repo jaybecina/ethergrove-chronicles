@@ -356,7 +356,9 @@ Cook at the house stove. One buff at a time; a new dish replaces it. Buffs last 
   MSAA 4×, sun 4096 with 4 cascades, SSIL, volumetric fog. Art, models, gameplay and hitboxes are identical on
   every tier, and no tier may look dull.
 - **Camera:** fixed angle, 50° pitch, one fixed yaw, orthographic, following the player by panning (October §7.2).
-  The camera spec in the plan confirms the orthographic size by eye against the F0 renders.
+  Final orthographic size (set by eye in M1 Plan 2 Task 17, `CameraMath.ORTHO_SIZE`): **23.0 m** vertical outdoors,
+  so at 1280 × 720 the view is 40.9 m wide and the farm's 25-tile field fills about 61 % of it; **10.0 m** in the
+  farmhouse (`HOUSE_ORTHO_SIZE`). Outdoor zones sit on a grass apron, since the view is wider than the farm.
 - **Assets:** only CC0 packs already credited in `CREDITS.md`, or Poly Haven scans used by the F0 kit in
   `ethergrove-godot-proof` (CC0; each one added to `CREDITS.md` when copied in). Placeholder enemy and boss models
   are recoloured CC0 creatures until the commissioned art lands; heroes use the current CC0 Quaternius

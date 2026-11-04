@@ -129,3 +129,30 @@ func test_lesson_slot_picks_the_pinned_seed_quick_slot_for_plant() -> void:
 	var none := s.duplicate(true)
 	none["quickSlots"] = [null, null, null]
 	eq(Tutorial.lesson_slot(none), -1)
+
+
+func test_lesson_target_in_lowmere_points_at_to_farm() -> void:
+	var s := TestStates.stand_at(TestStates.lesson_at(TestStates.fresh(), "till"), 5, 10, "n")
+	d(s["player"])["location"] = "lowmere"
+	eq(Tutorial.lesson_target(s), {"location": "lowmere", "x": 12, "y": 0})
+	eq(Tutorial.lesson_slot(s), 0)
+	s = TestStates.lesson_at(s, "sleep")
+	eq(Tutorial.lesson_target(s), {"location": "lowmere", "x": 12, "y": 0})
+
+
+func test_obstacles_note_in_lowmere_does_not_error() -> void:
+	var prev := TestStates.lesson_at(TestStates.fresh(), "till")
+	var next := TestStates.stand_at(prev, 12, 1, "n")
+	d(next["player"])["location"] = "lowmere"
+	var events: Array = [{"type": "actionFailed", "reason": "noTarget"}, {"type": "toolUsed", "hit": false}]
+	var r := Tutorial.advance(prev, next, events)
+	eq(ev(r).has({"type": "noteShown", "id": "obstacles"}), false, "no obstacle tile in Lowmere")
+	eq(d(st(r)["player"])["location"], "lowmere")
+
+
+func test_lesson_target_is_empty_in_the_woods_and_the_clinic() -> void:
+	for zone: String in ["woods", "clinic", "mossdeep"]:
+		var s := TestStates.fresh()
+		d(s["tutorial"])["lesson"] = "till"
+		d(s["player"])["location"] = zone
+		eq(Tutorial.lesson_target(s), {}, zone)

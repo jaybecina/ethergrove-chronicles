@@ -143,6 +143,28 @@ The checks are split by cost:
 Each step shows a spinner and its time, and prints its output only if it fails; e2e prints one live
 line per test.
 
+## Try the Godot game (work in progress)
+
+The action-RPG version lives in `apps/game` and has no web or desktop-app build yet (exports come later), so run it
+from Godot 4.7.2 on a Mac:
+
+```bash
+pnpm game:import   # once, or after adding assets
+/Applications/Godot.app/Contents/MacOS/Godot --path apps/game
+```
+
+Run both from the repo root. From the Woods (Lowmere's east door) you fight with left mouse (tap light, hold heavy),
+right mouse block (just before a hit to parry), Space dodge, Q lock-on and F interact; Esc pauses. `pnpm game:test` and
+`pnpm game:smoke` run its checks.
+
+To try the Woods, Mossdeep and the boss without playing to day 8, load a throwaway slot with the developer flag. It
+starts you by the old well on day 9 with the first shipment made, level 5, 5,000 gold and copper gear and dishes in the
+bag (Esc, then Bag to equip and eat them):
+
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --path apps/game -- --debug-deep
+```
+
 ## Desktop app (macOS and Windows)
 
 The same game ships as an installable app, built with [Electron](https://www.electronjs.org/) and

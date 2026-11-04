@@ -24,6 +24,16 @@ static func apply(state: Dictionary, cmd: Dictionary) -> Dictionary:
 	return Tutorial.advance(state, m_state, m_events)
 
 
+## A slice rule's {ok, state, reason} as a result: the event on success, `actionFailed` with the reason otherwise.
+static func _checked(r: Dictionary, event: Dictionary) -> Dictionary:
+	var ok: bool = r["ok"]
+	var next: Dictionary = r["state"]
+	if ok:
+		return GameStateUtil.result(next, [event])
+	var reason: String = r["reason"]
+	return GameStateUtil.fail(next, reason)
+
+
 static func _dispatch(state: Dictionary, cmd: Dictionary) -> Dictionary:
 	var type: String = cmd.get("type", "")
 	match type:
@@ -69,6 +79,23 @@ static func _dispatch(state: Dictionary, cmd: Dictionary) -> Dictionary:
 			var item_id: String = cmd["itemId"]
 			var buy_qty: int = cmd["qty"]
 			return Economy.buy_item(state, item_id, buy_qty)
+		"equip":
+			var gear_id: String = cmd["itemId"]
+			return _checked(Gear.equip(state, gear_id), {"type": "equipped", "item": gear_id})
+		"cook":
+			var dish: String = cmd["dish"]
+			return _checked(Cooking.cook(state, dish), {"type": "cooked", "dish": dish})
+		"eatDish":
+			var dish_id: String = cmd["itemId"]
+			return _checked(Cooking.eat(state, dish_id), {"type": "dishEaten", "dish": dish_id})
+		"smelt":
+			return _checked(Forge.smelt(state), {"type": "smelted"})
+		"craft":
+			var made: String = cmd["gearId"]
+			return _checked(Forge.craft(state, made), {"type": "crafted", "item": made})
+		"enterMossdeep":
+			var floor_n: int = cmd["floor"]
+			return Mossdeep.enter(state, floor_n)
 		"skipLessons":
 			return Tutorial.skip_lessons(state)
 		"restartLessons":

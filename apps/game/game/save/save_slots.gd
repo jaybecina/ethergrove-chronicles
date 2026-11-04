@@ -27,11 +27,15 @@ func _path(slot: int) -> String:
 ## Writes `file` to `slot` atomically: the text goes to `slot-<n>.json.tmp`, which then replaces the slot file in
 ## one rename, so a crash leaves the old save or the new one, never half of either. A file that does not validate
 ## as the current version, or a slot outside 1..3, is refused with ERR_INVALID_PARAMETER and nothing is written.
-func save(slot: int, file: Dictionary) -> Error:
+## A slot holding a save from a newer game version is refused with ERR_ALREADY_EXISTS unless `force` is true. A
+## corrupt slot may be overwritten.
+func save(slot: int, file: Dictionary, force: bool = false) -> Error:
 	if not _valid_slot(slot):
 		return ERR_INVALID_PARAMETER
 	if SaveSchema.validate_file(file) != "" or file.get("version") != SaveMigrate.CURRENT_SAVE_VERSION:
 		return ERR_INVALID_PARAMETER
+	if not force and _peek_is_newer(slot):
+		return ERR_ALREADY_EXISTS
 	var made := DirAccess.make_dir_recursive_absolute(_base_dir)
 	if made != OK:
 		return made
@@ -60,7 +64,8 @@ func save(slot: int, file: Dictionary) -> Error:
 	return renamed
 
 
-## {"kind": "ok", "file"} (migrated to the current version and validated), {"kind": "missing"} or
+## {"kind": "ok", "file"} (migrated to the current version and validated), {"kind": "missing"},
+## {"kind": "newer"} (parses, with an integer `version` above the current one: written by a newer game) or
 ## {"kind": "corrupt"}. A leftover `.tmp` file is never read. A slot outside 1..3 is always missing.
 func load_slot(slot: int) -> Dictionary:
 	if not _valid_slot(slot) or not FileAccess.file_exists(_path(slot)):
@@ -68,19 +73,43 @@ func load_slot(slot: int) -> Dictionary:
 	var json := JSON.new()
 	if json.parse(FileAccess.get_file_as_string(_path(slot))) != OK:
 		return {"kind": "corrupt"}
+	if _is_newer(json.data):
+		return {"kind": "newer"}
 	var migrated := SaveMigrate.migrate(json.data)
 	if migrated["ok"] != true:
 		return {"kind": "corrupt"}
 	return {"kind": "ok", "file": migrated["file"]}
 
 
-## One entry per slot 1..3: {slot, summary, savedAt, playTimeMs, corrupt}. An empty or corrupt slot has a null
-## summary and savedAt and 0 play time.
+## True when parsed JSON is an object whose `version` is a whole number above the current save version.
+static func _is_newer(data: Variant) -> bool:
+	if typeof(data) != TYPE_DICTIONARY:
+		return false
+	var dict: Dictionary = data
+	var version: Variant = dict.get("version")
+	if typeof(version) == TYPE_INT:
+		return version > SaveMigrate.CURRENT_SAVE_VERSION
+	if typeof(version) == TYPE_FLOAT:
+		var number: float = version
+		return is_finite(number) and number == floorf(number) and number > SaveMigrate.CURRENT_SAVE_VERSION
+	return false
+
+
+## True when the slot file parses and is newer (see `_is_newer`); no migration or validation.
+func _peek_is_newer(slot: int) -> bool:
+	if not FileAccess.file_exists(_path(slot)):
+		return false
+	var json := JSON.new()
+	return json.parse(FileAccess.get_file_as_string(_path(slot))) == OK and _is_newer(json.data)
+
+
+## One entry per slot 1..3: {slot, summary, savedAt, playTimeMs, corrupt, newer}. An empty, corrupt or newer slot
+## has a null summary and savedAt and 0 play time; `newer` slots are not `corrupt`.
 func list() -> Array:
 	var out: Array = []
 	for slot: int in range(FIRST_SLOT, LAST_SLOT + 1):
 		var res := load_slot(slot)
-		var entry := {"slot": slot, "summary": null, "savedAt": null, "playTimeMs": 0, "corrupt": false}
+		var entry := {"slot": slot, "summary": null, "savedAt": null, "playTimeMs": 0, "corrupt": false, "newer": false}
 		if res["kind"] == "ok":
 			var file: Dictionary = res["file"]
 			entry["summary"] = file["summary"]
@@ -88,12 +117,14 @@ func list() -> Array:
 			entry["playTimeMs"] = file["playTimeMs"]
 		elif res["kind"] == "corrupt":
 			entry["corrupt"] = true
+		elif res["kind"] == "newer":
+			entry["newer"] = true
 		out.append(entry)
 	return out
 
 
-## Imports the text of a save exported from the web build into the first empty slot. A corrupt slot counts as
-## taken, so it is never overwritten. Returns {ok: true, slot} or
+## Imports the text of a save exported from the web build into the first empty slot. A corrupt or newer slot
+## counts as taken, so it is never overwritten. Returns {ok: true, slot} or
 ## {ok: false, error: "invalid" | "unsupportedVersion" | "noFreeSlot" | "writeFailed"}.
 func import_text(text: String) -> Dictionary:
 	var json := JSON.new()
@@ -110,3 +141,15 @@ func import_text(text: String) -> Dictionary:
 			return {"ok": false, "error": "writeFailed"}
 		return {"ok": true, "slot": slot}
 	return {"ok": false, "error": "noFreeSlot"}
+
+
+## Deletes the save in `slot` (ok, corrupt or newer) and any leftover `.tmp`. OK when it is gone or never existed;
+## ERR_INVALID_PARAMETER for a slot outside 1..3.
+func delete_slot(slot: int) -> Error:
+	if not _valid_slot(slot):
+		return ERR_INVALID_PARAMETER
+	var target := _path(slot)
+	DirAccess.remove_absolute(target + ".tmp")
+	if not FileAccess.file_exists(target):
+		return OK
+	return DirAccess.remove_absolute(target)

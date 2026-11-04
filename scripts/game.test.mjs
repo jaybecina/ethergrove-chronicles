@@ -8,8 +8,11 @@ import {
   countTestScripts,
   godotArgs,
   gutScriptCount,
+  okLine,
   outputHasScriptErrors,
   resolveGodotBin,
+  shotArgs,
+  SMOKE_TASKS,
 } from './game.mjs';
 
 const MAC_BIN = '/Applications/Godot.app/Contents/MacOS/Godot';
@@ -65,6 +68,44 @@ test('import and smoke args', () => {
     '-s',
     'res://test/smoke/smoke_boot.gd',
   ]);
+});
+
+test('playthrough args run the headless playthrough script', () => {
+  assert.deepEqual(godotArgs('playthrough'), [
+    '--headless',
+    '--path',
+    'apps/game',
+    '-s',
+    'res://test/smoke/smoke_playthrough.gd',
+  ]);
+});
+test('smoke runs both the boot smoke and the playthrough, each needing its OK line', () => {
+  assert.deepEqual(SMOKE_TASKS, ['smoke', 'playthrough']);
+  assert.equal(okLine('smoke'), 'SMOKE OK');
+  assert.equal(okLine('playthrough'), 'PLAYTHROUGH OK');
+  assert.equal(okLine('test'), null);
+});
+test('shot args open a 1280x720 window (not headless) and pass the shot options through', () => {
+  assert.deepEqual(shotArgs(['scene=farm', 'tier=low', 'season=winter', 'out=/tmp/a.png']), [
+    '--path',
+    'apps/game',
+    '--resolution',
+    '1280x720',
+    '--quit-after',
+    '600',
+    '-s',
+    'res://tools/shot.gd',
+    '--',
+    'scene=farm',
+    'tier=low',
+    'season=winter',
+    'out=/tmp/a.png',
+  ]);
+  assert.equal(shotArgs([]).includes('--headless'), false);
+});
+test('shot args drop the pnpm "--" separator and reject anything but key=value', () => {
+  assert.deepEqual(shotArgs(['--', 'scene=house']).slice(-2), ['--', 'scene=house']);
+  assert.throws(() => shotArgs(['scene']), /key=value/);
 });
 
 // Real lines from a GUT run where test_parity_harness.gd did not compile (GUT skipped it and exited 0).
