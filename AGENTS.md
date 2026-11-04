@@ -133,7 +133,7 @@ pnpm test:scripts     # node:test for repo scripts (second-brain hooks)
 pnpm test:coverage    # packages/core must stay ≥ 90%
 pnpm game:models      # rebuild apps/game/assets/models from the web models (decoded for Godot)
 pnpm game:import      # Godot headless import of apps/game (first run, or after adding assets)
-pnpm game:test        # GUT tests for apps/game (skips with a notice when Godot is not installed)
+pnpm game:test        # GUT tests for apps/game; prints only the totals unless one fails (GAME_VERBOSE=1 for all)
 pnpm game:smoke       # headless: the boot smoke (SMOKE OK) and the playthrough (PLAYTHROUGH OK); fails if either fails
 pnpm game:shot -- scene=farm tier=low season=winter out=/abs/x.png   # one 1280x720 screenshot in a real window
 apps/game/tools/shot.sh   # every by-eye shot (zones × tiers × spring/winter, night, rain, title) → apps/game/shots/
@@ -154,7 +154,8 @@ Single tests:
 ```bash
 pnpm --filter @ethergrove/core exec vitest run test/tutorial.test.ts -t "buySeeds"
 pnpm --filter web exec vitest run src/ui/lessons/cards.test.tsx
-cd apps/web && CI=true pnpm exec playwright test e2e/lessons.spec.ts --project=chromium -g "skipped"
+cd apps/web && CI=true pnpm exec playwright test e2e/lessons.spec.ts --project=chromium -g "skipped" --reporter=line
+pnpm game:test -- test/core/test_crops.gd test/game/test_hud.gd   # only these GUT scripts
 ```
 
 `CI=true` gives GitHub CI's settings for Playwright: one retry and a fresh dev server (two workers either way). Without it,
@@ -172,6 +173,10 @@ Run the smallest check that proves the change; the hooks run the rest. This keep
   `GameState` shape or saves, the loop, build or test config.
 - **A shared module changed** (`game/store.ts`, `systems/day.ts`, `e2e/helpers.ts` and the like): run the
   whole suite of that package, not just the nearest test file.
+- **Keep test output out of the context.** The runners print a short summary on a pass and everything on a
+  failure; don't add `--verbose`, `GAME_VERBOSE=1` or a `list` reporter unless you are reading a failure. Run
+  each check once per state of the code: a passing run that you, the hook or a subagent already did on
+  unchanged files counts, so don't re-run it to double-check.
 - **Writing the test:** read the nearby tests first and extend the existing file when one fits; don't
   repeat what another test already checks. Game rules (crops, day order, saves) get core unit tests;
   e2e is for what a player sees and does, not for logic the core can test in milliseconds.

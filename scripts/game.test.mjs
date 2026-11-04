@@ -8,6 +8,8 @@ import {
   countTestScripts,
   godotArgs,
   gutScriptCount,
+  gutSelection,
+  passSummary,
   okLine,
   outputHasScriptErrors,
   resolveGodotBin,
@@ -153,4 +155,52 @@ test('countTestScripts counts test_*.gd files in every subfolder', () => {
   ])
     writeFileSync(join(dir, f), '');
   assert.equal(countTestScripts(dir), 3);
+});
+
+test('gutSelection turns test files into res:// paths, from the repo root or apps/game', () => {
+  assert.deepEqual(gutSelection([]), []);
+  assert.deepEqual(
+    gutSelection(['--', 'apps/game/test/core/test_crops.gd', 'test/game/test_hud.gd']),
+    ['res://test/core/test_crops.gd', 'res://test/game/test_hud.gd'],
+  );
+  assert.deepEqual(gutSelection(['res://test/core/test_crops.gd']), [
+    'res://test/core/test_crops.gd',
+  ]);
+});
+test('gutSelection rejects anything but a test_*.gd file under test/', () => {
+  for (const bad of [
+    'test/core/crops.gd',
+    'core/test_crops.gd',
+    'test/../core/test_x.gd',
+    '-gdir=res://x',
+  ])
+    assert.throws(() => gutSelection([bad]), /test_\*\.gd/, bad);
+});
+test('test args with a selection run only those scripts', () => {
+  assert.deepEqual(
+    godotArgs('test', ['res://test/core/test_crops.gd', 'res://test/game/test_hud.gd']),
+    [
+      '--headless',
+      '--path',
+      'apps/game',
+      '-s',
+      'res://addons/gut/gut_cmdln.gd',
+      '-gtest=res://test/core/test_crops.gd,res://test/game/test_hud.gd',
+      '-gexit',
+    ],
+  );
+});
+test('passSummary keeps only the GUT run summary of a passing run', () => {
+  const run = `Godot Engine v4.7.2\n[  16% ] loading\nERROR: expected loud error\n   at: push_error\n${CLEAN}\nERROR: trailing noise\n`;
+  const out = passSummary('test', run);
+  assert.match(out, /Scripts\s+2/);
+  assert.match(out, /All tests passed/);
+  assert.doesNotMatch(out, /Godot Engine|loading|ERROR|test_arithmetic_works/);
+});
+test('passSummary of a smoke task is its OK line', () => {
+  assert.equal(passSummary('smoke', 'noise\nSMOKE OK\nmore noise'), 'SMOKE OK');
+  assert.equal(passSummary('playthrough', 'x\nPLAYTHROUGH OK'), 'PLAYTHROUGH OK');
+});
+test('passSummary falls back to the whole output when it finds no summary', () => {
+  assert.equal(passSummary('test', 'odd output'), 'odd output');
 });
