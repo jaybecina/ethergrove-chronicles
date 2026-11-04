@@ -9,8 +9,10 @@ not here, so the two never drift apart.
 
 ## Claude Code specifics
 
-- Features follow the superpowers flow: brainstorm, then a spec in `docs/superpowers/specs/`, then a plan in
-  `docs/superpowers/plans/`, then implementation by TDD, then one final review.
+- Work follows the project's own `lean-sdd` skill (`.claude/skills/lean-sdd/`): classify T0–T3, then
+  specify → implement → verify with only the ceremony that tier needs. T3 reviews use the read-only
+  `spec-reviewer` agent once, then `/code-review`. The Superpowers plugin is retired
+  ([[decisions/0022-lean-sdd-replaces-superpowers]]).
 - The pre-commit hook takes about 10 seconds; pass the message with `-m` or `-F <file>`. The full
   suite runs in GitHub CI on the owner's pull request. When you run `pnpm checks` yourself, give it a timeout of
   at least 600000 ms or run it in the background.

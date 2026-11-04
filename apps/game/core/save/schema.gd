@@ -10,7 +10,11 @@ extends RefCounted
 const TILE_KINDS: Array[String] = [
 	"grass", "path", "weed", "rock", "stump", "tilled", "water", "building", "fence", "wall", "floor", "feature",
 ]
-const FEATURES: Array[String] = ["houseDoor", "exitDoor", "bin", "bed", "cart", "rootShrine", "farmGate", "stove"]
+const FEATURES: Array[String] = [
+	"houseDoor", "exitDoor", "bin", "bed", "cart", "rootShrine", "farmGate", "stove",
+	"toFarm", "toWoods", "toLowmere", "clinicExit", "well", "stairsDown", "stairsUp",
+	"checkpointStone", "copperNode", "lantern", "brokenBlade", "forgeDoor", "clinicDoor", "cottageDoor", "noticeBoard",
+]
 const GEAR_SLOTS: Array[String] = ["weapon", "offHand", "head", "body", "feet", "trinket1", "trinket2"]
 const ROOTSTONES: Array[String] = ["verdant"]
 ## Mossdeep floors with a checkpoint stone (spec 6.1): the entrance, 4 and 8.
@@ -69,7 +73,10 @@ static func _is_enum(v: Variant, allowed: Array[String]) -> bool:
 
 
 static func _is_item(v: Variant) -> bool:
-	return typeof(v) == TYPE_STRING and ItemData.ITEMS.has(v)
+	if typeof(v) != TYPE_STRING:
+		return false
+	var id: String = v
+	return ItemData.has_item(id)
 
 
 static func _is_crop(v: Variant) -> bool:

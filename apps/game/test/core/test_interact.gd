@@ -97,13 +97,82 @@ func test_resolve_secondary_interacts_with_a_mature_crop() -> void:
 	eq(Interact.resolve_secondary(_seeds(MATURE)), "interact")
 
 
-## Version 3 features have no action in this plan (Plans 2 and 4 add them): interacting fails with noTarget.
-func test_the_new_features_have_no_action_yet() -> void:
+## The Root Shrine without the Rootstone does nothing; the stove opens cooking and changes nothing.
+func test_the_shrine_needs_the_stone_and_the_stove_opens_cooking() -> void:
 	var fail := [{"type": "actionFailed", "reason": "noTarget"}]
 	var shrine := TestStates.stand_at(TestStates.fresh(), 28, 3, "n")
 	eq(ev(Interact.interact(shrine)), fail, "rootShrine")
-	var gate := TestStates.stand_at(TestStates.fresh(), 16, 22, "s")
-	eq(ev(Interact.interact(gate)), fail, "farmGate")
 	var stove := TestStates.stand_at(_house(TestStates.fresh()), 1, 2, "n")
-	eq(ev(Interact.interact(stove)), fail, "stove")
+	eq(ev(Interact.interact(stove)), [{"type": "openUi", "ui": "stove"}], "stove")
 	eq(st(Interact.interact(stove)), stove, "nothing changes")
+
+
+func _lowmere(x: int, y: int, facing: String) -> Dictionary:
+	var s := TestStates.stand_at(TestStates.fresh(), x, y, facing)
+	d(s["player"])["location"] = "lowmere"
+	return s
+
+
+func test_farm_gate_enters_lowmere() -> void:
+	var r := Interact.interact(TestStates.stand_at(TestStates.fresh(), 16, 22, "s"))
+	var player: Dictionary = st(r)["player"]
+	eq(player["location"], "lowmere")
+	eq(player["x"], 12.5)
+	eq(player["z"], 1.5)
+	eq(player["facing"], "s")
+	eq(ev(r), [{"type": "locationChanged", "location": "lowmere"}])
+	eq(d(st(r)["maps"]).keys(), ["farm", "house"], "Lowmere is not saved state")
+
+
+func test_to_farm_returns_to_farm_gate() -> void:
+	var r := Interact.interact(_lowmere(12, 1, "n"))
+	var player: Dictionary = st(r)["player"]
+	eq(player["location"], "farm")
+	eq(player["x"], 16.5)
+	eq(player["z"], 22.5)
+	eq(player["facing"], "n")
+	eq(ev(r), [{"type": "locationChanged", "location": "farm"}])
+
+
+func test_other_features_are_noTarget() -> void:
+	var fail := [{"type": "actionFailed", "reason": "noTarget"}]
+	var cases: Array = [
+		["cottageDoor", 20, 5, "n", "lowmere"], ["noticeBoard", 10, 8, "n", "lowmere"],
+	]
+	for c: Array in cases:
+		var s := _lowmere(c[1] as int, c[2] as int, c[3] as String)
+		eq(ev(Interact.interact(s)), fail, c[0] as String)
+		eq(st(Interact.interact(s)), s, "%s changes nothing" % c[0])
+	eq(ev(Interact.interact(TestStates.stand_at(TestStates.fresh(), 28, 3, "n"))), fail, "rootShrine")
+
+
+func test_interacting_does_not_alter_the_cached_lowmere_grid() -> void:
+	var before := Zones.grid("lowmere").duplicate(true)
+	Interact.interact(_lowmere(12, 1, "n"))
+	Interact.interact(_lowmere(22, 8, "e"))
+	eq(Zones.grid("lowmere"), before)
+
+
+func test_lowmere_east_door_leads_to_woods_and_back() -> void:
+	var s := TestStates.fresh()
+	d(s["player"]).merge({"location": "lowmere", "x": 22.5, "z": 8.5, "facing": "e"}, true)
+	var r := Interact.interact(s)
+	var next := st(r)
+	eq(d(next["player"])["location"], "woods")
+	eq(d(next["player"])["x"], Zones.WOODS_SPAWN.x)
+	eq(d(next["player"])["z"], Zones.WOODS_SPAWN.y)
+	eq(d(ev(r)[0]), {"type": "locationChanged", "location": "woods"})
+	d(next["player"]).merge({"x": 1.5, "z": 45.5, "facing": "w"}, true)
+	var back := st(Interact.interact(next))
+	eq(d(back["player"])["location"], "lowmere")
+	eq(d(back["player"])["x"], Zones.LOWMERE_FROM_WOODS.x)
+	eq(d(back["player"])["facing"], "w")
+
+
+func test_clinic_exit_leads_to_lowmere_below_the_clinic_door() -> void:
+	var s := TestStates.fresh()
+	d(s["player"]).merge({"location": "clinic", "x": 4.5, "z": 5.5, "facing": "s"}, true)
+	var next := st(Interact.interact(s))
+	eq(d(next["player"])["location"], "lowmere")
+	eq(d(next["player"])["x"], Zones.LOWMERE_FROM_CLINIC.x)
+	eq(d(next["player"])["z"], Zones.LOWMERE_FROM_CLINIC.y)

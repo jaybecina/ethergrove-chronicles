@@ -25,6 +25,26 @@ const ITEMS: Dictionary = {
 	"seed:eggplant": {"kind": "seed", "sell": null, "eat": null},
 }
 
+## Items added by the Godot slice (M1 spec 7.5, 7.6). Kept apart from ITEMS, which mirrors the TypeScript data exactly.
+## Gear and dishes are not eaten through the farm rule (eat is null): dishes go through `Cooking.eat`.
+const SLICE_ITEMS: Dictionary = {
+	"copperOre": {"kind": "material", "sell": 15, "eat": null},
+	"copperBar": {"kind": "material", "sell": 80, "eat": null},
+	"practiceSword": {"kind": "gear", "sell": null, "eat": null},
+	"copperSword": {"kind": "gear", "sell": null, "eat": null},
+	"woodBuckler": {"kind": "gear", "sell": null, "eat": null},
+	"copperHelm": {"kind": "gear", "sell": null, "eat": null},
+	"copperMail": {"kind": "gear", "sell": null, "eat": null},
+	"copperBoots": {"kind": "gear", "sell": null, "eat": null},
+	"turnipStew": {"kind": "dish", "sell": null, "eat": null},
+	"potatoHash": {"kind": "dish", "sell": null, "eat": null},
+	"strawberryTart": {"kind": "dish", "sell": null, "eat": null},
+	"verdantRootstone": {"kind": "quest", "sell": null, "eat": null},
+	"mossmawTusk": {"kind": "quest", "sell": null, "eat": null},
+	"groundsLantern": {"kind": "quest", "sell": null, "eat": null},
+	"brokenBlade": {"kind": "quest", "sell": null, "eat": null},
+}
+
 const _SEED_PREFIX := "seed:"
 
 
@@ -35,3 +55,14 @@ static func seed_of(crop: String) -> String:
 ## The crop a seed item grows, or "" for a non-seed.
 static func crop_of_seed(id: String) -> String:
 	return id.substr(_SEED_PREFIX.length()) if id.begins_with(_SEED_PREFIX) else ""
+
+
+## True for any known item, ported or slice.
+static func has_item(id: String) -> bool:
+	return ITEMS.has(id) or SLICE_ITEMS.has(id)
+
+
+## The definition of a known item. Callers check `has_item` first.
+static func def_of(id: String) -> Dictionary:
+	var out: Dictionary = ITEMS[id] if ITEMS.has(id) else SLICE_ITEMS[id]
+	return out

@@ -155,3 +155,25 @@ static func prune_pins(state: Dictionary) -> Dictionary:
 		if qi < 0 or qi >= bag.size() or bag[qi] == null:
 			quick[k] = null
 	return out
+
+
+## Removes `qty` of item `id` across stacks. Returns the new bag, or null when the bag holds fewer than `qty`.
+static func remove_item(bag: Array, id: String, qty: int) -> Variant:
+	if count_of(bag, id) < qty:
+		return null
+	var next := bag.duplicate(true)
+	var left := qty
+	for i: int in next.size():
+		if left <= 0:
+			break
+		var cell: Variant = next[i]
+		if cell == null:
+			continue
+		var stack: Dictionary = cell
+		if stack["id"] != id:
+			continue
+		var held: int = stack["qty"]
+		var take := mini(left, held)
+		next[i] = null if take == held else {"id": id, "qty": held - take}
+		left -= take
+	return next

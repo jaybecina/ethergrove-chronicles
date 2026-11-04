@@ -5,6 +5,8 @@ Every third-party asset below is free to use; the license was checked in each pa
 
 ## 3D models (CC0 1.0)
 
+The Godot game (`apps/game/assets/models/`) reuses the same models as the web scene. Godot 4.7 cannot import `EXT_meshopt_compression` or `KHR_mesh_quantization`, so those copies are the web `.glb` files decoded and dequantized with glTF Transform (`copy`, `dequantize`, `prune`, `weld`), with no change to the art.
+
 | Pack                                                 | Author       | Used for                                       | Source                                                                                                                          |
 | ---------------------------------------------------- | ------------ | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | KayKit Adventurers Character Pack 1.0 (Kay Lousberg) | Kay Lousberg | The farmer (Rogue model and animations)        | https://github.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0                                                      |

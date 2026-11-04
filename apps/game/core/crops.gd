@@ -129,9 +129,9 @@ static func use_item(state: Dictionary) -> Dictionary:
 	var bag_index: int = q["bagIndex"]
 	var id: String = stack["id"]
 	var bag_now: Array = state["bag"]
-	if not ItemData.ITEMS.has(id):
+	if not ItemData.has_item(id):
 		return GameStateUtil.fail(state, "noTarget")
-	var def: Dictionary = ItemData.ITEMS[id]
+	var def := ItemData.def_of(id)
 	if def["kind"] == "seed":
 		var player_in: Dictionary = state["player"]
 		var target := Grid.target_tile(player_in)

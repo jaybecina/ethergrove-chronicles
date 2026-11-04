@@ -90,7 +90,7 @@ func test_corrupt_slot() -> void:
 
 
 func test_unknown_shape_is_corrupt() -> void:
-	_write_raw(_slot_path(1), '{"version": 99}')
+	_write_raw(_slot_path(1), '{"version": 2}')
 	eq(_slots.load_slot(1)["kind"], "corrupt")
 	_write_raw(_slot_path(2), "[]")
 	eq(_slots.load_slot(2)["kind"], "corrupt")
@@ -207,6 +207,72 @@ func test_import_does_not_overwrite_a_corrupt_slot() -> void:
 	eq(FileAccess.get_file_as_string(_slot_path(1)), "{")
 
 
+func _write_newer(slot: int) -> String:
+	var text := JSON.stringify({"version": 99, "future": "data"}, "\t")
+	_write_raw(_slot_path(slot), text)
+	return text
+
+
+func test_newer_version_is_reported_as_newer() -> void:
+	_write_newer(1)
+	eq(_slots.load_slot(1), {"kind": "newer"})
+	var entry := d(_slots.list()[0])
+	eq(entry["newer"], true)
+	eq(entry["corrupt"], false)
+	eq(entry["summary"], null)
+	eq(d(_slots.list()[1])["newer"], false)
+
+
+func test_save_refuses_to_overwrite_newer_slot() -> void:
+	var text := _write_newer(1)
+	eq(_slots.save(1, _file()), ERR_ALREADY_EXISTS)
+	eq(FileAccess.get_file_as_string(_slot_path(1)), text)
+	eq(Array(_files()), ["slot-1.json"])
+
+
+func test_save_force_overwrites_newer_slot() -> void:
+	_write_newer(1)
+	var file := _file()
+	eq(_slots.save(1, file, true), OK)
+	eq(JsonNorm.first_diff(_slots.load_slot(1)["file"], file), "")
+
+
+func test_save_still_overwrites_a_corrupt_slot() -> void:
+	_write_raw(_slot_path(1), "{")
+	eq(_slots.save(1, _file()), OK)
+	eq(_slots.load_slot(1)["kind"], "ok")
+
+
+func test_import_skips_newer_slot_as_occupied() -> void:
+	var text := _write_newer(1)
+	eq(_slots.import_text(FileAccess.get_file_as_string(WEB_EXPORT)), {"ok": true, "slot": 2})
+	eq(FileAccess.get_file_as_string(_slot_path(1)), text)
+
+
+func test_version_boundaries_for_newer() -> void:
+	_write_raw(_slot_path(1), '{"version":3}')
+	var kind: String = _slots.load_slot(1)["kind"]
+	assert_ne(kind, "newer")
+	for text: String in ['{"version":99.5}', '{"version":"99"}', "{}"]:
+		_write_raw(_slot_path(1), text)
+		eq(_slots.load_slot(1)["kind"], "corrupt", text)
+	_write_raw(_slot_path(1), '{"version":99.0, "future": 1}')
+	eq(_slots.load_slot(1)["kind"], "newer")
+
+
+func test_import_mixed_slots_returns_no_free_slot() -> void:
+	eq(_slots.save(1, _file()), OK)
+	_write_newer(2)
+	_write_raw(_slot_path(3), "{")
+	var before: Array[String] = []
+	for slot: int in [1, 2, 3]:
+		before.append(FileAccess.get_file_as_string(_slot_path(slot)))
+	eq(_slots.import_text(FileAccess.get_file_as_string(WEB_EXPORT)), {"ok": false, "error": "noFreeSlot"})
+	for slot: int in [1, 2, 3]:
+		eq(FileAccess.get_file_as_string(_slot_path(slot)), before[slot - 1])
+	eq(_files().size(), 3)
+
+
 ## A directory at the .tmp path makes opening the tmp file for writing fail, deterministically.
 func _block_tmp(slot: int) -> void:
 	DirAccess.make_dir_recursive_absolute(_slot_path(slot) + ".tmp")
@@ -231,3 +297,15 @@ func test_import_write_failure_is_write_failed() -> void:
 
 func test_import_failed_text() -> void:
 	eq(SaveSlots.IMPORT_FAILED_TEXT, "This save can't be opened.")
+
+
+func test_delete_slot_removes_ok_corrupt_and_newer_saves() -> void:
+	eq(_slots.save(1, _file()), OK)
+	_write_raw(_slot_path(2), "{broken")
+	_write_raw(_slot_path(3), JSON.stringify({"version": SaveMigrate.CURRENT_SAVE_VERSION + 1}))
+	_write_raw(_slot_path(1) + ".tmp", "leftover")
+	for slot: int in [1, 2, 3]:
+		eq(_slots.delete_slot(slot), OK)
+	eq(_files().size(), 0)
+	eq(_slots.delete_slot(2), OK, "an empty slot is already gone")
+	eq(_slots.delete_slot(4), ERR_INVALID_PARAMETER)

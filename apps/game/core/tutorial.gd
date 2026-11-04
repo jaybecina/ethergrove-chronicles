@@ -271,8 +271,7 @@ static func _triggered(id: String, next: Dictionary, events: Array) -> bool:
 			if not missed:
 				return false
 			var player: Dictionary = next["player"]
-			var maps: Dictionary = next["maps"]
-			var grid: Dictionary = maps[player["location"]]
+			var grid := GameStateUtil.current_grid(next)
 			var t := Grid.target_tile(player)
 			var tile: Variant = Grid.tile_at(grid, t.x, t.y)
 			if tile == null:
@@ -414,6 +413,12 @@ static func lesson_target(state: Dictionary) -> Dictionary:
 	var house: Dictionary = maps["house"]
 	var player: Dictionary = state["player"]
 	var here: String = player["location"]
+	# Beyond Lowmere (the Woods, the clinic, Mossdeep) the lessons have nothing to point at.
+	if here != "farm" and here != "house" and here != "lowmere":
+		return {}
+	if here == "lowmere":
+		var gate := Grid.find_feature(Zones.grid("lowmere"), "toFarm")
+		return {"location": here, "x": gate.x, "y": gate.y}
 	var px: float = player["x"]
 	var pz: float = player["z"]
 	# Positions measured from the player only make sense on the farm; in the house use the door.
