@@ -1,16 +1,8 @@
 import { noteMidi } from './notes';
 import { hallImpulse, roomImpulse } from './reverb';
 import { playSample } from './sampler';
-import {
-  KIT_LOWPASS,
-  pickSample,
-  SAMPLE_MAP,
-  type InstrumentId,
-  type KitId,
-  type SampleIndex,
-} from './samples';
+import { pickSample, SAMPLE_MAP, type InstrumentId, type KitId, type SampleIndex } from './samples';
 import { compilePiece, type NoteEvent, type Piece } from './score';
-import { applyLofi, validateLofi, type LofiSpec } from './lofi';
 import { playSynth, SYNTH_IDS, type SynthId } from './synths';
 
 export type MakeContext = (channels: number, length: number, rate: number) => OfflineAudioContext;
@@ -65,6 +57,9 @@ const PLUCKED = new Set<InstrumentId>([
   'violinsPizz',
   'cellosPizz',
   'clarinetStac',
+  'cellosSpic',
+  'bassesPizz',
+  'fiddleSpic',
 ]);
 
 const defaultContext: MakeContext = (channels, length, rate) =>
@@ -188,16 +183,11 @@ export async function renderPiece(
   makeContext: MakeContext = defaultContext,
 ): Promise<Rendered> {
   const c = compilePiece(piece);
-  if (piece.lofi) validateLofi(piece);
   const isTrack = piece.kind === 'track';
   const passes = isTrack ? 2 : 1;
   const seconds = c.seconds * passes + (isTrack ? TRACK_TAIL_SEC : JINGLE_TAIL_SEC);
   const ctx = makeContext(2, Math.ceil(seconds * RATE), RATE);
-  const { bus } = musicGraph(
-    ctx,
-    hallImpulse,
-    piece.lofi && ((input) => applyLofi(ctx, input, piece.lofi as LofiSpec, c.seconds)),
-  );
+  const { bus } = musicGraph(ctx, hallImpulse);
   const buses = Object.fromEntries(
     Object.entries(c.parts).map(([name, p]) => [name, bus(p.pan, p.reverb)]),
   );
@@ -228,7 +218,7 @@ export async function renderPiece(
     const offset = pass * c.seconds;
     c.tones.forEach((e, i) => {
       const dest = buses[e.part] as GainNode;
-      const start = offset + timeOf(e.step);
+      const start = Math.max(0, offset + timeOf(e.step) + e.offset);
       const dur = e.steps * c.stepSec;
       const pick = picks[i];
       if (!pick) {
@@ -250,19 +240,18 @@ export async function renderPiece(
         gain: e.gain,
         release: 0.25,
         dest,
+        ...(e.attack !== undefined ? { attack: Math.min(e.attack, dur) } : {}),
       });
     });
     for (const h of c.hits) {
       const buffer = buffers.get(kitPath(h.kit, h.noteIndex)) as AudioBuffer;
-      const lowpass = KIT_LOWPASS[h.kit];
       playSample(ctx, buffer, {
-        start: offset + timeOf(h.step),
+        start: Math.max(0, offset + timeOf(h.step) + h.offset),
         dur: null,
         rate: 1,
         gain: h.gain,
         release: 0.1,
         dest: buses[h.part] as GainNode,
-        ...(lowpass === undefined ? {} : { lowpass }),
       });
     }
   }

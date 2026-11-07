@@ -23,6 +23,10 @@ var world: WorldRoot
 ## `--debug-deep` was passed: a loaded game starts ready for the Woods and Mossdeep (DebugStart).
 var debug_deep: bool = false
 
+## The music and the sound effects live for the whole run, title included (soundtrack spec REQ-16, REQ-17).
+var music: MusicPlayer
+var sfx: SfxPlayer
+
 var _menus: CanvasLayer
 
 
@@ -39,7 +43,24 @@ func _ready() -> void:
 	_menus = CanvasLayer.new()
 	_menus.name = "Menus"
 	add_child(_menus)
+	_add_audio()
 	show_title()
+
+
+func _add_audio() -> void:
+	music = MusicPlayer.new()
+	music.name = "Music"
+	music.session = session
+	music.settings = settings
+	music.engagement_source = func() -> String:
+		return world.combat.engagement() if world != null and world.combat != null else "none"
+	add_child(music)
+	sfx = SfxPlayer.new()
+	sfx.name = "Sfx"
+	sfx.session = session
+	sfx.settings = settings
+	sfx.jingle_started.connect(music.duck)
+	add_child(sfx)
 
 
 ## Frees whatever is shown and shows the title screen on the "title" screen state.

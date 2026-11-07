@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>$GODOT_PROJECT_NAME</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #14171a;
+        color: #f2ead7;
+        font-family: system-ui, sans-serif;
+      }
+      #canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      #unsupported {
+        box-sizing: border-box;
+        max-width: 34rem;
+        margin: 0 auto;
+        padding: 2rem 1.25rem;
+        line-height: 1.5;
+      }
+      #unsupported h1 {
+        font-size: 1.6rem;
+        margin: 0 0 1rem;
+      }
+      #unsupported button {
+        min-width: 44px;
+        min-height: 44px;
+        margin: 0.5rem 0.5rem 0 0;
+        padding: 0.6rem 1rem;
+        font: inherit;
+        color: #14171a;
+        background: #f2ead7;
+        border: 0;
+        border-radius: 6px;
+      }
+      #status {
+        position: absolute;
+        inset: auto 0 1rem;
+        text-align: center;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+    $GODOT_HEAD_INCLUDE
+  </head>
+  <body>
+    <main id="unsupported" hidden>
+      <h1>Ethergrove is best played on a computer</h1>
+      <p>
+        Ethergrove Chronicles is an action RPG made for a keyboard and mouse or a gamepad, so it
+        isn't ready for phones and tablets yet. A mobile app is on the way.
+      </p>
+      <p>For now, open this page on a PC or laptop to play, or get the desktop version.</p>
+      <button type="button" id="copy-link">Copy link for my computer</button>
+      <button type="button" id="play-anyway">Play anyway</button>
+      <p id="copy-status" role="status"></p>
+    </main>
+    <canvas id="canvas">Ethergrove needs a browser with HTML5 canvas support.</canvas>
+    <div id="status" role="status" hidden>Loading…</div>
+    <script src="$GODOT_URL"></script>
+    <script>
+      /*DETECT_UNSUPPORTED*/
+      const GODOT_CONFIG = $GODOT_CONFIG;
+      const engine = new Engine(GODOT_CONFIG);
+      const notice = document.getElementById('unsupported');
+      const canvas = document.getElementById('canvas');
+      const status = document.getElementById('status');
+
+      function startGame() {
+        notice.hidden = true;
+        canvas.hidden = false;
+        status.hidden = false;
+        engine
+          .startGame({
+            onProgress: (current, total) => {
+              status.textContent =
+                total > 0 ? 'Loading… ' + Math.round((current / total) * 100) + '%' : 'Loading…';
+            },
+          })
+          .then(() => {
+            status.hidden = true;
+          })
+          .catch((err) => {
+            status.textContent = 'Ethergrove could not start: ' + err.message;
+          });
+      }
+
+      // No data leaves the page: the buttons only copy the address or start the engine.
+      if (
+        detectUnsupported({
+          matchMedia: (q) => window.matchMedia(q),
+          screen: window.screen,
+          navigator,
+        })
+      ) {
+        canvas.hidden = true;
+        notice.hidden = false;
+        document.getElementById('play-anyway').addEventListener('click', startGame);
+        document.getElementById('copy-link').addEventListener('click', () => {
+          const done = () => {
+            document.getElementById('copy-status').textContent = 'Link copied';
+          };
+          navigator.clipboard.writeText(location.href).then(done, () => {
+            document.getElementById('copy-status').textContent =
+              'Copy this address: ' + location.href;
+          });
+        });
+      } else {
+        startGame();
+      }
+    </script>
+  </body>
+</html>

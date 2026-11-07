@@ -22,7 +22,15 @@ export type InstrumentId =
   | 'piano'
   | 'uprightNr1'
   | 'glock'
-  | 'marimba';
+  | 'marimba'
+  | 'fiddle'
+  | 'strumstick'
+  | 'folkHarp'
+  | 'psaltery'
+  | 'recorder'
+  | 'cellosSpic'
+  | 'bassesPizz'
+  | 'fiddleSpic';
 export type KitId =
   | 'timpHit'
   | 'timpRoll'
@@ -38,9 +46,18 @@ export type KitId =
   | 'bellTree'
   | 'glockGliss'
   | 'gong'
-  | 'softKick'
-  | 'snareTap'
-  | 'shakerSoft';
+  | 'frameDrum'
+  | 'darbuka'
+  | 'slitDrum'
+  | 'oceanDrum'
+  | 'tenorDrum'
+  | 'bassDrumBig';
+
+/**
+ * Sample paths are relative to VSCO 2 CE, except those under `vcsl/`: the Versilian Community Sample Library
+ * (CC0 1.0, github.com/sgossner/VCSL), which scripts/studio.mjs serves from `VCSL_DIR` (soundtrack spec REQ-08).
+ */
+export const VCSL = 'vcsl/';
 
 /**
  * Where each instrument's samples live in VSCO 2 CE (spec §3.1). Patterns use named groups: `note`, `layer`, `rr`
@@ -113,8 +130,40 @@ export const SAMPLE_MAP: Record<InstrumentId, InstrumentDef> = {
   uprightNr1: def('Keys/Upright Nr1', re(`UR1_${N}_(?<layer>pp|mf|f)_RR(?<rr>\\d)`), 0, 0),
   glock: def('Percussion/Glock', re(`glock_medium_${N}`)),
   marimba: def('Percussion/Marimba', re(`Marimba_hit_Outrigger_${N}_loud_01`)),
+  // The folk palette (soundtrack spec §A). Measured: VCSL names sound an octave up like VSCO's; the solo violin is in
+  // standard pitch (LLVln_ArcoVib_A3 sounds 220 Hz). Only the bowed psaltery is used: its plucked files measured unevenly.
+  fiddle: def('Strings/Solo Violin/Arco Vib', re(`LLVln_ArcoVib_${N}_(?<layer>p|f)`), 8, 0),
+  strumstick: def(
+    `${VCSL}Chordophones/Composite Chordophones/Strumstick/Finger`,
+    re(`Strumstick_Finger_Str\\d_Main_${N}_vl(?<layer>\\d)_rr(?<rr>\\d)`),
+  ),
+  folkHarp: def(
+    `${VCSL}Chordophones/Composite Chordophones/Folk Harp`,
+    re(`EWHarp_Normal_${N}_v(?<layer>\\d)_RR(?<rr>\\d)`),
+  ),
+  psaltery: def(
+    `${VCSL}Chordophones/Zithers/Psaltery, Bowed and Plucked/LongBow`,
+    re(`BowedPsaltery_${N}_Main_LongBow_rr(?<rr>\\d)`),
+    6,
+  ),
+  recorder: def(
+    `${VCSL}Aerophones/Edge-blown Aerophones/Baroque Alto Recorder/Sustain`,
+    re(`AltRecorder_Sus_${N}_rr(?<rr>\\d)_Main`),
+    5,
+  ),
+  // Short strings for drive and the tavern bass (cinematic folk REQ-23). Measured 2026-11-05: all three sound an
+  // octave above their names, the solo violin's spiccato included (its arco files do not).
+  cellosSpic: def('Strings/Cello Section/spic', re(`spic_${N}_v(?<layer>\\d)_RR(?<rr>\\d)`)),
+  bassesPizz: def(
+    'Strings/Solo Contrabass/Pizz',
+    re(`BKCtbss_Pizz_${N}_v(?<layer>\\d)_rr(?<rr>\\d)`),
+  ),
+  fiddleSpic: def('Strings/Solo Violin/spic', re(`LLVln_spic_${N}_v(?<layer>\\d)_rr(?<rr>\\d)`)),
 };
 
+const FRAME = 'Membranophones/Struck Membranophones/Frame Drum/';
+const DARBUKA = 'Membranophones/Struck Membranophones/Darbuka/';
+const SLIT = 'Idiophones/Struck Idiophones/Slit Drum/';
 const P = 'VSCO 1 Percussion';
 const M = 'Miscellania Raw';
 /** Unpitched sounds, as VSCO-relative files; several files alternate as round robins. */
@@ -136,18 +185,24 @@ export const KIT_MAP: Record<KitId, readonly string[]> = {
   bellTree: [`${P}/varMetal/various/bell_tree_scrape1.wav`],
   glockGliss: [`${M}/Misc 2/glock_glisses/glock_fx_up_chromatic_med_01.wav`],
   gong: [`${P}/varMetal/Gong/gong_hit_p.wav`],
-  // The soft lo-fi kit (audio spec §3.2): the two softest bass-drum layers, snare taps and a tambourine shake.
-  softKick: [1, 2].flatMap((v) =>
-    [1, 2].map((rr) => `Percussion/BDrumNewhit_v${v}_rr${rr}_Sum.wav`),
+  // Hand drums from VCSL (soundtrack spec REQ-08): the large frame drum's open and muted hits, the five darbuka
+  // strokes, the low and high slit drum, and the ocean drum's long wash.
+  frameDrum: ['Hit', 'HitMuted'].flatMap((h) =>
+    [2, 3].flatMap((v) => [1, 2].map((rr) => `${VCSL}${FRAME}HDrumL_${h}_v${v}_rr${rr}_Sum.wav`)),
   ),
-  snareTap: [1, 2, 3, 4].flatMap((v) =>
-    [1, 2].map((rr) => `Percussion/Snare2-taps_v${v}_rr${rr}_Sum.wav`),
+  darbuka: [1, 2, 3, 4, 5].flatMap((n) =>
+    [1, 2].map((rr) => `${VCSL}${DARBUKA}Darbuka_${n}_hit_vl2_rr${rr}.wav`),
   ),
-  shakerSoft: [1, 2].map((rr) => `Percussion/Tamb1-Shake_v1_rr${rr}_Sum.wav`),
+  slitDrum: ['Hi', 'Lo'].flatMap((h) =>
+    [1, 2, 3].map((v) => `${VCSL}${SLIT}LogDrum${h}_MedM_v${v}_rr1_Sum.wav`),
+  ),
+  oceanDrum: [1, 2, 3].map(
+    (n) => `${VCSL}Membranophones/Other Membranophones/Ocean Drum/OceanDrum_Sus_${n}_Mid.wav`,
+  ),
+  // A marching tenor drum and a big concert bass drum for builds and fights (cinematic folk REQ-23).
+  tenorDrum: [1, 2, 3].map((n) => `${P}/drums/tenor/tenor_higher/tenorH_mf_${n}.wav`),
+  bassDrumBig: [1, 2].map((n) => `${P}/drums/bass/bdrum_f_${n}.wav`),
 };
-
-/** Kit sounds played through a lowpass, in Hz (audio spec §3.2). */
-export const KIT_LOWPASS: Partial<Record<KitId, number>> = { softKick: 2000 };
 
 /** The first note name in a sample's file name, as MIDI. */
 export function parseRoot(fileName: string): number | null {
@@ -172,7 +227,7 @@ export interface SampleIndex {
   kit: Record<KitId, string[]>;
 }
 
-const LAYER_WORDS: Record<string, number> = { pp: 0, mf: 1, f: 2 };
+const LAYER_WORDS: Record<string, number> = { pp: 0, p: 0, mf: 1, f: 2 };
 
 /** Sorts a list of VSCO-relative paths into instruments and kit sounds. */
 export function buildIndex(

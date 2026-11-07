@@ -2,3 +2,5 @@
 build/
 *.tmp
 shots/
+build/
+web/shell.generated.html

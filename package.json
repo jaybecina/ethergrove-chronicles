@@ -11,7 +11,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "test:coverage": "pnpm -r test:coverage",
-    "test:scripts": "node --test --test-reporter=dot 'scripts/**/*.test.mjs'",
+    "test:scripts": "node --test --test-reporter=dot 'scripts/**/*.test.mjs' 'apps/game/web/*.test.mjs'",
     "format": "prettier --write .",
     "prepare": "husky",
     "dev": "pnpm --filter web dev",
@@ -25,6 +25,7 @@
     "game:test": "node scripts/game.mjs test",
     "game:smoke": "node scripts/game.mjs smoke",
     "game:shot": "node scripts/game.mjs shot",
+    "game:export": "node scripts/exportGame.mjs",
     "game:fixtures": "UPDATE_PARITY=1 pnpm --filter @ethergrove/core exec vitest run test/parityFixtures.test.ts",
     "checks": "node scripts/checks.mjs all",
     "checks:commit": "node scripts/checks.mjs commit"

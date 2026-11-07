@@ -42,6 +42,24 @@ describe('playSample', () => {
     expect(stops).toEqual([1 + 1.25, 2, 1 + 1.5]);
   });
 
+  it('swells in over the attack time when given one (cinematic folk REQ-22)', () => {
+    const { fake, ctx, dest } = setup();
+    playSample(ctx, buffer(4), {
+      start: 1,
+      dur: 2,
+      rate: 1,
+      gain: 0.5,
+      release: 0.25,
+      attack: 0.5,
+      dest,
+    });
+    const env = fake.created('gain').at(-1) as FakeGain;
+    expect(env.gain.calls.slice(0, 2)).toEqual([
+      ['setValueAtTime', 0, 1],
+      ['linearRampToValueAtTime', 0.5, 1.5],
+    ]);
+  });
+
   it('can filter and sweep the pitch', () => {
     const { fake, ctx, dest } = setup();
     playSample(ctx, buffer(1), {

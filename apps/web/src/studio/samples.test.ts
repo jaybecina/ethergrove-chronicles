@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildIndex,
-  KIT_LOWPASS,
   KIT_MAP,
   parseRoot,
   pianoKey,
@@ -106,25 +105,120 @@ describe('buildIndex and pickSample', () => {
     expect(pickSample(index, 'uprightNr1', 69, 'mf', 0)?.ref.root).toBe(67);
   });
 
-  it('maps the soft lo-fi kit to the files checked in the library (audio spec §3.2)', () => {
-    const p = 'Percussion/';
-    expect(KIT_MAP.softKick).toEqual([
-      `${p}BDrumNewhit_v1_rr1_Sum.wav`,
-      `${p}BDrumNewhit_v1_rr2_Sum.wav`,
-      `${p}BDrumNewhit_v2_rr1_Sum.wav`,
-      `${p}BDrumNewhit_v2_rr2_Sum.wav`,
-    ]);
-    expect(KIT_MAP.snareTap).toHaveLength(8);
-    expect(KIT_MAP.snareTap.every((f) => f.startsWith(`${p}Snare2-taps_v`))).toBe(true);
-    expect(KIT_MAP.shakerSoft).toEqual([
-      `${p}Tamb1-Shake_v1_rr1_Sum.wav`,
-      `${p}Tamb1-Shake_v1_rr2_Sum.wav`,
-    ]);
-    expect(KIT_LOWPASS).toEqual({ softKick: 2000 });
-  });
-
   it('knows how long each sustained instrument can hold a note', () => {
     expect(SAMPLE_MAP.cellos).toMatchObject({ sustained: true, maxSustainSec: 6 });
     expect(SAMPLE_MAP.harp.sustained).toBe(false);
+  });
+});
+
+describe('short string articulations and big drums (cinematic folk REQ-23)', () => {
+  const idx = buildIndex(
+    [
+      'Strings/Cello Section/spic/spic_A2_v1_RR1.wav',
+      'Strings/Cello Section/spic/spic_A2_v2_RR2.wav',
+      'Strings/Solo Contrabass/Pizz/BKCtbss_Pizz_A1_v3_rr1.wav',
+      'Strings/Solo Violin/spic/LLVln_spic_A4_v2_rr1.wav',
+      ...Object.values(KIT_MAP).flat(),
+    ],
+    {},
+  );
+
+  it('reads each at the pitch it was measured to sound', () => {
+    // Measured 2026-11-05 by the energy at each candidate pitch: spic_A2 peaks at 220 Hz (A3), Pizz_A1 at 110 Hz
+    // (A2), LLVln_spic_A4 at 880 Hz (A5), unlike the arco solo violin, which sounds as named.
+    expect(idx.instruments.cellosSpic.map((r) => [r.root, r.layer, r.rr])).toEqual([
+      [57, 1, 1],
+      [57, 2, 2],
+    ]);
+    expect(idx.instruments.bassesPizz.map((r) => r.root)).toEqual([45]);
+    expect(idx.instruments.fiddleSpic.map((r) => r.root)).toEqual([81]);
+  });
+
+  it('plays them as short notes that ring out', () => {
+    for (const id of ['cellosSpic', 'bassesPizz', 'fiddleSpic'] as const)
+      expect(SAMPLE_MAP[id].sustained, id).toBe(false);
+  });
+
+  it('finds the tenor drum and the big bass drum in VSCO', () => {
+    for (const id of ['tenorDrum', 'bassDrumBig'] as const) {
+      expect(idx.kit[id].length, id).toBeGreaterThan(1);
+      expect(
+        KIT_MAP[id].every((f) => f.startsWith('VSCO 1 Percussion/drums/')),
+        id,
+      ).toBe(true);
+    }
+  });
+});
+
+describe('folk instruments from VCSL (CC0) and the solo violin (soundtrack spec REQ-08)', () => {
+  const VC = 'vcsl/';
+  const STRUM = `${VC}Chordophones/Composite Chordophones/Strumstick/Finger/`;
+  const HARP = `${VC}Chordophones/Composite Chordophones/Folk Harp/`;
+  const PSALTERY = `${VC}Chordophones/Zithers/Psaltery, Bowed and Plucked/`;
+  const RECORDER = `${VC}Aerophones/Edge-blown Aerophones/Baroque Alto Recorder/Sustain/`;
+  const FIDDLE = 'Strings/Solo Violin/Arco Vib/';
+  const folk = buildIndex(
+    [
+      `${STRUM}Strumstick_Finger_Str1_Main_D2_vl1_rr1.wav`,
+      `${STRUM}Strumstick_Finger_Str1_Main_D2_vl3_rr1.wav`,
+      `${STRUM}Strumstick_Finger_Str3_Main_D4_vl2_rr1.wav`,
+      `${HARP}EWHarp_Normal_C3_v2_RR1.wav`,
+      `${HARP}EWHarp_Normal_C3_v3_RR1.wav`,
+      `${PSALTERY}LongBow/BowedPsaltery_E4_Main_LongBow_rr2.wav`,
+      `${PSALTERY}Pluck/BowedPsaltery_E5_Main_Pluck_rr1.wav`,
+      `${RECORDER}AltRecorder_Sus_E4_rr1_Main.wav`,
+      `${RECORDER}AltRecorder_Sus_A#3_rr1_Main.wav`,
+      `${FIDDLE}LLVln_ArcoVib_A3_p.wav`,
+      `${FIDDLE}LLVln_ArcoVib_A3_f.wav`,
+      ...Object.values(KIT_MAP).flat(),
+    ],
+    {},
+  );
+
+  it('reads each instrument at the pitch it was measured to sound', () => {
+    // Measured by autocorrelation: Str1_D2 sounds 147 Hz (D3), C3 harp 262.5 Hz (C4), the recorder E4 658 Hz (E5),
+    // the psaltery E4 658 Hz (E5): VCSL calls middle C "C3" like VSCO. The solo violin A3 sounds 220 Hz (A3).
+    expect(folk.instruments.strumstick.map((r) => [r.root, r.layer])).toEqual([
+      [50, 1],
+      [50, 3],
+      [74, 2],
+    ]);
+    expect(folk.instruments.folkHarp.map((r) => [r.root, r.layer])).toEqual([
+      [60, 2],
+      [60, 3],
+    ]);
+    expect(folk.instruments.recorder.map((r) => r.root)).toEqual([70, 76]);
+    expect(folk.instruments.fiddle.map((r) => [r.root, r.layer])).toEqual([
+      [57, 0],
+      [57, 2],
+    ]);
+  });
+
+  it('uses only the bowed psaltery, never its plucked or spiccato files', () => {
+    expect(folk.instruments.psaltery.map((r) => r.root)).toEqual([76]);
+  });
+
+  it('plays the strumstick softly or hard by dynamic, and the fiddle p or f', () => {
+    expect(pickSample(folk, 'strumstick', 51, 'p', 0)?.ref.layer).toBe(1);
+    expect(pickSample(folk, 'strumstick', 51, 'f', 0)?.ref.layer).toBe(3);
+    expect(pickSample(folk, 'fiddle', 58, 'p', 0)?.ref.path).toContain('A3_p');
+    expect(pickSample(folk, 'fiddle', 58, 'f', 0)?.ref.path).toContain('A3_f');
+  });
+
+  it('keeps notes from running out of recording', () => {
+    for (const id of ['fiddle', 'recorder', 'psaltery'] as const)
+      expect(SAMPLE_MAP[id].sustained, id).toBe(true);
+    for (const id of ['strumstick', 'folkHarp'] as const)
+      expect(SAMPLE_MAP[id].sustained, id).toBe(false);
+  });
+
+  it('finds the new hand drums, which all come from VCSL', () => {
+    for (const id of ['frameDrum', 'darbuka', 'slitDrum', 'oceanDrum'] as const) {
+      expect(folk.kit[id].length, id).toBeGreaterThan(0);
+      expect(
+        KIT_MAP[id].every((f) => f.startsWith(VC)),
+        id,
+      ).toBe(true);
+    }
   });
 });

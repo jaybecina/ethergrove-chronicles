@@ -158,3 +158,36 @@ func test_f11_is_bound_to_fullscreen() -> void:
 		if k != null and k.physical_keycode == KEY_F11:
 			found = true
 	assert_true(found)
+
+
+func test_volume_defaults_and_round_trip() -> void:
+	var s: Node = _make()
+	eq(s.get("music_volume"), 0.6)
+	eq(s.get("sfx_volume"), 0.8)
+	s.call("set_music_volume", 0.25)
+	s.call("set_sfx_volume", 1.0)
+	var again: Node = _make()
+	eq(again.get("music_volume"), 0.25)
+	eq(again.get("sfx_volume"), 1.0)
+
+
+func test_an_old_settings_file_without_volumes_loads_the_defaults() -> void:
+	var cfg := ConfigFile.new()
+	cfg.set_value("graphics", "choice", "low")
+	cfg.save(_path)
+	var s: Node = _make()
+	eq(s.get("choice"), "low")
+	eq(s.get("music_volume"), 0.6)
+	eq(s.get("sfx_volume"), 0.8)
+
+
+func test_volumes_are_clamped_and_bad_stored_values_default() -> void:
+	var s: Node = _make()
+	s.call("set_music_volume", 3.0)
+	eq(s.get("music_volume"), 1.0)
+	s.call("set_sfx_volume", -1.0)
+	eq(s.get("sfx_volume"), 0.0)
+	var cfg := ConfigFile.new()
+	cfg.set_value("audio", "music", "loud")
+	cfg.save(_path)
+	eq(_make().get("music_volume"), 0.6)
