@@ -1,4 +1,5 @@
-// Exports the Godot game for macOS, Windows and Web into apps/game/build/: `node scripts/exportGame.mjs`
+// Exports the Godot game for macOS, Windows and Web into apps/game/build/: `node scripts/exportGame.mjs [preset…]`
+// (no names: all three; `node scripts/exportGame.mjs Web` is what the godot-web deploy workflow runs)
 // (M1 spec §9.1). The Web export uses a custom shell that shows the phone and tablet message; this script
 // builds that shell from apps/game/web/shell.html and detect.mjs first. Needs Godot's export templates, which
 // the owner installs once (M1 spec §11.1).
@@ -29,6 +30,23 @@ export function buildShell(shell, detectSource) {
   if (!shell.includes(SHELL_MARKER)) throw new Error(`the shell has no ${SHELL_MARKER} marker`);
   const classic = detectSource.replace(/^export\s+/gm, '');
   return shell.replace(SHELL_MARKER, () => classic);
+}
+
+/**
+ * The presets to export: all of them when `names` is empty, else exactly the named ones in EXPORT_PRESETS order.
+ * @param {string[]} names
+ * @returns {{ name: string, output: string }[]}
+ */
+export function selectPresets(names) {
+  if (names.length === 0) return EXPORT_PRESETS;
+  for (const n of names) {
+    if (!EXPORT_PRESETS.some((p) => p.name === n)) {
+      throw new Error(
+        `Unknown export preset "${n}" (known: ${EXPORT_PRESETS.map((p) => p.name).join(', ')})`,
+      );
+    }
+  }
+  return EXPORT_PRESETS.filter((p) => names.includes(p.name));
 }
 
 /**
@@ -79,7 +97,7 @@ function main() {
     readFileSync(`${web}/detect.mjs`, 'utf8'),
   );
   writeFileSync(`${web}/shell.generated.html`, shell);
-  for (const preset of EXPORT_PRESETS) {
+  for (const preset of selectPresets(process.argv.slice(2))) {
     mkdirSync(join(root, preset.output, '..'), { recursive: true });
     const r = spawnSync(bin, exportArgs(preset), { stdio: 'inherit' });
     if (r.status !== 0) {
