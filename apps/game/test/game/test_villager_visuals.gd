@@ -1,5 +1,7 @@
 extends CoreTest
-## VillagerVisuals: the four Lowmere villagers as tinted, idling `player` models.
+## VillagerVisuals: the four Lowmere villagers. One with a character model (assets/characters/<id>.glb, made from
+## the owner's concept) stands as that model, at its own height, facing the camera; one without keeps the tinted,
+## idling `player` model.
 
 const TINTS: Dictionary[String, Color] = {
 	"hilda": Color("#b5603a"),
@@ -25,6 +27,37 @@ func _first_material(node: Node) -> StandardMaterial3D:
 	return null
 
 
+## The villagers whose character model is committed; Fern joins when hers is made.
+const WITH_MODEL: Array[String] = ["hilda", "aldous", "bram"]
+
+
+func test_villagers_with_a_model_use_it_and_face_the_camera() -> void:
+	var root := _spawned()
+	for id: String in WITH_MODEL:
+		assert_true(ResourceLoader.exists(VillagerVisuals.model_path(id)), "%s model file" % id)
+		var node := root.get_node_or_null("Villager_%s" % id) as Node3D
+		assert_not_null(node, id)
+		if node == null:
+			continue
+		eq(node.get_meta("look", ""), "character", id)
+		assert_almost_eq(node.rotation.y, PlayerVisual.FACING_YAW["s"], 1e-5)
+		var box := _bounds(node)
+		assert_between(box.size.y, 1.4, 1.95, "%s stands at a person's height" % id)
+		assert_almost_eq(box.position.y, 0.0, 0.02)
+		eq(node.find_children("*", "AnimationPlayer", true, false).size(), 0, "%s is a still figure" % id)
+
+
+func _bounds(node: Node3D) -> AABB:
+	var out := AABB()
+	var first := true
+	for found: Node in node.find_children("*", "MeshInstance3D", true, false):
+		var mi := found as MeshInstance3D
+		var box: AABB = node.global_transform.affine_inverse() * mi.global_transform * mi.get_aabb()
+		out = box if first else out.merge(box)
+		first = false
+	return out
+
+
 func test_four_villagers_spawn_at_their_tiles() -> void:
 	var plain := ModelCatalog.instantiate("player")
 	add_child_autofree(plain)
@@ -42,6 +75,8 @@ func test_four_villagers_spawn_at_their_tiles() -> void:
 		var x: int = v["x"]
 		var y: int = v["y"]
 		assert_almost_eq(node.position, Vector3(x + 0.5, 0.0, y + 0.5), Vector3.ONE * 1e-5)
+		if node.get_meta("look", "") == "character":
+			continue  # covered by test_villagers_with_a_model_use_it_and_face_the_camera
 		var facing: String = v["facing"]
 		assert_almost_eq(node.rotation.y, PlayerVisual.FACING_YAW[facing], 1e-5)
 		var anim := node.find_children("*", "AnimationPlayer", true, false)[0] as AnimationPlayer
@@ -52,7 +87,7 @@ func test_four_villagers_spawn_at_their_tiles() -> void:
 		if mat != null:
 			seen.append(mat.albedo_color)
 			assert_true(mat.albedo_color.is_equal_approx(base * TINTS[id]), "%s tint" % id)
-	# Each villager reads differently.
+	# Each tinted villager reads differently.
 	for i: int in seen.size():
 		for j: int in range(i + 1, seen.size()):
 			assert_false(seen[i].is_equal_approx(seen[j]), "villagers %d and %d differ" % [i, j])
