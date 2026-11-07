@@ -2,7 +2,13 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { buildShell, exportArgs, EXPORT_PRESETS, templatesInstalled } from './exportGame.mjs';
+import {
+  buildShell,
+  exportArgs,
+  EXPORT_PRESETS,
+  selectPresets,
+  templatesInstalled,
+} from './exportGame.mjs';
 
 const SHELL = 'a\n/*DETECT_UNSUPPORTED*/\nb';
 
@@ -70,4 +76,28 @@ test('export_presets.cfg declares the same three presets and the custom Web shel
 test('project.godot enables ETC2/ASTC textures, which the universal macOS export requires', () => {
   const project = readFileSync(new URL('../apps/game/project.godot', import.meta.url), 'utf8');
   assert.match(project, /^textures\/vram_compression\/import_etc2_astc=true$/m);
+});
+
+test('selectPresets exports every preset when no names are given', () => {
+  assert.deepEqual(selectPresets([]), EXPORT_PRESETS);
+});
+
+test('selectPresets keeps only the named presets, so CI can export just the Web build', () => {
+  assert.deepEqual(
+    selectPresets(['Web']).map((p) => p.name),
+    ['Web'],
+  );
+});
+
+test('selectPresets rejects an unknown preset name instead of exporting nothing', () => {
+  assert.throws(() => selectPresets(['Linux']), /Unknown export preset "Linux"/);
+});
+
+test('the Godot web deploy workflow exports only Web and deploys only when the Vercel secrets exist', () => {
+  const wf = readFileSync(new URL('../.github/workflows/godot-web.yml', import.meta.url), 'utf8');
+  assert.match(wf, /node scripts\/exportGame\.mjs Web/);
+  assert.match(wf, /branches: \[main\]/);
+  assert.match(wf, /if: env\.VERCEL_TOKEN != ''/);
+  assert.match(wf, /vercel@[0-9]/);
+  assert.doesNotMatch(wf, /pnpm --filter web build/);
 });

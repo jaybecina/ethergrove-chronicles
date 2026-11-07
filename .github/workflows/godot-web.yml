@@ -1,0 +1,78 @@
+# Builds the Godot game for the web and deploys it to its own Vercel project on every merge to main.
+# The main site (ethergrove-chronicles.vercel.app, root vercel.json) is the React web game and is not touched here.
+#
+# One-time setup by the owner: create an empty Vercel project for the Godot build (framework "Other", no build
+# command), then add the repository secrets VERCEL_TOKEN, VERCEL_ORG_ID and VERCEL_PROJECT_ID. Until they exist the
+# export still runs (so a broken export shows up) and the deploy step is skipped.
+name: Godot web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/game/**'
+      - 'scripts/exportGame.mjs'
+      - 'scripts/game.mjs'
+      - '.github/workflows/godot-web.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: godot-web
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Export Web and deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      # Godot 4.7.2, the same binary and cache key as ci.yml's game job.
+      - uses: actions/cache@v4
+        id: godot-cache
+        with:
+          path: ~/godot
+          key: godot-4.7.2-linux
+      - name: Download Godot 4.7.2
+        if: steps.godot-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p "$HOME/godot"
+          curl -fsSL -o "$RUNNER_TEMP/godot.zip" https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$HOME/godot"
+          chmod +x "$HOME/godot/Godot_v4.7.2-stable_linux.x86_64"
+      # Only the web template is kept from the official export templates (the Web preset has threads off).
+      - uses: actions/cache@v4
+        id: templates-cache
+        with:
+          path: ~/.local/share/godot/export_templates/4.7.2.stable
+          key: godot-4.7.2-web-templates
+      - name: Download the Godot 4.7.2 web export template
+        if: steps.templates-cache.outputs.cache-hit != 'true'
+        run: |
+          dest="$HOME/.local/share/godot/export_templates/4.7.2.stable"
+          mkdir -p "$dest"
+          curl -fsSL -o "$RUNNER_TEMP/templates.tpz" https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz
+          unzip -j -q "$RUNNER_TEMP/templates.tpz" 'templates/version.txt' 'templates/web_nothreads_release.zip' 'templates/web_nothreads_debug.zip' -d "$dest"
+          rm "$RUNNER_TEMP/templates.tpz"
+      - name: Point GODOT_BIN at the cached binary
+        run: echo "GODOT_BIN=$HOME/godot/Godot_v4.7.2-stable_linux.x86_64" >> "$GITHUB_ENV"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm game:import
+      - run: node scripts/exportGame.mjs Web
+      - name: Deploy to Vercel
+        if: env.VERCEL_TOKEN != ''
+        run: |
+          cp apps/game/web/vercel.json apps/game/build/web/vercel.json
+          npx --yes vercel@65.2.0 deploy apps/game/build/web --prod --yes --token "$VERCEL_TOKEN"
+      - name: Note the skipped deploy
+        if: env.VERCEL_TOKEN == ''
+        run: echo "::notice::Exported the web build; deploy skipped because the VERCEL_TOKEN secret is not set."

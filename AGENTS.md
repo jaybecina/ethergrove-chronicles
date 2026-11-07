@@ -93,6 +93,14 @@ Work as a senior team in one person. Each role is a check to apply before callin
   (types only, copy text, assets), say why and prefix the commit line with it:
   `NO_TEST_REASON="<why, 10+ chars>" git commit …`. The reason lands in the message as a `No-Test:` trailer.
 
+## Everything lives in this monorepo
+
+Owner rule (7 Nov 2026): every asset, render, proof and tool output for Ethergrove is created and kept inside this
+repo folder, never in a sibling folder of `Jay Dev/`. Third-party source assets go in the git-ignored `assets-src/`
+(the board's Poly Haven scans are in `assets-src/polyhaven/`, its renders in `assets-src/board-renders/`); listening
+takes go in the git-excluded `audio-pilot/` (keep `audio-pilot/listen/round3/`). The owner's Mac is short on disk:
+ask before downloading anything large.
+
 ## Project memory and code graph
 
 - **`brain/` is the project memory.** Start with `brain/MEMORY.md`. Decisions are in `brain/decisions/`,
@@ -136,6 +144,7 @@ pnpm game:import      # Godot headless import of apps/game (first run, or after 
 pnpm game:test        # GUT tests for apps/game; prints only the totals unless one fails (GAME_VERBOSE=1 for all)
 pnpm game:smoke       # headless: the boot smoke (SMOKE OK) and the playthrough (PLAYTHROUGH OK); fails if either fails
 pnpm game:shot -- scene=farm tier=low season=winter out=/abs/x.png   # one 1280x720 screenshot in a real window
+node scripts/exportGame.mjs Web   # only the Godot Web build (no names: macOS, Windows and Web)
 apps/game/tools/shot.sh   # every by-eye shot (zones × tiers × spring/winter, night, rain, title) → apps/game/shots/
 pnpm build            # production build → apps/web/dist
 pnpm checks:commit    # the fast gate with live progress (what pre-commit runs, ~10 s)
@@ -338,8 +347,9 @@ audible low end, strummed chords, string swells, Phrygian-dominant fights, human
 - Nobody can hear tests: the owner listens to every changed `.m4a` before merging.
 - **AI music briefs (ACE-Step 1.5):** its DiT text encoder keeps only 256 tokens of `instruction + caption + metas`
   (~200 for the caption), so write a caption of ≤ ~190 tokens, put the arc in the `lyrics` section tags and the "no …"
-  words in `lm_negative_prompt` ([[lessons/ace-step-caption-256-tokens]]). Briefs, renders and the loop and measure
-  tools live outside the repo in `../ai-audio/`; takes go to the git-excluded `audio-pilot/`.
+  words in `lm_negative_prompt` ([[lessons/ace-step-caption-256-tokens]]). ACE-Step was uninstalled on 7 Nov 2026 to free
+  disk (only the briefs remain in `../ai-audio/pilot/`); the kept takes are `audio-pilot/listen/round3/`. A reinstall
+  goes inside this repo (see "Everything lives in this monorepo").
 
 ### Saves
 
@@ -429,3 +439,8 @@ server Playwright starts on port 5199. `check:build` fails the production build 
   (tutorial spec §9).
 - Deploy is on Vercel via the root `vercel.json` (it builds `pnpm --filter web build` into
   `apps/web/dist`). The Vercel project's Root Directory must be empty, or `vercel.json` is ignored.
+- **Vercel serves only the React web game.** Changes to the Godot game (`apps/game`) never show on
+  ethergrove-chronicles.vercel.app: Vercel cannot run Godot. The Godot web build comes from `exportGame.mjs`'s Web preset
+  (`apps/game/build/web`, ~71 MB) and needs its own deploy; say so whenever a Godot change is meant to be seen online.
+  That deploy is `.github/workflows/godot-web.yml`: on a merge to `main` it runs `node scripts/exportGame.mjs Web` and
+  uploads the build to a second Vercel project ([[decisions/0027-godot-web-own-vercel-project]]).

@@ -75,10 +75,21 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
   music. — verified, [[decisions/0012-ethergrove-audio-direction]]
 - **The soundtrack direction is now cinematic orchestral fantasy with folk instruments as colour,** and AI-generated
   music (ACE-Step 1.5, MIT) may ship in the Godot game with the Steam disclosure; the web game's audio stays frozen. The
-  pilot (`lowmere`, `woods`, `woodsFight`, 12 takes) renders outside the repo in `../ai-audio/` into the git-excluded
-  `audio-pilot/round3/`; the owner picks by ear before any rollout. — verified,
+  pilot (`lowmere`, `woods`, `woodsFight`, 12 takes) finals are kept in the git-excluded
+  `audio-pilot/listen/round3/`; ACE-Step itself was uninstalled on 7 Nov 2026 to free disk. The owner picks by ear
+  before any rollout. — verified,
   [[decisions/0025-ai-generated-audio-may-ship]]; spec
   `docs/superpowers/specs/2026-11-06-soundtrack-cinematic-orchestral-design.md`; prompts `docs/audio/soundtrack-prompts.md`
+- **Character art: every human now follows the owner's two Meshy hero concepts** (gritty, weathered leather and
+  linen); the v16 board designs are retired. No paid tools: NPC concepts from free ChatGPT images
+  (`docs/art/character-prompts.md`), image-to-3D shapes from Hunyuan3D 2.1's free online demo (owner outside the licence's
+  excluded EU/UK/South Korea; a few anonymous tries a day), coloured and simplified by `assets-src/characters/tools`.
+  The male hero is done (15k triangles); board v17 shows it. The Meshy spec
+  is a draft to revise for this route. A person is ~34 px tall in play. — verified, [[sessions/2026-11-07]], spec
+  `docs/superpowers/specs/2026-11-07-character-art-meshy-design.md`
+- **The Godot web build deploys to its own Vercel project** on every merge to `main` (`godot-web.yml`); the main
+  Vercel site stays the React game until Godot replaces it. Needs the owner's three Vercel secrets. — verified,
+  [[decisions/0027-godot-web-own-vercel-project]]
 - Deferred review minors for the tutorial are listed in [[sessions/2026-10-25]].
 
 ## Lessons worth knowing before you touch…
