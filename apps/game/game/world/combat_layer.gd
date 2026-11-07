@@ -133,6 +133,20 @@ func _add_actor(data: Dictionary, passive: bool) -> EnemyActor:
 	return actor
 
 
+## What the music sees: "boss" while the Bramble Matron stands, "fight" while a live enemy that is not a dummy is
+## chasing, winding up, recovering or staggered, otherwise "none" (soundtrack spec REQ-15). Allocates nothing.
+func engagement() -> String:
+	if not boss.is_empty():
+		return "boss"
+	for e: EnemyActor in enemies:
+		if e.passive:
+			continue
+		var st: String = e.data["state"]
+		if st == "chase" or st == "telegraph" or st == "recover" or st == "staggered":
+			return "fight"
+	return "none"
+
+
 func _max_stamina() -> float:
 	if session == null or session.state.is_empty():
 		return 100.0

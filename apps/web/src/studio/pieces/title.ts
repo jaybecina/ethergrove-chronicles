@@ -1,213 +1,169 @@
-import { ROOTSONG_MAJOR, ROOTSONG_MINOR, transpose } from '../motifs';
-import type { Piece } from '../score';
+import { HUMANIZE_TRACK, type Piece } from '../score';
 import { bars, dyn, held, rests, times } from './notation';
+import { bedBar, harpBar, move, PHRASE_MAJOR_D, PHRASE_MINOR_B, rootAt, strumBar } from './folk';
 
-// Chords per section (audio spec §4.2), close voicings with the root below in the cellos and basses.
-const A = [
-  '(B3 D4 F#4)',
-  '(G3 B3 D4)',
-  '(A3 D4 F#4)',
-  '(A3 C#4 E4)',
-  '(B3 D4 F#4)',
-  '(G3 B3 D4)',
-  '(G3 B3 E4)',
-];
-const A_LAST = '(F#3 B3 C#4):8 (F#3 A#3 C#4):8';
-const B = [
-  '(A3 D4 F#4)',
-  '(A3 C#4 E4)',
-  '(B3 D4 F#4)',
-  '(G3 B3 D4)',
-  '(A3 D4 F#4)',
-  '(G3 B3 D4)',
-  '(G3 B3 D4 E4)',
-  '(A3 C#4 E4)',
-];
-const C = [
-  '(G3 B3 D4)',
-  '(A3 C#4 E4)',
-  '(A3 C#4 F#4)',
-  '(B3 D4 F#4)',
-  '(G3 B3 D4)',
-  '(A3 D4 F#4)',
-  '(G3 B3 D4 E4)',
-];
-const C_LAST = '(A3 D4 E4):8 (A3 C#4 E4):8';
-const ROOTS_A = ['B2', 'G2', 'D3', 'A2', 'B2', 'G2', 'E2', 'F#2'];
-const ROOTS_B = ['D3', 'A2', 'B2', 'G2', 'F#2', 'G2', 'E2', 'A2'];
-const ROOTS_C = ['G2', 'A2', 'F#2', 'B2', 'G2', 'F#2', 'E2', 'A2'];
-const HARP_A = [
-  '(B2 F#3 B3 D4 F#4)',
-  '(G2 D3 G3 B3 D4)',
-  '(D3 A3 D4 F#4 A4)',
-  '(A2 E3 A3 C#4 E4)',
-  '(B2 F#3 B3 D4 F#4)',
-  '(G2 D3 G3 B3 D4)',
-  '(E2 B2 E3 G3 B3)',
-  '(F#2 C#3 F#3 A#3 C#4)',
-];
+/** Chords under each bar of the minor and major Rootsong phrases (two chords split the bar in half). */
+const MINOR = ['Bm G', 'F# Bm', 'D', 'A', 'Bm G', 'F# Bm', 'Em', 'Bm'];
+const MAJOR = ['Bm A', 'G D', 'D', 'A', 'Bm A', 'G D', 'Bm', 'D'];
+const INTRO = ['Bm', 'G A'];
+const SWELL_TAIL = ['D', 'A'];
+/** Bars 1-2 intro, 3-10 the bard (minor), 11-20 the swell (major), 21-28 the bard again (minor, an octave up). */
+const CHORDS = [...INTRO, ...MINOR, ...MAJOR, ...SWELL_TAIL, ...MINOR];
 
-/** The minor Rootsong in B minor, an octave up for the flute (B4–G5). */
-const MINOR_FLUTE = transpose(ROOTSONG_MINOR, 12);
-/** The Rootsong in D: horns at B3–A4, violins an octave up, the flute two octaves up. */
-const MAJOR_HORN = ROOTSONG_MAJOR.notes;
-const MAJOR_VIOLIN = transpose(ROOTSONG_MAJOR, 12);
-const MAJOR_FLUTE = transpose(ROOTSONG_MAJOR, 24);
+/** Strum patterns in 16ths: a ballad lilt, a driving swell, a soft close. */
+const BALLAD = [6, 2, 4, 4];
+const DRIVE = [4, 2, 2, 4, 2, 2];
+const SOFT = [8, 8];
+const strum = (chords: readonly string[], pattern: readonly number[]) =>
+  chords.map((c) => strumBar(c, pattern));
+/** The first chord of a bar. */
+const head = (c: string) => c.split(' ')[0] ?? c;
+
+/** The swell's string lines: a violin counter-line over cellos on the roots, both bowed in slowly. */
+const VIOLINS = [
+  'F#5:8 E5:8',
+  'D5:8 F#5:8',
+  'A5:16',
+  'E5:16',
+  'F#5:8 E5:8',
+  'G5:8 F#5:8',
+  'F#5:16',
+  'A5:16',
+  'D6:16',
+  'C#6:16',
+];
 
 /**
- * "Ethergrove": wonder and mystery. D major, 70 bpm, 24 bars (≈82 s): A B C.
- * A: harp and glock arpeggios, a pad shimmer, the flute plays the minor Rootsong — small and secret.
- * B: the horns answer with the Rootsong in major over a cello countermelody and string tremolo; a timpani roll.
- * C: tutti, the violins sing the Rootsong in octaves with the violas and flute, then fade to p into bar 1.
+ * "Ethergrove" (cinematic folk spec §C): a bard by a fire, then the valley opens. B minor into D major, 72 bpm,
+ * 28 bars (93 s).
+ * Bars 1-10, the bard: a strummed strumstick and a contrabass B, then the fiddle sings the minor Rootsong.
+ * Bars 11-20, the swell: a timpani roll and cymbal lead in; violins and cellos bow in under the major Rootsong on
+ * fiddle and recorder in octaves, with a big bass drum on the downbeats.
+ * Bars 21-28, the bard again: the recorder takes the minor Rootsong over the strumstick and a folk harp, softer, and
+ * the last bars thin to the strumstick so the loop returns to bar 1.
  */
 export const title: Piece = {
   id: 'title',
   kind: 'track',
-  bpm: 70,
+  bpm: 72,
   meter: 4,
+  humanize: HUMANIZE_TRACK,
   parts: {
-    flute: {
-      instrument: 'flute',
-      gain: 0.48,
-      dyn: dyn(['p', 8], ['mp', 8], ['f', 6], ['>', 1], ['p', 1]),
+    fiddle: {
+      instrument: 'fiddle',
+      gain: 0.5,
+      reverb: 0.4,
+      dyn: dyn(['mp', 10], ['mf', 4], ['f', 4], ['mf', 2], ['mp', 8]),
+      notes: bars(rests(2), PHRASE_MINOR_B, PHRASE_MAJOR_D, rests(2), rests(8)),
+    },
+    recorder: {
+      instrument: 'recorder',
+      gain: 0.42,
+      dyn: dyn(['mp', 10], ['mf', 8], ['mp', 2], ['mp', 6], ['p', 2]),
+      notes: bars(rests(10), move(PHRASE_MAJOR_D, 12), rests(2), move(PHRASE_MINOR_B, 12)),
+    },
+    strumstick: {
+      instrument: 'strumstick',
+      gain: 0.3,
+      strum: 22,
+      dyn: dyn(['mp', 10], ['mf', 10], ['mp', 6], ['p', 2]),
       notes: bars(
-        MINOR_FLUTE,
-        'A5:4 F#5:4 D5:8',
-        'E5:8 C#5:4 A4:4',
-        MINOR_FLUTE,
-        'G5:4 E5:4 B4:8',
-        'B4:8 A#4:8',
-        rests(8),
-        rests(3),
-        MAJOR_FLUTE,
-        rests(3),
+        strum(CHORDS.slice(0, 10), BALLAD),
+        strum(CHORDS.slice(10, 20), DRIVE),
+        strum(CHORDS.slice(20, 26), BALLAD),
+        strum(CHORDS.slice(26), SOFT),
       ),
     },
-    harp: {
-      instrument: 'harp',
+    folkHarp: {
+      instrument: 'folkHarp',
       arp: 'up',
       arpRate: 2,
-      gain: 0.36,
-      dyn: dyn(['p', 8], ['mp', 16]),
-      notes: bars(held(HARP_A), held(HARP_A), held(HARP_A)),
-    },
-    glock: {
-      instrument: 'glock',
-      gain: 0.18,
-      dyn: dyn(['pp', 24]),
+      gain: 0.32,
+      reverb: 0.45,
+      dyn: dyn(['pp', 20], ['p', 6], ['pp', 2]),
       notes: bars(
-        times(2, 'r:12 F#6:4'),
-        'r:12 A6:4',
-        'r:12 E6:4',
-        times(2, 'r:12 D6:4'),
-        'r:12 B5:4',
-        'r:8 C#6:8',
-        rests(16),
-      ),
-    },
-    pad: {
-      instrument: 'pad',
-      gain: 0.22,
-      reverb: 0.5,
-      dyn: dyn(['pp', 24]),
-      notes: bars(held(A), A_LAST, held(B), held(C), C_LAST),
-    },
-    horns: {
-      instrument: 'horn',
-      gain: 0.42,
-      dyn: dyn(['mf', 16], ['f', 6], ['mf', 2]),
-      notes: bars(
-        rests(8),
-        'F#4:8 A4:8',
-        'E4:16',
-        MAJOR_HORN,
-        'F#4:8 D4:8',
-        'D4:8 B3:8',
-        'E4:16',
-        'E4:8 C#4:8',
-        held(['(B3 D4)', '(C#4 E4)', '(C#4 F#4)', '(D4 F#4)', '(B3 D4)', '(A3 D4)']),
+        rests(20),
+        CHORDS.slice(20, 26).map((c) => harpBar(head(c))),
         rests(2),
       ),
     },
-    violinsTrem: {
-      instrument: 'violinsTrem',
-      octave: 1,
-      gain: 0.3,
-      dyn: dyn(['p', 12], ['mp', 12]),
-      notes: bars(rests(8), held(B), rests(8)),
-    },
-    violins: {
-      instrument: 'violins',
-      gain: 0.5,
-      dyn: dyn(['mf', 16], ['f', 6], ['>', 1], ['p', 1]),
-      notes: bars(
-        rests(16),
-        'B4:8 D5:8',
-        'C#5:8 E5:8',
-        'C#5:4 A4:4 F#4:8',
-        MAJOR_VIOLIN,
-        'A5:8 F#5:8',
-        'G5:8 E5:8',
-        'E5:8 C#5:8',
-      ),
-    },
-    violas: {
-      instrument: 'violas',
-      gain: 0.42,
-      dyn: dyn(['pp', 8], ['p', 8], ['f', 6], ['>', 1], ['p', 1]),
-      notes: bars(
-        held(['D4', 'B3', 'A3', 'C#4', 'D4', 'B3', 'B3']),
-        'B3:8 A#3:8',
-        rests(8),
-        'D4:16',
-        'E4:16',
-        'C#4:16',
-        MAJOR_HORN,
-        'D4:16',
-        'D4:16',
-        'C#4:16',
-      ),
-    },
-    cellos: {
-      instrument: 'cellos',
-      gain: 0.4,
-      dyn: dyn(['pp', 8], ['mp', 8], ['f', 6], ['>', 1], ['p', 1]),
-      notes: bars(
-        held(ROOTS_A.map((r) => r.replace('2', '3'))),
-        // B: a countermelody under the horns
-        'F#3:8 A3:8',
-        'E3:8 C#3:8',
-        'D3:8 F#3:8',
-        'G3:8 B3:8',
-        'A3:8 F#3:8',
-        'B3:8 D4:8',
-        'E4:8 D4:8',
-        'C#4:8 E3:4 A3:4',
-        held(ROOTS_C.map((r) => r.replace('2', '3'))),
-      ),
-    },
-    basses: {
+    droneBass: {
       instrument: 'basses',
-      gain: 0.38,
-      dyn: dyn(['pp', 8], ['mp', 8], ['f', 6], ['>', 1], ['p', 1]),
-      notes: bars(held(ROOTS_A), held(ROOTS_B), held(ROOTS_C)),
+      gain: 0.55,
+      reverb: 0.35,
+      dyn: dyn(['p', 10], ['mf', 10], ['p', 8]),
+      notes: bars(held(CHORDS.map((c) => rootAt(c, 33)))),
     },
-    choir: {
-      instrument: 'choir',
-      gain: 0.2,
-      dyn: dyn(['pp', 16], ['mp', 6], ['>', 1], ['p', 1]),
-      notes: bars(rests(16), held(C), C_LAST),
+    droneCellos: {
+      instrument: 'cellos',
+      gain: 0.42,
+      dyn: dyn(['p', 10], ['p', 10], ['p', 8]),
+      notes: bars(
+        CHORDS.slice(0, 10).map((c) => bedBar(head(c))),
+        rests(10),
+        CHORDS.slice(20).map((c) => bedBar(head(c))),
+      ),
     },
-    perc: {
+    stringsHigh: {
+      instrument: 'violins',
+      gain: 0.36,
+      attack: 0.9,
+      reverb: 0.5,
+      dyn: dyn(['p', 11], ['mp', 2], ['mf', 3], ['f', 2], ['mf', 1], ['mp', 1], ['p', 8]),
+      notes: bars(rests(10), VIOLINS, rests(8)),
+    },
+    stringsLow: {
+      instrument: 'cellos',
+      gain: 0.5,
+      attack: 0.6,
+      reverb: 0.45,
+      dyn: dyn(['p', 10], ['mp', 3], ['mf', 3], ['f', 2], ['mf', 1], ['mp', 1], ['p', 8]),
+      notes: bars(rests(10), held(CHORDS.slice(10, 20).map((c) => rootAt(c, 40))), rests(8)),
+    },
+    timpani: {
       instrument: 'kit',
       gain: 0.45,
-      kit: { r: 'timpRoll', t: 'timpHit', s: 'cymbalSwell' },
-      dyn: dyn(['mp', 16], ['f', 8]),
+      kit: { R: 'timpRoll' },
+      dyn: dyn(['p', 9], ['mf', 1], ['p', 8], ['mp', 1], ['p', 9]),
       notes: bars(
-        times(15, '................'),
-        '....s...r.......',
-        't...............',
-        times(7, '................'),
+        times(9, '................'),
+        'R...............',
+        times(8, '................'),
+        'R...............',
+        times(9, '................'),
+      ),
+    },
+    cymbal: {
+      instrument: 'kit',
+      gain: 0.3,
+      kit: { S: 'cymbalSwell' },
+      dyn: dyn(['mp', 28]),
+      notes: bars(times(9, '................'), 'S...............', times(18, '................')),
+    },
+    bigDrum: {
+      instrument: 'kit',
+      gain: 0.5,
+      kit: { B: 'bassDrumBig' },
+      dyn: dyn(['mp', 10], ['mf', 4], ['f', 4], ['mp', 2], ['p', 8]),
+      notes: bars(
+        times(10, '................'),
+        times(4, 'B...............'),
+        times(4, 'B.......B.......'),
+        times(2, 'B...............'),
+        times(8, '................'),
+      ),
+    },
+    frame: {
+      instrument: 'kit',
+      gain: 0.36,
+      kit: { f: 'frameDrum' },
+      dyn: dyn(['p', 10], ['mp', 10], ['pp', 8]),
+      notes: bars(
+        times(2, '................'),
+        times(8, 'f.......f.......'),
+        times(10, 'f.....f.f.......'),
+        times(6, 'f...............'),
+        times(2, '................'),
       ),
     },
   },

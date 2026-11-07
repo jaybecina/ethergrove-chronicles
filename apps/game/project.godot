@@ -28,3 +28,8 @@ gdscript/warnings/exclude_addons=true
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
+[rendering]
+
+textures/vram_compression/import_etc2_astc=true
+renderer/rendering_method.web="gl_compatibility"

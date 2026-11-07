@@ -11,26 +11,33 @@ const jingle = (id: string, bpm: number, parts: Record<string, PartSpec>): Piece
   parts,
 });
 
-/** A new day: a harp gliss up, a three-note flute call and a glock sparkle. C major. */
+/** A new day: a folk harp roll up, a three-note recorder call and a picked strumstick. C major. */
 const morning = jingle('morning', 120, {
-  harp: { instrument: 'harp', arp: 'up', gain: 0.5, notes: '(C4 E4 G4 C5 E5 G5 C6):7 r:9 | r:16' },
-  flute: { instrument: 'flute', gain: 0.5, notes: 'r:6 G5:2 C6:2 E6:6 | r:16' },
-  glock: { instrument: 'glock', gain: 0.3, notes: 'r:8 C7:8 | r:16' },
-  strings: { instrument: 'violins', gain: 0.35, dyn: 'p p', notes: '(C4 E4 G4):16 | r:16' },
+  harp: {
+    instrument: 'folkHarp',
+    arp: 'up',
+    gain: 0.5,
+    notes: '(C4 E4 G4 C5 E5 G5 C6):7 r:9 | r:16',
+  },
+  recorder: { instrument: 'recorder', gain: 0.5, notes: 'r:6 G5:2 C6:2 E6:6 | r:16' },
+  strumstick: { instrument: 'strumstick', gain: 0.4, notes: 'r:8 C5:8 | r:16' },
+  fiddle: { instrument: 'fiddle', gain: 0.35, dyn: 'p p', notes: 'C4:16 | r:16' },
 });
 
-/** Each season's fanfare: the Rootsong on horns, in the season's key, over strings and timpani. */
+/** Each season's fanfare: the Rootsong on the fiddle, in the season's key, over harp, cello and frame drum. */
 function season(
   id: JingleFile,
-  horn: string,
+  lead: string,
   chords: [string, string, string, string],
   roots: [string, string, string, string],
   sleigh = false,
 ): Piece {
   return jingle(id, 120, {
-    horn: { instrument: 'horn', gain: 0.55, dyn: 'mf mf f', notes: horn },
-    strings: {
-      instrument: 'violins',
+    fiddle: { instrument: 'fiddle', gain: 0.55, dyn: 'mf mf f', notes: lead },
+    harp: {
+      instrument: 'folkHarp',
+      arp: 'up',
+      arpRate: 2,
       gain: 0.4,
       dyn: 'mp mf f',
       notes: bars(`${chords[0]}:16`, `${chords[1]}:8 ${chords[2]}:8`, `${chords[3]}:12 r:4`),
@@ -44,11 +51,11 @@ function season(
     perc: {
       instrument: 'kit',
       gain: 0.5,
-      kit: { r: 'timpRoll', t: 'timpHit', s: 'cymbalSwell', b: 'sleigh' },
+      kit: { f: 'frameDrum', b: 'sleigh' },
       notes: bars(
         '................',
-        '....s...r.......',
-        sleigh ? 't.b...b...b.....' : 't...............',
+        '....f.......f...',
+        sleigh ? 'f.b...b...b.....' : 'f...............',
       ),
     },
   });
@@ -82,22 +89,24 @@ const seasonWinter = season(
   true,
 );
 
-/** All lessons done: a bright brass fanfare over string tremolo, timpani and a cymbal. C major. */
+/** All lessons done: a bright recorder and fiddle call over a rolling harp and frame drum. C major. */
 const lessonsComplete = jingle('lessonsComplete', 120, {
-  trumpet: {
-    instrument: 'trumpet',
+  recorder: {
+    instrument: 'recorder',
     gain: 0.5,
     dyn: 'f f',
     notes: 'C5:2 E5:2 G5:2 C6:6 r:4 | A5:2 B5:2 D6:2 C6:10',
   },
-  horn: {
-    instrument: 'horn',
+  fiddle: {
+    instrument: 'fiddle',
     gain: 0.45,
     dyn: 'f f',
     notes: 'E4:2 G4:2 C5:2 E5:6 r:4 | F4:2 G4:2 B4:2 E5:10',
   },
-  strings: {
-    instrument: 'violinsTrem',
+  harp: {
+    instrument: 'folkHarp',
+    arp: 'up',
+    arpRate: 2,
     gain: 0.4,
     dyn: 'f f',
     notes: '(E4 G4 C5):16 | (F4 A4 C5):6 (E4 G4 C5):10',
@@ -106,12 +115,12 @@ const lessonsComplete = jingle('lessonsComplete', 120, {
   perc: {
     instrument: 'kit',
     gain: 0.55,
-    kit: { t: 'timpHit', c: 'cymbalHit' },
-    notes: 't............... | t.....c.........',
+    kit: { f: 'frameDrum', t: 'tamb' },
+    notes: 'f............... | f.....t.........',
   },
 });
 
-/** Passing out: cellos sink chromatically over a low piano and a fading pad. */
+/** Passing out: cellos sink chromatically over a low piano and a quiet bowed psaltery. */
 const faint = jingle('faint', 70, {
   cellos: {
     instrument: 'cellos',
@@ -120,7 +129,12 @@ const faint = jingle('faint', 70, {
     notes: 'E4:4 Eb4:4 D4:4 Db4:4 | C4:12 r:4',
   },
   piano: { instrument: 'piano', gain: 0.4, dyn: 'pp pp', notes: '(C2 G2 C3):16 | r:16' },
-  pad: { instrument: 'pad', gain: 0.18, dyn: 'p pp', notes: '(C3 G3 Eb4):16 | (C3 G3 Eb4):12 r:4' },
+  psaltery: {
+    instrument: 'psaltery',
+    gain: 0.3,
+    dyn: 'p pp',
+    notes: 'Eb5:16 | Eb5:12 r:4',
+  },
 });
 
 export const JINGLE_PIECES: Record<JingleFile, Piece> = {

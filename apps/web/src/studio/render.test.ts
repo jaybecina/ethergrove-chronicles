@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FakeAudioContext, FakeBufferSource, FakeConvolver, FakeFilter } from '../test/fakeAudio';
+import { FakeAudioContext, FakeBufferSource, FakeConvolver } from '../test/fakeAudio';
 import {
   normalizeGain,
   renderPiece,
@@ -113,44 +113,6 @@ describe('renderPiece', () => {
     // A one-shot fades out over its last 0.3 s, so a still-ringing harp never ends on a click.
     expect(out.left.at(-1)).toBeCloseTo(0, 3);
     expect(out.left[out.left.length - Math.round(0.6 * 44100)]).toBeCloseTo(0.2 * (0.11 / 0.2), 2);
-  });
-
-  it('plays the soft kick through a 2000 Hz lowpass, and other kit sounds unfiltered', async () => {
-    const { make, ctxs } = fakeOffline();
-    const index = buildIndex(
-      ['Percussion/BDrumNewhit_v1_rr1_Sum.wav', 'VSCO 1 Percussion/varWood/claves_mp.wav'],
-      {},
-    );
-    const kicks: Piece = {
-      ...track,
-      kind: 'jingle',
-      parts: {
-        perc: { instrument: 'kit', notes: 'k.......c.......', kit: { k: 'softKick', c: 'claves' } },
-      },
-    };
-    await renderPiece(kicks, load, index, make);
-    const lowpasses = (ctxs[0]?.created('filter') ?? []).filter(
-      (f) => (f as FakeFilter).type === 'lowpass' && (f as FakeFilter).frequency.value === 2000,
-    );
-    expect(lowpasses).toHaveLength(1);
-  });
-
-  it('runs a lo-fi track through the lo-fi stage, and refuses one that breaks the rules', async () => {
-    const { make, ctxs } = fakeOffline();
-    const lofi: Piece = {
-      ...track,
-      bpm: 72,
-      parts: { keys: { instrument: 'ePiano', notes: 'C4:16' } },
-      lofi: { wowHz: 0.6, wowMs: 1, drive: 1.4, lowpassHz: 6500, hissDb: -44 },
-    };
-    await renderPiece(lofi, load, INDEX, make);
-    expect(ctxs[0]?.created('waveShaper')).toHaveLength(1);
-    expect((ctxs[0]?.created('bufferSource') as FakeBufferSource[]).some((s) => s.loop)).toBe(true);
-    await expect(renderPiece({ ...lofi, bpm: 120 }, load, INDEX, make)).rejects.toThrow(
-      'demo: bpm 120',
-    );
-    await renderPiece(track, load, INDEX, make);
-    expect(ctxs.at(-1)?.created('waveShaper')).toHaveLength(0);
   });
 
   it('fails clearly when a note has no sample', async () => {

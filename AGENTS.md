@@ -299,19 +299,47 @@ The tutorial state lives in the core as `GameState.tutorial`.
 
 ### Audio
 
-All music and SFX are original scores rendered offline by the dev-only studio (audio spec
-`docs/superpowers/specs/2026-10-30-ethergrove-audio-design.md`) and shipped as AAC `.m4a`.
+All music and SFX are original scores rendered offline by the dev-only studio and shipped as AAC `.m4a` (web). The
+style is **Outward-style folk fantasy** ([[decisions/0023-outward-style-folk-soundtrack]], spec
+`docs/superpowers/specs/2026-11-05-outward-style-soundtrack-design.md`): small ensembles (fiddle, recorder,
+strumstick, folk harp, psaltery, cello drones, hand drums), folk modes, rests, a day / night / fight set per place.
+It is being revised toward **cinematic folk** (medieval, gypsy, bard, a little cinematic;
+[[decisions/0024-cinematic-folk-revision]], spec `docs/superpowers/specs/2026-11-05-soundtrack-cinematic-folk-design.md`):
+audible low end, strummed chords, string swells, Phrygian-dominant fights, human timing. Pilot: `title`, `woods`,
+`woodsFight`, `lowmere`; the rest follows after the owner listens. Nothing is copied from any game's music.
 
 - **Render:** start the e2e dev server on port 5199 (it must serve this checkout), then
-  `VSCO_DIR=<path to VSCO-2-CE> pnpm --filter web studio [--only <id>]`. It needs macOS `afconvert` and writes
-  `public/assets/{music,sfx}/*.m4a` plus the generated `src/audio/manifest.ts`. Commit both; never commit samples.
-- **Rules tests enforce:** the Rootsong in the title, seasons, night, rain and season fanfares; Grandpa's theme at
-  home; the retired Hearth motif nowhere (`studio/motifs.ts`); lo-fi rules for home, night and rain
-  (`studio/lofi.ts`: 60–85 bpm, soft kit at mp or quieter, never snare taps on both beats 2 and 4); budgets
-  (track ≤ 1 MB, jingle ≤ 120 KB, SFX ≤ 40 KB, total ≤ 9 MB); seamless loops.
+  `VSCO_DIR=<VSCO-2-CE> VCSL_DIR=<VCSL> pnpm --filter web studio [--only <id>]`. VCSL (CC0, github.com/sgossner/VCSL)
+  can be a sparse checkout of the 8 instrument folders in `src/studio/samples.ts`. It needs macOS `afconvert`, writes
+  `public/assets/{music,sfx}/*.m4a` plus the generated `src/audio/manifest.ts`; commit both, never samples. A
+  single-track `--only` run needs `apps/web/studio-out/manifest.json` from one full run (it refuses without it).
+- **Pieces** are built with `pieces/folk.ts` (`folkPiece`: chord names and phrases in, parts out). Godot-only tracks
+  are in `pieces/godot.ts` and are not web `TrackId`s.
+- **Rules tests enforce** (`pieces/folk.test.ts`): no `pad`, `choir`, `ePiano`, `arp`, `glock`, `subBass`, bell
+  sounds or lo-fi anywhere; at most 4 melodic voices at once (3 in night tracks); a 4-bar melodic rest in every
+  exploration track; the Rootsong in the title, seasons, night, rain, Lowmere and season fanfares; Grandpa's theme at
+  home; the Gloam in Mossdeep and the Bramble Matron; night variants at 0.65–0.8 of the day tempo; the retired Hearth
+  motif nowhere; budgets (track ≤ 1 MB, jingle ≤ 120 KB, SFX ≤ 40 KB, total ≤ 9 MB); seamless loops.
+- **Revision rules** (`pieces/folk.test.ts`, on the `REVISED` list until the rollout): a low note (≤ C3, gain ≥ 0.15)
+  in 60 % of bars (every bar in fights); `strings…` parts are beds with `attack` ≥ 0.4 s that rest in 25 % of bars;
+  ≤ 4 tambourine or shaker hits a bar; an augmented second in fights, the boss and Lowmere; a pitched layer in every
+  8th of a fight; every piece sets `humanize` (`HUMANIZE_TRACK` / `HUMANIZE_JINGLE`). `strum` (ms) and `attack` (s)
+  are part options in `score.ts`; `strumBar` and `voicing` in `pieces/folk.ts` make guitar-like strummed chords.
+- **Measure, don't guess:** a score can satisfy a rule and still sound wrong (pp drones were "low end" on paper and
+  2–5 % in the audio). Check a render with the Web Audio analyser recipe in the cinematic folk spec (low-end share,
+  largest pitch class, onsets per second, loudness percentiles) against its reference numbers.
+- **VSCO pitch:** check a sample's octave by the energy at each candidate pitch (Goertzel), not by autocorrelation
+  alone: autocorrelation called the contrabass an octave low. Cello spiccato, contrabass pizzicato and solo-violin
+  spiccato all sound an octave above their names; the solo violin's arco files do not.
 - **Loop seams:** rendered loops are exact; AAC noise lowers the decoded seam correlation to 0.98–0.99, while a
   broken wrap measures about 0.6. The e2e bar is 0.95, so don't "fix" a 0.98 seam.
+- **Godot** plays music and sounds through `apps/game/game/audio/`: `MusicDirector` (pure cue rules),
+  `MusicConductor` (fades, 4 s fight hold), `MusicPlayer`, `SfxPlayer`, volumes in `Settings`.
 - Nobody can hear tests: the owner listens to every changed `.m4a` before merging.
+- **AI music briefs (ACE-Step 1.5):** its DiT text encoder keeps only 256 tokens of `instruction + caption + metas`
+  (~200 for the caption), so write a caption of ≤ ~190 tokens, put the arc in the `lyrics` section tags and the "no …"
+  words in `lm_negative_prompt` ([[lessons/ace-step-caption-256-tokens]]). Briefs, renders and the loop and measure
+  tools live outside the repo in `../ai-audio/`; takes go to the git-excluded `audio-pilot/`.
 
 ### Saves
 
@@ -350,6 +378,9 @@ server Playwright starts on port 5199. `check:build` fails the production build 
 
 - **Autoload names are not identifiers in a `-s` SceneTree script** (the playthrough smoke, `tools/shot.gd`):
   they are compiled before the autoloads exist. Node code looks them up with `get_node_or_null("/root/<Name>")`.
+- **Godot exports** (`pnpm game:export`) need the 4.7.2 export templates installed once, a universal macOS build needs
+  `textures/vram_compression/import_etc2_astc=true` in `project.godot`, and the Web shell must have `detectUnsupported`
+  inlined by `scripts/exportGame.mjs` because the export copies only the shell file.
 - **Godot imports anything under `apps/game/`,** so a folder of generated files (like `shots/`) needs a `.gdignore`.
 - **Godot 4.7.2 silently fails to import glTF using EXT_meshopt_compression / KHR_mesh_quantization** (`valid=false`, no scene). apps/game models are produced by `pnpm game:models`, never copied raw.
 - **Zustand selectors must return stable values** ([story](brain/lessons/lesson-marker-render-loop.md)).

@@ -24,7 +24,13 @@ export const SFX_RECIPES: Record<SoundId, SfxRecipe> = {
     level: 0.6,
     layers: [
       { at: 0, source: { file: `${M}/Misc 1/bubbles.wav` }, dur: 400, release: 0.06 },
-      { at: 40, source: { instrument: 'harp', note: 'E6' }, gainDb: -10, dur: 300, release: 0.2 },
+      {
+        at: 40,
+        source: { instrument: 'strumstick', note: 'E5' },
+        gainDb: -10,
+        dur: 250,
+        release: 0.15,
+      },
     ],
   },
   sickle: {
@@ -70,8 +76,8 @@ export const SFX_RECIPES: Record<SoundId, SfxRecipe> = {
     level: 0.7,
     layers: [
       { at: 0, source: { instrument: 'marimba', note: 'C6' }, dur: 400, release: 0.2 },
-      { at: 60, source: { instrument: 'glock', note: 'G6' }, dur: 500, release: 0.25 },
-      { at: 0, source: { kit: 'bellTree' }, gainDb: -12, dur: 700, release: 0.2 },
+      { at: 60, source: { instrument: 'strumstick', note: 'G5' }, dur: 250, release: 0.15 },
+      { at: 0, source: { kit: 'claves' }, gainDb: -8, dur: 100 },
     ],
   },
   plant: {
@@ -90,14 +96,16 @@ export const SFX_RECIPES: Record<SoundId, SfxRecipe> = {
     layers: [
       { at: 0, source: { file: `${P}/varWood/claves_pp1.wav` }, dur: 120 },
       { at: 120, source: { file: `${P}/varWood/claves_pp1.wav` }, rate: 1.1, dur: 120 },
-      { at: 260, source: { instrument: 'harp', note: 'G5' }, dur: 300, release: 0.2 },
+      { at: 260, source: { instrument: 'strumstick', note: 'G4' }, dur: 250, release: 0.15 },
     ],
   },
+  // A bard's purse: two plucked notes and one tambourine jingle (cinematic folk REQ-31).
   coin: {
     level: 0.6,
     layers: [
-      { at: 0, source: { instrument: 'glock', note: 'C7' }, dur: 400, release: 0.25 },
-      { at: 0, source: { kit: 'triangle' }, gainDb: -10, dur: 500, release: 0.2 },
+      { at: 0, source: { instrument: 'strumstick', note: 'B4' }, dur: 260, release: 0.15 },
+      { at: 40, source: { instrument: 'strumstick', note: 'E5' }, dur: 300, release: 0.15 },
+      { at: 0, source: { kit: 'tamb' }, gainDb: -12, dur: 200, release: 0.08 },
     ],
   },
   door: {
@@ -116,11 +124,10 @@ export const SFX_RECIPES: Record<SoundId, SfxRecipe> = {
   chime: {
     level: 0.7,
     layers: [
-      { at: 0, source: { kit: 'glockGliss' }, dur: 900, release: 0.25 },
-      { at: 0, source: { instrument: 'harp', note: 'E5' }, dur: 300, release: 0.3 },
-      { at: 50, source: { instrument: 'harp', note: 'G#5' }, dur: 300, release: 0.3 },
-      { at: 100, source: { instrument: 'harp', note: 'B5' }, dur: 300, release: 0.3 },
-      { at: 150, source: { instrument: 'harp', note: 'E6' }, dur: 500, release: 0.3 },
+      { at: 0, source: { instrument: 'strumstick', note: 'E4' }, dur: 250, release: 0.2 },
+      { at: 70, source: { instrument: 'strumstick', note: 'G#4' }, dur: 250, release: 0.2 },
+      { at: 140, source: { instrument: 'strumstick', note: 'B4' }, dur: 250, release: 0.2 },
+      { at: 210, source: { instrument: 'strumstick', note: 'E5' }, dur: 300, release: 0.25 },
     ],
   },
   deny: {
@@ -167,21 +174,43 @@ export const SFX_RECIPES: Record<SoundId, SfxRecipe> = {
   menuMove: {
     level: 0.25,
     layers: [
-      { at: 0, source: { instrument: 'glock', note: 'C7' }, lowpass: 4000, dur: 80, release: 0.06 },
+      { at: 0, source: { kit: 'claves' }, gainDb: -12, lowpass: 4000, dur: 60, release: 0.05 },
     ],
   },
+  // A strummed open chord, down to confirm and up to go back (cinematic folk REQ-31).
   menuConfirm: {
     level: 0.4,
     layers: [
-      { at: 0, source: { instrument: 'harp', note: 'E5' }, dur: 200, release: 0.15 },
-      { at: 50, source: { instrument: 'harp', note: 'B5' }, dur: 300, release: 0.2 },
+      { at: 0, source: { instrument: 'strumstick', note: 'E3' }, dur: 300, release: 0.2 },
+      { at: 25, source: { instrument: 'strumstick', note: 'B3' }, dur: 300, release: 0.2 },
+      { at: 50, source: { instrument: 'strumstick', note: 'E4' }, dur: 300, release: 0.2 },
+      { at: 0, source: { kit: 'frameDrum' }, gainDb: -10, lowpass: 900, dur: 250, release: 0.08 },
     ],
   },
   menuBack: {
     level: 0.35,
     layers: [
-      { at: 0, source: { instrument: 'harp', note: 'B5' }, dur: 200, release: 0.15 },
-      { at: 50, source: { instrument: 'harp', note: 'E5' }, dur: 300, release: 0.2 },
+      {
+        at: 0,
+        source: { instrument: 'strumstick', note: 'E4' },
+        gainDb: -3,
+        dur: 300,
+        release: 0.2,
+      },
+      {
+        at: 25,
+        source: { instrument: 'strumstick', note: 'B3' },
+        gainDb: -3,
+        dur: 300,
+        release: 0.2,
+      },
+      {
+        at: 50,
+        source: { instrument: 'strumstick', note: 'E3' },
+        gainDb: -3,
+        dur: 300,
+        release: 0.2,
+      },
     ],
   },
 };

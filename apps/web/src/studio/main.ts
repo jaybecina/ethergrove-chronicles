@@ -1,4 +1,4 @@
-import { JINGLE_PIECES, SFX_RECIPES, TRACK_PIECES } from './pieces';
+import { GODOT_TRACK_PIECES, JINGLE_PIECES, SFX_RECIPES, TRACK_PIECES } from './pieces';
 import { renderPiece, renderSfx, type Rendered } from './render';
 import { buildIndex, type SampleIndex } from './samples';
 import { encodeWav } from './wav';
@@ -6,9 +6,9 @@ import { encodeWav } from './wav';
 /** The studio page's API, driven by scripts/studio.mjs in headless Chromium. Dev only. */
 export interface StudioApi {
   init(paths: string[], pianoChart: Record<string, number>): void;
-  list(): { track: string[]; jingle: string[]; sfx: string[] };
+  list(): { track: string[]; jingle: string[]; sfx: string[]; godot: string[] };
   render(
-    kind: 'track' | 'jingle' | 'sfx',
+    kind: 'track' | 'jingle' | 'sfx' | 'godot',
     id: string,
   ): Promise<{
     wav: string;
@@ -72,11 +72,16 @@ window.studio = {
       track: Object.keys(TRACK_PIECES),
       jingle: Object.keys(JINGLE_PIECES),
       sfx: Object.keys(SFX_RECIPES),
+      godot: Object.keys(GODOT_TRACK_PIECES),
     };
   },
   async render(kind, id) {
     if (!index) throw new Error('studio.init() first');
-    const table = { track: TRACK_PIECES, jingle: JINGLE_PIECES } as const;
+    const table = {
+      track: TRACK_PIECES,
+      jingle: JINGLE_PIECES,
+      godot: GODOT_TRACK_PIECES,
+    } as const;
     const r =
       kind === 'sfx'
         ? await renderSfx(id, SFX_RECIPES[id as keyof typeof SFX_RECIPES], load, index)

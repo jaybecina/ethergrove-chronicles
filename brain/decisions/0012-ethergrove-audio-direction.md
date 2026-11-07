@@ -1,6 +1,6 @@
 # 0012 — Ethergrove audio: Rootsong, a style per area, lo-fi for cozy moments
 
-- **Status:** accepted · **Date:** 2026-10-30 · **Evidence:**
+- **Status:** superseded in part by [[decisions/0023-outward-style-folk-soundtrack]] (style map and lo-fi rules) · **Date:** 2026-10-30 · **Evidence:**
   `docs/superpowers/specs/2026-10-30-ethergrove-audio-design.md`
 
 ## Context

@@ -10,6 +10,7 @@ import { summer } from './summer';
 import { title } from './title';
 import { winter } from './winter';
 
+export { GODOT_TRACK_PIECES, type GodotTrackId } from './godot';
 export { JINGLE_PIECES } from './jingles';
 export { SFX_RECIPES } from './sfx';
 

@@ -21,9 +21,10 @@ rendered offline with real instrument recordings, then shipped as AAC files (aud
 `docs/superpowers/specs/2026-10-30-ethergrove-audio-design.md`). No melody, recording or sound file comes from
 another game.
 
-| Library                  | Author            | Used for                                                         | Source                                                  |
-| ------------------------ | ----------------- | ---------------------------------------------------------------- | ------------------------------------------------------- |
-| VSCO 2 Community Edition | Versilian Studios | Every orchestral, piano, percussion and kit sample in the studio | https://versilian-studios.com/vsco-community/ (CC0 1.0) |
+| Library                                   | Author            | Used for                                                                                                     | Source                                                  |
+| ----------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| VSCO 2 Community Edition                  | Versilian Studios | Every orchestral, piano, percussion and kit sample in the studio                                             | https://versilian-studios.com/vsco-community/ (CC0 1.0) |
+| Versilian Community Sample Library (VCSL) | Versilian Studios | Strumstick, folk harp, bowed psaltery, recorder, frame drum, darbuka, slit drum and ocean drum in the studio | https://github.com/sgossner/VCSL (CC0 1.0)              |
 
 The samples are never shipped or committed; only the finished `.m4a` files are. The synth layers (pad, sub bass,
 arp, choir, electric piano) and the lo-fi tape effect are the studio's own code.

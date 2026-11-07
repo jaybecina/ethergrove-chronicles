@@ -11,6 +11,8 @@ export interface SampleNote {
   dest: AudioNode;
   lowpass?: number;
   highpass?: number;
+  /** Seconds to fade in (a bowed swell); default 5 ms. */
+  attack?: number;
 }
 
 const ATTACK_SEC = 0.005;
@@ -36,7 +38,7 @@ export function playSample(ctx: BaseAudioContext, buffer: AudioBuffer, o: Sample
   if (o.highpass) filter('highpass', o.highpass);
   const env = ctx.createGain();
   env.gain.setValueAtTime(0, o.start);
-  env.gain.linearRampToValueAtTime(o.gain, o.start + ATTACK_SEC);
+  env.gain.linearRampToValueAtTime(o.gain, o.start + (o.attack ?? ATTACK_SEC));
   if (o.dur !== null) env.gain.setTargetAtTime(0, o.start + o.dur, o.release);
   head.connect(env).connect(o.dest);
   made.push(env);

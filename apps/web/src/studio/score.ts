@@ -1,6 +1,5 @@
 import { NOTE_MAX, NOTE_MIN, noteMidi } from './notes';
 import type { InstrumentId, KitId } from './samples';
-import type { LofiSpec } from './lofi';
 import type { SynthId } from './synths';
 
 /**
@@ -36,7 +35,20 @@ export interface PartSpec {
   octave?: number;
   /** Kit parts: character → kit sound. */
   kit?: Record<string, KitId>;
+  /** Play each block chord as a strum, this many ms between strings (cinematic folk REQ-21). */
+  strum?: number;
+  /** Fade every note in over this many seconds: a bowed swell (cinematic folk REQ-22). */
+  attack?: number;
 }
+
+/** Human timing and touch: offsets within ±`ms`, gains within 1 ± `gain` (cinematic folk REQ-20). */
+export interface Humanize {
+  ms: number;
+  gain: number;
+}
+/** What every track and every jingle uses at least (cinematic folk REQ-29). */
+export const HUMANIZE_TRACK: Humanize = { ms: 14, gain: 0.1 };
+export const HUMANIZE_JINGLE: Humanize = { ms: 8, gain: 0.06 };
 
 export interface Piece {
   id: string;
@@ -44,9 +56,9 @@ export interface Piece {
   bpm: number;
   meter: 3 | 4;
   swing?: number;
+  /** Off unless given; pieces opt in (HUMANIZE_TRACK, HUMANIZE_JINGLE). */
+  humanize?: Humanize;
   parts: Record<string, PartSpec>;
-  /** Makes this a lo-fi track (audio spec §3.3): the render adds the lo-fi stage and checks its rules. */
-  lofi?: LofiSpec;
 }
 
 export interface NoteEvent {
@@ -59,6 +71,10 @@ export interface NoteEvent {
   dyn: Dyn;
   /** Counts the part's notes, for round robins. */
   noteIndex: number;
+  /** Seconds from the grid: humanise and strum. */
+  offset: number;
+  /** The part's swell, when it has one. */
+  attack?: number;
 }
 export interface HitEvent {
   step: number;
@@ -66,6 +82,8 @@ export interface HitEvent {
   kit: KitId;
   gain: number;
   noteIndex: number;
+  /** Seconds from the grid: humanise. */
+  offset: number;
 }
 
 export interface CompiledPiece {
@@ -105,6 +123,11 @@ export const DEFAULT_PAN: Partial<Record<Voice | 'kit', number>> = {
   bassoon: 0.2,
   glock: -0.25,
   marimba: -0.25,
+  fiddle: -0.3,
+  strumstick: -0.2,
+  folkHarp: -0.45,
+  psaltery: 0.3,
+  recorder: 0.1,
 };
 const DEFAULT_GAIN = 0.5;
 const DEFAULT_REVERB = 0.3;
@@ -237,6 +260,19 @@ function arpOrder(n: number, arp: 'up' | 'down' | 'updown'): number[] {
   return [...up, ...up.slice(1, -1).reverse()];
 }
 
+/** Two repeatable numbers in [-1, 1] for a part's nth note (FNV-1a, then a xorshift). */
+export function jitter(part: string, n: number): [number, number] {
+  let h = 2166136261;
+  for (const ch of `${part}:${String(n)}`) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  const next = () => {
+    h ^= h << 13;
+    h ^= h >>> 17;
+    h ^= h << 5;
+    return ((h >>> 0) / 4294967295) * 2 - 1;
+  };
+  return [next(), next()];
+}
+
 export function compilePiece(p: Piece): CompiledPiece {
   const barSteps = p.meter * 4;
   const stepSec = 60 / p.bpm / 4;
@@ -244,6 +280,14 @@ export function compilePiece(p: Piece): CompiledPiece {
   const hits: HitEvent[] = [];
   const parts: CompiledPiece['parts'] = {};
   const barCounts: number[] = [];
+  const human = p.humanize ?? { ms: 0, gain: 0 };
+  /** The humanised offset (never before the piece starts) and gain factor of a part's nth note. */
+  const feel = (part: string, n: number, step: number): [number, number] => {
+    if (human.ms === 0 && human.gain === 0) return [0, 1];
+    const [t, g] = jitter(part, n);
+    const offset = (t * human.ms) / 1000;
+    return [step === 0 ? Math.abs(offset) : offset, 1 + g * human.gain];
+  };
   for (const [name, part] of Object.entries(p.parts)) {
     const where = (bar: number) => `${p.id} ${name} bar ${bar}`;
     const bars = part.notes.split('|');
@@ -256,22 +300,39 @@ export function compilePiece(p: Piece): CompiledPiece {
     };
     let noteIndex = 0;
     if (part.instrument === 'kit') {
-      for (const h of parseKit(where, bars, barSteps, part.kit ?? {}))
-        hits.push({ ...h, part: name, gain: partGain * curve(h.step), noteIndex: noteIndex++ });
+      for (const h of parseKit(where, bars, barSteps, part.kit ?? {})) {
+        const [offset, mul] = feel(name, noteIndex, h.step);
+        hits.push({
+          ...h,
+          part: name,
+          gain: partGain * curve(h.step) * mul,
+          noteIndex: noteIndex++,
+          offset,
+        });
+      }
       continue;
     }
     const instrument = part.instrument;
-    const tone = (step: number, steps: number, midi: number, mul: number): NoteEvent => {
+    const tone = (
+      step: number,
+      steps: number,
+      midi: number,
+      mul: number,
+      strumSec = 0,
+    ): NoteEvent => {
       const level = curve(step);
+      const [offset, touch] = feel(name, noteIndex, step);
       return {
         step,
         steps,
         part: name,
         instrument,
         midi,
-        gain: partGain * level * mul,
+        gain: partGain * level * mul * touch,
         dyn: dynAt(level),
         noteIndex: noteIndex++,
+        offset: offset + strumSec,
+        ...(part.attack !== undefined ? { attack: part.attack } : {}),
       };
     };
     const arp = part.arp ?? 'block';
@@ -280,7 +341,14 @@ export function compilePiece(p: Piece): CompiledPiece {
       const midis = it.midis;
       if (!midis) continue;
       if (midis.length === 1) tones.push(tone(it.start, it.steps, midis[0] ?? 0, 1));
-      else if (arp === 'block')
+      else if (part.strum !== undefined) {
+        // Down (low to high) on even 8ths, up on odd ones.
+        const up = Math.floor(it.start / 2) % 2 === 1;
+        const gap = part.strum / 1000;
+        midis.forEach((m, i) => {
+          tones.push(tone(it.start, it.steps, m, 1, (up ? midis.length - 1 - i : i) * gap));
+        });
+      } else if (arp === 'block')
         for (const m of midis) tones.push(tone(it.start, it.steps, m, BLOCK_GAIN));
       else {
         const order = arpOrder(midis.length, arp);

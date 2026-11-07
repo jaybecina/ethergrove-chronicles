@@ -4,20 +4,19 @@ import type { SoundId } from '../../audio/soundMap';
 import { noteMidi } from '../notes';
 import { KIT_MAP, SAMPLE_MAP, type InstrumentId } from '../samples';
 import { compilePiece, DYN_GAIN, validatePiece, type Piece } from '../score';
-import { validateLofi } from '../lofi';
 import { findMotif, GRANDPA, HEARTH, ROOTSONG_MAJOR, ROOTSONG_MINOR } from '../motifs';
 import { JINGLE_PIECES, SFX_RECIPES, TRACK_PIECES } from './index';
 
 const TRACKS: Record<TrackId, { bars: number; bpm: number; meter: 3 | 4; seconds: number }> = {
-  title: { bars: 24, bpm: 70, meter: 4, seconds: 82 },
-  spring: { bars: 32, bpm: 96, meter: 4, seconds: 80 },
-  summer: { bars: 32, bpm: 108, meter: 4, seconds: 71 },
-  fall: { bars: 32, bpm: 88, meter: 3, seconds: 65 },
-  winter: { bars: 20, bpm: 66, meter: 4, seconds: 73 },
-  night: { bars: 16, bpm: 62, meter: 4, seconds: 62 },
-  home: { bars: 16, bpm: 74, meter: 4, seconds: 52 },
-  shop: { bars: 32, bpm: 116, meter: 4, seconds: 66 },
-  rain: { bars: 16, bpm: 72, meter: 4, seconds: 53 },
+  title: { bars: 28, bpm: 72, meter: 4, seconds: 93.3 },
+  spring: { bars: 40, bpm: 96, meter: 4, seconds: 100 },
+  summer: { bars: 44, bpm: 104, meter: 4, seconds: 101.5 },
+  fall: { bars: 48, bpm: 88, meter: 3, seconds: 98 },
+  winter: { bars: 32, bpm: 66, meter: 4, seconds: 116 },
+  night: { bars: 20, bpm: 58, meter: 4, seconds: 83 },
+  home: { bars: 28, bpm: 72, meter: 4, seconds: 93 },
+  shop: { bars: 40, bpm: 112, meter: 4, seconds: 86 },
+  rain: { bars: 24, bpm: 64, meter: 4, seconds: 90 },
 };
 const JINGLES: JingleFile[] = [
   'morning',
@@ -123,38 +122,6 @@ describe('the soundtrack', () => {
     for (const p of ALL) expect(findMotif(p, HEARTH), p.id).toBe(false);
   });
 
-  it('makes home, night and rain lo-fi, within the lo-fi rules (audio spec §3.3, §4.2)', () => {
-    expect(TRACK_PIECES.home.lofi).toEqual({
-      wowHz: 0.5,
-      wowMs: 1.2,
-      drive: 1.4,
-      lowpassHz: 6500,
-      hissDb: -44,
-    });
-    expect(TRACK_PIECES.night.lofi).toEqual({
-      wowHz: 0.4,
-      wowMs: 1.5,
-      drive: 1.2,
-      lowpassHz: 6000,
-      hissDb: -46,
-    });
-    expect(TRACK_PIECES.rain.lofi).toEqual({
-      wowHz: 0.6,
-      wowMs: 1,
-      drive: 1.6,
-      lowpassHz: 7000,
-      hissDb: -42,
-    });
-    expect([TRACK_PIECES.home.swing, TRACK_PIECES.rain.swing]).toEqual([0.1, 0.08]);
-    for (const p of [TRACK_PIECES.home, TRACK_PIECES.night, TRACK_PIECES.rain])
-      expect(() => {
-        validateLofi(p);
-      }, p.id).not.toThrow();
-    const night = compilePiece(TRACK_PIECES.night);
-    expect(night.hits.filter((h) => h.step < 8 * night.barSteps)).toEqual([]);
-    for (const p of ALL.filter((x) => !x.lofi)) expect(p.lofi, p.id).toBeUndefined();
-  });
-
   it('never holds a sustained note longer than its recording', () => {
     for (const p of ALL) {
       const c = compilePiece(p);
@@ -223,6 +190,56 @@ describe('sound effects', () => {
         if ('file' in layer.source)
           expect(known.has(layer.source.file), `${id} ${layer.source.file}`).toBe(true);
         expect(layer.at + (layer.dur ?? 0), id).toBeLessThanOrEqual(2500);
+      }
+  });
+
+  it('strum the menu and coin sounds like a bard, with no marimba (cinematic folk REQ-31)', () => {
+    const notes = (id: SoundId) =>
+      SFX_RECIPES[id].layers.flatMap((l) =>
+        'instrument' in l.source ? [[l.source.instrument, l.source.note, l.at]] : [],
+      );
+    const kits = (id: SoundId) =>
+      SFX_RECIPES[id].layers.flatMap((l) => ('kit' in l.source ? [[l.source.kit, l.gainDb]] : []));
+    expect(notes('menuConfirm')).toEqual([
+      ['strumstick', 'E3', 0],
+      ['strumstick', 'B3', 25],
+      ['strumstick', 'E4', 50],
+    ]);
+    expect(kits('menuConfirm').map((k) => k[0])).toEqual(['frameDrum']);
+    expect(notes('menuBack')).toEqual([
+      ['strumstick', 'E4', 0],
+      ['strumstick', 'B3', 25],
+      ['strumstick', 'E3', 50],
+    ]);
+    expect(SFX_RECIPES.menuBack.layers.every((l) => l.gainDb === -3)).toBe(true);
+    expect(notes('coin')).toEqual([
+      ['strumstick', 'B4', 0],
+      ['strumstick', 'E5', 40],
+    ]);
+    expect(kits('coin')).toEqual([['tamb', -12]]);
+  });
+
+  it('keep the eight chime-like effects free of bells and long harp rolls (soundtrack spec REQ-13)', () => {
+    const CHIMES: SoundId[] = [
+      'water',
+      'harvest',
+      'eat',
+      'coin',
+      'chime',
+      'menuMove',
+      'menuConfirm',
+      'menuBack',
+    ];
+    for (const id of CHIMES)
+      for (const layer of SFX_RECIPES[id].layers) {
+        const where = `${id} at ${String(layer.at)}`;
+        if ('instrument' in layer.source) {
+          expect(['glock', 'harp'], where).not.toContain(layer.source.instrument);
+          if (['strumstick', 'folkHarp'].includes(layer.source.instrument))
+            expect(layer.dur ?? 0, where).toBeLessThanOrEqual(300);
+        }
+        if ('kit' in layer.source)
+          expect(['bellTree', 'glockGliss', 'triangle'], where).not.toContain(layer.source.kit);
       }
   });
 });

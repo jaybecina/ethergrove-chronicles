@@ -44,7 +44,7 @@ test('each place gets its own music', async ({ page }) => {
   await expect.poll(() => cue(page)).toBe('night');
 });
 
-test('rain plays its own lo-fi track', async ({ page }) => {
+test('rain plays its own track', async ({ page }) => {
   await newGame(page, 3);
   await unlock(page);
   await page.evaluate(() => {
