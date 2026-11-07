@@ -73,6 +73,12 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
   orchestral / lo-fi / synth by area, never hip-hop; 9 tracks, 7 jingles, 22 SFX rendered by the studio from
   CC0 VSCO 2 samples. The old uncommitted audio in the main checkout is superseded. Never copies of existing game
   music. — verified, [[decisions/0012-ethergrove-audio-direction]]
+- **The soundtrack direction is now cinematic orchestral fantasy with folk instruments as colour,** and AI-generated
+  music (ACE-Step 1.5, MIT) may ship in the Godot game with the Steam disclosure; the web game's audio stays frozen. The
+  pilot (`lowmere`, `woods`, `woodsFight`, 12 takes) renders outside the repo in `../ai-audio/` into the git-excluded
+  `audio-pilot/round3/`; the owner picks by ear before any rollout. — verified,
+  [[decisions/0025-ai-generated-audio-may-ship]]; spec
+  `docs/superpowers/specs/2026-11-06-soundtrack-cinematic-orchestral-design.md`; prompts `docs/audio/soundtrack-prompts.md`
 - Deferred review minors for the tutorial are listed in [[sessions/2026-10-25]].
 
 ## Lessons worth knowing before you touch…
@@ -83,3 +89,4 @@ Status tags: **verified** (checked against the cited source) · **inferred** (re
 - …R3F components and Zustand selectors: [[lessons/lesson-marker-render-loop]]
 - …the e2e `boot()` helper: [[lessons/e2e-boot-aborted-textures]]
 - …agent token cost of tests (measure printed bytes first): [[lessons/test-output-tokens]]
+- …AI music briefs (ACE-Step reads only ~200 caption tokens): [[lessons/ace-step-caption-256-tokens]]
