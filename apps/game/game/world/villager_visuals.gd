@@ -1,8 +1,15 @@
 class_name VillagerVisuals
 extends RefCounted
-## The four Lowmere villagers (Villagers.ALL): each a `player` model fitted like the farmer (PlayerVisual), standing
-## on its tile centre, turned to its facing (PlayerVisual.FACING_YAW), looping Idle, and tinted to its own palette by
-## multiplying every surface's albedo with a per-villager duplicate of the material (the farmer keeps his look).
+## The four Lowmere villagers (Villagers.ALL), each standing on its tile centre.
+##
+## A villager with a character model (assets/characters/<id>.glb: made from the owner's concept with Hunyuan3D 2.1,
+## coloured from the concept and simplified to 10k triangles, see assets-src/characters/tools) stands as that model,
+## at its own baked height in metres, facing the camera (PlayerVisual.FACING_YAW["s"]): its back is a guess and its
+## face is the best of it (character spec REQ-08). These models have no skeleton yet, so they do not animate.
+##
+## A villager without one is a `player` model fitted like the farmer (PlayerVisual), turned to its facing, looping
+## Idle, and tinted to its own palette by multiplying every surface's albedo with a per-villager duplicate of the
+## material (the farmer keeps his look). Each node carries meta `look`: "character" or "tinted".
 
 ## Villager id → albedo multiplier.
 const TINTS: Dictionary[String, Color] = {
@@ -11,6 +18,11 @@ const TINTS: Dictionary[String, Color] = {
 	"fern": Color("#d8b84a"),
 	"bram": Color("#4a74b8"),
 }
+
+
+## The character model for a villager id (it may not exist yet).
+static func model_path(id: String) -> String:
+	return "res://assets/characters/%s.glb" % id
 
 
 ## Adds one `Villager_<id>` per villager under `parent`.
@@ -23,6 +35,16 @@ static func spawn(parent: Node3D) -> void:
 		var node := Node3D.new()
 		node.name = "Villager_%s" % id
 		node.position = Vector3(x + 0.5, 0.0, y + 0.5)
+		if ResourceLoader.exists(model_path(id)):
+			var scene := load(model_path(id)) as PackedScene
+			if scene != null:
+				node.rotation = Vector3(0.0, PlayerVisual.FACING_YAW["s"], 0.0)
+				node.add_child(scene.instantiate())
+				node.set_meta("look", "character")
+				parent.add_child(node)
+				continue
+			push_error("Character model failed to load: %s" % model_path(id))
+		node.set_meta("look", "tinted")
 		var yaw: float = PlayerVisual.FACING_YAW.get(facing, 0.0)
 		node.rotation = Vector3(0.0, yaw, 0.0)
 		var model := ModelCatalog.instantiate("player")

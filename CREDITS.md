@@ -14,6 +14,16 @@ The Godot game (`apps/game/assets/models/`) reuses the same models as the web sc
 | Kenney Nature Kit                                    | Kenney       | Crops and growth stages, rocks, stumps, fences | https://kenney.nl/assets/nature-kit                                                                                             |
 | Kenney Furniture Kit                                 | Kenney       | Bed and house furniture                        | https://kenney.nl/assets/furniture-kit                                                                                          |
 
+## Character models made with AI tools (not CC0; preview only until decision 0026)
+
+The Lowmere villagers in `apps/game/assets/characters/` (Hilda, Doc Aldous, Mayor Bram) are original characters.
+Each started as a concept image made on the owner's Mac with FLUX.1 schnell (Black Forest Labs, Apache 2.0, run with
+mflux, MIT) from our own prompts (`docs/art/character-prompts.md`). The 3D shape was made from that image with
+Hunyuan3D 2.1 (Tencent Hunyuan 3D 2.1 Community License: outside the EU, UK and South Korea, and a separate licence
+above 1 million monthly users), then coloured from the concept, simplified and scaled with our own tools
+(`assets-src/characters/tools`). They are an exception to the CC0-only rule (decision 0004) that needs its own
+decision note (0026) before they ship, and Steam's AI-content disclosure applies.
+
 ## Music and sound (CC0 1.0 samples)
 
 All music and sound effects are original to Ethergrove: composed as scores in `apps/web/src/studio/` and

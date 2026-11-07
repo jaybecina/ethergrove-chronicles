@@ -6,6 +6,20 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "web", "dev:e2e"],
       "port": 5199
+    },
+    {
+      "name": "godot-web",
+      "runtimeExecutable": "/usr/bin/python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8060",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "apps/game/build/web"
+      ],
+      "port": 8060
     }
   ]
 }
